@@ -25,7 +25,7 @@ void SockAddr::init(const char* ip, uint16_t port, uint16_t family)
     }
     memset(addr_, 0, sizeof(*addr_));
 
-    struct sockaddr_in *addr = (struct sockaddr_in*)&addr_;
+    struct sockaddr_in *addr = (struct sockaddr_in*)addr_;
 
     //判断ip是域名还是ip地址
     bool is_name = false;
