@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/kenfly/gearkit/base/Logger.cpp
+Logger.h
+/home/kenfly/gearkit/base/Logger.h
+
+/home/kenfly/gearkit/base/Logger.h
+stdarg.h
+-
+stdio.h
+-
+string.h
+-
+Singleton.h
+/home/kenfly/gearkit/base/Singleton.h
+
+/home/kenfly/gearkit/base/Singleton.h
+

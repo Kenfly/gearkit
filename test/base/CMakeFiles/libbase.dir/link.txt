@@ -1,0 +1,2 @@
+/usr/bin/ar qc libbase.a  CMakeFiles/libbase.dir/Logger.cpp.o
+/usr/bin/ranlib libbase.a

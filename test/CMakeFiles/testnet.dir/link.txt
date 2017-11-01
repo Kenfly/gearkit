@@ -1,0 +1,1 @@
+/usr/bin/c++      -rdynamic CMakeFiles/testnet.dir/main.cpp.o  -o testnet base/libbase.a network/libnetwork.a 
