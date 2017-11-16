@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/testkit.dir/app_server.cpp.o CMakeFiles/testkit.dir/main_server.cpp.o  -o testkit out/libgearkit.a out/network/libnetwork.a out/base/libbase.a -lpthread 

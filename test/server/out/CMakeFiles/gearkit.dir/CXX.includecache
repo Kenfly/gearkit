@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../../base/Logger.h
+stdarg.h
+-
+stdio.h
+-
+string.h
+-
+Singleton.h
+../../base/Singleton.h
+
+../../base/RefPool.h
+vector
+-
+Singleton.h
+../../base/Singleton.h
+
+../../base/Singleton.h
+
+../../base/kitsys.h
+stdint.h
+-
+intrin.h
+-
+
+/home/kenfly/gearkit/Application.cpp
+Application.h
+/home/kenfly/gearkit/Application.h
+RefPool.h
+/home/kenfly/gearkit/RefPool.h
+Logger.h
+/home/kenfly/gearkit/Logger.h
+
+/home/kenfly/gearkit/Application.h
+kitsys.h
+/home/kenfly/gearkit/kitsys.h
+

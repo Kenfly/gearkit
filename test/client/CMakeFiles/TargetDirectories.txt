@@ -1,0 +1,12 @@
+/home/kenfly/gearkit/test/client/CMakeFiles/rebuild_cache.dir
+/home/kenfly/gearkit/test/client/CMakeFiles/edit_cache.dir
+/home/kenfly/gearkit/test/client/CMakeFiles/testkit.dir
+/home/kenfly/gearkit/test/client/out/CMakeFiles/rebuild_cache.dir
+/home/kenfly/gearkit/test/client/out/CMakeFiles/edit_cache.dir
+/home/kenfly/gearkit/test/client/out/CMakeFiles/gearkit.dir
+/home/kenfly/gearkit/test/client/out/base/CMakeFiles/rebuild_cache.dir
+/home/kenfly/gearkit/test/client/out/base/CMakeFiles/edit_cache.dir
+/home/kenfly/gearkit/test/client/out/base/CMakeFiles/libbase.dir
+/home/kenfly/gearkit/test/client/out/network/CMakeFiles/rebuild_cache.dir
+/home/kenfly/gearkit/test/client/out/network/CMakeFiles/edit_cache.dir
+/home/kenfly/gearkit/test/client/out/network/CMakeFiles/libnetwork.dir

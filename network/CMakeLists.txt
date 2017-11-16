@@ -1,35 +1,50 @@
 project(network)
-if(WIN32)
-    add_definitions(-DPLATFORM_WINDOWS)
-    set(SRC_DIR "platform/win")
+
+set(TARGET_NAME libnetwork)
+set(EXTLIB)
+
+if(WINDOWS)
+    set(suffix "win")
 elseif(APPLE)
-	add_definitions(-DPLATFORM_MAC)
-    set(SRC_DIR "platform/linux")
-elseif(UNIX)
-	add_definitions(-DPLATFORM_LINUX)
-    set(SRC_DIR "platform/linux")
+    set(suffix "linux")
+    list(APPEND EXTLIB pthread)
+elseif(LINUX)
+    set(suffix "linux")
+    list(APPEND EXTLIB pthread)
 endif()
 
+include_directories(${INCLUDE_DIR})
+
 set(HEADER_FILE
-    netbase.h
     network.h
-	Socket.h
     SockAddr.h
+    Packet.h
+	Socket.h
+    platform/${suffix}/SockAddr_${suffix}.h
+    platform/${suffix}/Socket_${suffix}.h
 )
 
 Set(SOURCE_FILE
+    SockAddr.cpp
+    Packet.cpp
+    Socket.cpp
+    platform/${suffix}/SockAddr_${suffix}.cpp
+    platform/${suffix}/Socket_${suffix}.cpp
 )
 
-list(APPEND SOURCE_FILE ${SRC_DIR}/Socket.cpp)
-list(APPEND SOURCE_FILE ${SRC_DIR}/SockAddr.cpp)
 
 if(BUILD_TYPE STREQUAL "server")
     list(APPEND HEADER_FILE Server.h)
-    list(APPEND SOURCE_FILE ${SRC_DIR}/Server.cpp)
+    list(APPEND SOURCE_FILE Server.cpp)
+    list(APPEND HEADER_FILE platform/${suffix}/Server_${suffix}.h)
+    list(APPEND SOURCE_FILE platform/${suffix}/Server_${suffix}.cpp)
 elseif(BUILD_TYPE STREQUAL "client")
     list(APPEND HEADER_FILE Client.h)
-    list(APPEND SOURCE_FILE ${SRC_DIR}/Client.cpp)
+    list(APPEND SOURCE_FILE Client.cpp)
+    list(APPEND HEADER_FILE platform/${suffix}/Client_${suffix}.h)
+    list(APPEND SOURCE_FILE platform/${suffix}/Client_${suffix}.cpp)
 endif()
 
-add_library(libnetwork ${HEADER_FILE} ${SOURCE_FILE})
-set_target_properties(libnetwork PROPERTIES OUTPUT_NAME "network")
+add_library(${TARGET_NAME} ${HEADER_FILE} ${SOURCE_FILE})
+set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME "network")
+target_link_libraries(${TARGET_NAME} ${EXTLIB} libbase)

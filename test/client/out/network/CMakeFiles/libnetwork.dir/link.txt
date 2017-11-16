@@ -1,0 +1,2 @@
+/usr/bin/ar qc libnetwork.a  CMakeFiles/libnetwork.dir/platform/linux/Socket.cpp.o CMakeFiles/libnetwork.dir/platform/linux/SockAddr.cpp.o CMakeFiles/libnetwork.dir/Client.cpp.o CMakeFiles/libnetwork.dir/platform/linux/Client_linux.cpp.o
+/usr/bin/ranlib libnetwork.a
