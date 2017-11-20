@@ -5,6 +5,7 @@
 #include "kitsys.h"
 #include "Packet.h"
 #include "Queue.h"
+#include "List.h"
 
 #define DSOCKERR		-1
 
@@ -19,7 +20,7 @@ public:
 	ISocket();
 	virtual ~ISocket();
 
-    virtual init(void);
+    virtual void init(void);
 	virtual void init(int32_t family, int32_t type, int32_t protocol);
     virtual void init(int32_t sock);
 
@@ -32,13 +33,10 @@ public:
 	int32_t listen(int32_t count);
 	int32_t accept(SockAddr* addr);
 	int32_t getErrno();
-    bool valid() const { return sock_ != DSOCKERR; };
 
-    void send(const Buffer* buf);
-    Buffer* recv();
 
-	int32_t send(const char* buf, int32_t size, int32_t mode);
-	int32_t recv(char* buf, int32_t size, int32_t mode);
+	int32_t send(const char* buf, int32_t size, int32_t mode = 0);
+	int32_t recv(char* buf, int32_t size, int32_t mode = 0);
 	int32_t sendTo(const char* buf, int32_t size, int32_t mode, SockAddr* addr);
 	int32_t recvFrom(char* buf, int32_t size, int32_t mode, SockAddr* addr);
 
@@ -52,21 +50,31 @@ public:
     void setAddr(SockAddr* addr);
     SockAddr* getAddr() const { return addr_; }
 
-protected:
     // 接收缓冲区
     // 返回-1，接收错误，返回0，接收完毕，返回1，还可以继续接收
     int32_t doRecv();
     // 发送缓冲区
-    // 返回-1，发送错误，返回0，发送完毕，返回1，还可以继续发送
+    // 返回-1，发送错误，返回0，发送完毕, 返回1，还可以继续发送
     int32_t doSend();
-    // 固定只接受size字节
+    // 发送一个包
+    // 返回-1，发送错误，返回0，发送完毕, 返回1，还可以继续发送
+    int32_t sendPacket(Buffer* buf);
+    // 处理接收到的包
+    void dealRecv();
+
+    bool valid() const { return valid_; }
+
+    // 有效标志，没效后删除
+    bool valid_;
+    // 可发送标志,不可发送放到队列里去
+    bool readyOut_;
+protected:
+    // recv/send一个buffer
     // 成功返回已接收的字节数，-1掉线
-    int32_t recvLimit(char* buf, uint32_t size);
+    int32_t recvBuffer(Buffer* buf);
+    int32_t sendBuffer(Buffer* buf);
     // 清空recv缓冲区,抛弃掉错误包
     void recvClear();
-
-    bool pushPacket(Buffer* buf);
-    bool popPacket(Buffer*& buf);
 
 protected:
 	int32_t sock_;
@@ -77,14 +85,22 @@ private:
     uint32_t packet_seed_;
     // 统计有效包数量
     uint32_t recv_count_;
-    // 接收包头
-    Buffer* head_buf_;
+    // 接收发送包头
+    Buffer* recv_head_buf_;
+    Buffer* send_head_buf_;
     // 一个完整包接收buf
     Buffer* recv_buf_;
+    Buffer* send_buf_;
+    Buffer* send_bufs_;
 
     // 存储各个完整的包
     typedef Queue<Buffer*, 200> BufferQue;
-    BufferQue packet_que_;
+    // 处理队列
+    BufferQue recv_que_;
+    BufferQue send_que_;
+    // 缓存包
+    List<Buffer*> recv_list_;
+    List<Buffer*> send_list_;
 };
 
 } // namespcae kit

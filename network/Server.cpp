@@ -13,7 +13,6 @@ IServer::IServer()
 , active_(false)
 , timeval_(-1)
 {
-    HashList_init(socket_list_, CONNECTION_LIMIT);
 }
 
 IServer::~IServer()
@@ -78,6 +77,39 @@ int32_t IServer::startup(const char* ip, int32_t port)
 
 void IServer::update()
 {
+    // 处理epoll事件
+    PollEvent ev;
+    int32_t cnt = event_que_.count();
+    int32_t sock_fd;
+    int32_t sock_ev;
+    Socket* sock;
+
+    for (int i = 0; i != cnt; ++i)
+    {
+        if (!event_que_.pop(ev))
+            break;
+        sock_fd = ev.fd;
+        sock_ev = ev.events;
+        sock = getSocket(sock_fd);
+        if (sock)
+            continue;
+        if (sock_ev & KIT_POLLIN)
+        {
+            sock->dealRecv();
+        }
+        if (sock_ev & KIT_POLLOUT)
+        {
+            sock->doSend();
+        }
+        if (sock_ev & KIT_POLLERR)
+        {
+            // 真正删除
+            sock->release();
+            socket_array_.del(sock_fd);
+        }
+
+        DBG("[Server](update) poll event fd=%d", ev.fd);
+    }
 }
 
 int32_t IServer::addSocket(int32_t fd, Socket* sock)
@@ -89,8 +121,9 @@ int32_t IServer::addSocket(int32_t fd, Socket* sock)
         sock->init(fd);
     }
 
-    HashList_addElement(socket_list_, fd, sock);
-
+    sock->valid_ = true;
+    sock->retain();
+    socket_array_.add(fd, sock);
     return 0;
 }
 
@@ -101,8 +134,10 @@ int32_t IServer::delSocket(int32_t fd)
     if (sock)
     {
         sock->close();
-        HashList_delElement(socket_list_, fd);
-
+        sock->valid_ = false;
+        //不在这里删除，避免漏掉线程传过来的消息处理。
+        //sock->release();
+        //socket_array_.del(fd);
         return 0;
     }
     else
@@ -113,7 +148,9 @@ int32_t IServer::delSocket(int32_t fd)
 
 Socket* IServer::getSocket(int32_t fd)
 {
-    return (Socket*)HashList_getElement(socket_list_, fd);
+    Socket* s = NULL;
+    socket_array_.get(fd, s);
+    return s;
 }
 
 int32_t IServer::shutdown()
@@ -126,15 +163,14 @@ int32_t IServer::shutdown()
 		socket_ = NULL;
 	}
 
-    int index = 0;
-    while (index = HashList_next(socket_list_, index))
+    Socket* sock = NULL;
+    socket_array_.resetNext();
+    while (socket_array_.next(sock))
     {
-        Socket* sock = (Socket*)HashList_getElement(socket_list_, index);
-        if (sock)
-            sock->close();
+        sock->close();
+        sock->release();
     }
-
-    HashList_init(socket_list_, CONNECTION_LIMIT);
+    socket_array_.clear();
     return 0;
 }
 

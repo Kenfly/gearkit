@@ -2,12 +2,14 @@
 #define __KIT_SERVER_H__
 
 #include "Ref.h"
-#include "kitsys.h"
-#include "HashList.h"
+#include "netsys.h"
+#include "Queue.h"
+#include "Array.h"
 
 namespace kit {
 
 const uint16_t CONNECTION_LIMIT = 0x7FFF;
+const uint16_t SERVER_EVENT_CNT = 512;
 
 class Socket;
 
@@ -37,7 +39,11 @@ protected:
     int32_t timeval_;
 
     // socket list
-    HashListDef socket_list_[CONNECTION_LIMIT];
+    Array<Socket*, CONNECTION_LIMIT> socket_array_;
+
+    // event que
+    typedef Queue<PollEvent, SERVER_EVENT_CNT> EventQue;
+    EventQue event_que_;
 };
 
 } // namespcae kit

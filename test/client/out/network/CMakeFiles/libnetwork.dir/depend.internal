@@ -3,32 +3,72 @@
 
 out/network/CMakeFiles/libnetwork.dir/Client.cpp.o
  ../../base/HashList.h
+ ../../base/List.h
  ../../base/Logger.h
  ../../base/Queue.h
  ../../base/Ref.h
  ../../base/Singleton.h
  ../../base/kitsys.h
  ../../network/platform/linux/Client_linux.h
+ ../../network/platform/linux/SockAddr_linux.h
+ ../../network/platform/linux/Socket_linux.h
  /home/kenfly/gearkit/network/Client.cpp
  /home/kenfly/gearkit/network/Client.h
+ /home/kenfly/gearkit/network/Packet.h
  /home/kenfly/gearkit/network/SockAddr.h
+ /home/kenfly/gearkit/network/Socket.h
+ /home/kenfly/gearkit/network/netsys.h
+out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o
+ ../../base/Buffer.h
+ ../../base/Ref.h
+ ../../base/kitsys.h
+ /home/kenfly/gearkit/network/Packet.cpp
+ /home/kenfly/gearkit/network/Packet.h
+out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o
+ ../../base/Ref.h
+ ../../base/kitsys.h
+ ../../network/platform/linux/SockAddr_linux.h
+ /home/kenfly/gearkit/network/SockAddr.cpp
+ /home/kenfly/gearkit/network/SockAddr.h
+out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o
+ ../../base/Array.h
+ ../../base/Buffer.h
+ ../../base/HashList.h
+ ../../base/List.h
+ ../../base/Logger.h
+ ../../base/Queue.h
+ ../../base/Ref.h
+ ../../base/RefPool.h
+ ../../base/Singleton.h
+ ../../base/base.h
+ ../../base/kitsys.h
+ ../../network/platform/linux/SockAddr_linux.h
+ ../../network/platform/linux/Socket_linux.h
+ /home/kenfly/gearkit/network/Packet.h
+ /home/kenfly/gearkit/network/SockAddr.h
+ /home/kenfly/gearkit/network/Socket.cpp
  /home/kenfly/gearkit/network/Socket.h
  /home/kenfly/gearkit/network/netsys.h
 out/network/CMakeFiles/libnetwork.dir/platform/linux/Client_linux.cpp.o
  ../../base/HashList.h
+ ../../base/List.h
  ../../base/Logger.h
  ../../base/Queue.h
  ../../base/Ref.h
  ../../base/Singleton.h
  ../../base/kitsys.h
  ../../network/Client.h
+ ../../network/Packet.h
  ../../network/SockAddr.h
  ../../network/Socket.h
  ../../network/netsys.h
  ../../network/platform/linux/Client_linux.h
+ ../../network/platform/linux/SockAddr_linux.h
+ ../../network/platform/linux/Socket_linux.h
  /home/kenfly/gearkit/network/platform/linux/Client_linux.cpp
  /home/kenfly/gearkit/network/platform/linux/Client_linux.h
-out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr.cpp.o
+out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o
+ ../../base/Array.h
  ../../base/Buffer.h
  ../../base/HashList.h
  ../../base/Logger.h
@@ -39,10 +79,14 @@ out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr.cpp.o
  ../../base/base.h
  ../../base/kitsys.h
  ../../network/SockAddr.h
- /home/kenfly/gearkit/network/platform/linux/SockAddr.cpp
-out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket.cpp.o
+ ../../network/platform/linux/SockAddr_linux.h
+ /home/kenfly/gearkit/network/platform/linux/SockAddr_linux.cpp
+ /home/kenfly/gearkit/network/platform/linux/SockAddr_linux.h
+out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o
+ ../../base/Array.h
  ../../base/Buffer.h
  ../../base/HashList.h
+ ../../base/List.h
  ../../base/Logger.h
  ../../base/Queue.h
  ../../base/Ref.h
@@ -50,6 +94,10 @@ out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket.cpp.o
  ../../base/Singleton.h
  ../../base/base.h
  ../../base/kitsys.h
+ ../../network/Packet.h
  ../../network/SockAddr.h
  ../../network/Socket.h
- /home/kenfly/gearkit/network/platform/linux/Socket.cpp
+ ../../network/platform/linux/SockAddr_linux.h
+ ../../network/platform/linux/Socket_linux.h
+ /home/kenfly/gearkit/network/platform/linux/Socket_linux.cpp
+ /home/kenfly/gearkit/network/platform/linux/Socket_linux.h

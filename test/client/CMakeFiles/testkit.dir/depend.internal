@@ -3,17 +3,20 @@
 
 CMakeFiles/testkit.dir/app_client.cpp.o
  ../.././Application.h
+ ../.././base/Array.h
  ../.././base/Buffer.h
  ../.././base/Logger.h
  ../.././base/RefPool.h
  ../.././base/Singleton.h
  ../.././base/base.h
  ../.././gearkit.h
+ ../.././network/Packet.h
  ../.././network/Server.h
  ../.././network/SockAddr.h
  ../.././network/Socket.h
  ../.././network/network.h
  ../../base/HashList.h
+ ../../base/List.h
  ../../base/Queue.h
  ../../base/Ref.h
  ../../base/kitsys.h
@@ -21,10 +24,14 @@ CMakeFiles/testkit.dir/app_client.cpp.o
  ../../network/netsys.h
  ../../network/platform/linux/Client_linux.h
  ../../network/platform/linux/Server_linux.h
+ ../../network/platform/linux/SockAddr_linux.h
+ ../../network/platform/linux/Socket_linux.h
  /home/kenfly/gearkit/test/app_client.cpp
  /home/kenfly/gearkit/test/app_client.h
 CMakeFiles/testkit.dir/main_client.cpp.o
  ../.././Application.h
+ ../../base/Array.h
+ ../../base/List.h
  ../../base/kitsys.h
  /home/kenfly/gearkit/test/app_client.h
  /home/kenfly/gearkit/test/main_client.cpp

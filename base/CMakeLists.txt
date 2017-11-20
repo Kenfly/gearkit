@@ -9,6 +9,9 @@ set(HEADER_FILE
     HashList.h
     Buffer.h
     BufferPool.h
+    Queue.h
+    List.h
+    Array.h
 )
 
 Set(SOURCE_FILE

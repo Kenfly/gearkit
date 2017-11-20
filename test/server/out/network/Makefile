@@ -125,6 +125,33 @@ libnetwork/fast:
 	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/build
 .PHONY : libnetwork/fast
 
+Packet.o: Packet.cpp.o
+
+.PHONY : Packet.o
+
+# target to build an object file
+Packet.cpp.o:
+	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o
+.PHONY : Packet.cpp.o
+
+Packet.i: Packet.cpp.i
+
+.PHONY : Packet.i
+
+# target to preprocess a source file
+Packet.cpp.i:
+	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Packet.cpp.i
+.PHONY : Packet.cpp.i
+
+Packet.s: Packet.cpp.s
+
+.PHONY : Packet.s
+
+# target to generate assembly for a file
+Packet.cpp.s:
+	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Packet.cpp.s
+.PHONY : Packet.cpp.s
+
 Server.o: Server.cpp.o
 
 .PHONY : Server.o
@@ -296,6 +323,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... libnetwork"
+	@echo "... Packet.o"
+	@echo "... Packet.i"
+	@echo "... Packet.s"
 	@echo "... Server.o"
 	@echo "... Server.i"
 	@echo "... Server.s"

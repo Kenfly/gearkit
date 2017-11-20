@@ -5,9 +5,12 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/kenfly/gearkit/network/Client.cpp" "/home/kenfly/gearkit/test/client/out/network/CMakeFiles/libnetwork.dir/Client.cpp.o"
+  "/home/kenfly/gearkit/network/Packet.cpp" "/home/kenfly/gearkit/test/client/out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o"
+  "/home/kenfly/gearkit/network/SockAddr.cpp" "/home/kenfly/gearkit/test/client/out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o"
+  "/home/kenfly/gearkit/network/Socket.cpp" "/home/kenfly/gearkit/test/client/out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o"
   "/home/kenfly/gearkit/network/platform/linux/Client_linux.cpp" "/home/kenfly/gearkit/test/client/out/network/CMakeFiles/libnetwork.dir/platform/linux/Client_linux.cpp.o"
-  "/home/kenfly/gearkit/network/platform/linux/SockAddr.cpp" "/home/kenfly/gearkit/test/client/out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr.cpp.o"
-  "/home/kenfly/gearkit/network/platform/linux/Socket.cpp" "/home/kenfly/gearkit/test/client/out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket.cpp.o"
+  "/home/kenfly/gearkit/network/platform/linux/SockAddr_linux.cpp" "/home/kenfly/gearkit/test/client/out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o"
+  "/home/kenfly/gearkit/network/platform/linux/Socket_linux.cpp" "/home/kenfly/gearkit/test/client/out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

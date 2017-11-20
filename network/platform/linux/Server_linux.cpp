@@ -155,16 +155,7 @@ void Server::run()
 
 void Server::update()
 {
-    // 处理epoll事件
-    PollEvent ev;
-    int32_t cnt = event_que_.count();
-
-    for (int i = 0; i != cnt; ++i)
-    {
-        if (!event_que_.pop(ev))
-            break;
-        DBG("[Server](update) poll event fd=%d", ev.fd);
-    }
+    IServer::update();
 }
 
 int32_t Server::handleSocket(Socket* sock, int32_t events)
@@ -202,7 +193,7 @@ int32_t Server::handleSocket(Socket* sock, int32_t events)
         int32_t ret = 0;
         do {
             ret = sock->doRecv();
-        } while (ret == 1)
+        } while (ret == 1);
         if (ret == -1)
         {
             // 断开
@@ -213,6 +204,7 @@ int32_t Server::handleSocket(Socket* sock, int32_t events)
     if (events & EPOLLOUT)
     {
         // 可以写
+        sock->readyOut_ = true;
         DBG("[Server](handleSocket) EPOLLOUT fd:%d", sock->getHandle());
     }
 

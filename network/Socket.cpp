@@ -9,10 +9,14 @@
 namespace kit {
 
 ISocket::ISocket()
-: sock_(DSOCKERR)
+: valid_(false) 
+, sock_(DSOCKERR)
 , addr_(NULL)
-, head_buf_(NULL)
+, readyOut_(false)
+, recv_head_buf_(NULL)
+, send_head_buf_(NULL)
 , recv_buf_(NULL)
+, send_buf_(NULL)
 {
 }
 
@@ -25,10 +29,15 @@ ISocket::~ISocket()
         addr_->release();
         addr_ = NULL;
     }
-    if (head_buf_)
+    if (recv_head_buf_)
     {
-        head_buf_->release();
-        head_buf_ = NULL;
+        recv_head_buf_->release();
+        recv_head_buf_ = NULL;
+    }
+    if (send_head_buf_)
+    {
+        send_head_buf_->release();
+        send_head_buf_ = NULL;
     }
     if (recv_buf_)
     {
@@ -39,8 +48,10 @@ ISocket::~ISocket()
 
 void ISocket::init(void)
 {
-    head_buf_ = new Buffer();
-    head_buf_->init(PACKET_HEADER_SIZE);
+    recv_head_buf_ = new Buffer();
+    recv_head_buf_->init(PACKET_HEADER_SIZE);
+    send_head_buf_ = new Buffer();
+    send_head_buf_->init(PACKET_HEADER_SIZE);
 
     // 生成随机种子
     packet_seed_ = ::rand();
@@ -172,26 +183,33 @@ int32_t ISocket::getErrno()
 
 int32_t ISocket::doRecv()
 {
-    int32_t ret = 0;
+    // 先把缓存列队的放进que
+    Buffer* p = NULL;
+    while (recv_list_.count() > 0)
+    {
+        if (!recv_list_.front(p) || !recv_que_.push(p))
+            break;
+        recv_list_.pop(p);
+    }
+
     // 接收包头
-    uint32_t rest_header_size = head_buf_->getWritableSize();
+    int32_t ret = 0;
+    uint32_t rest_header_size = recv_head_buf_->getWritableSize();
     if (rest_header_size > 0)
     {
-        ret = recvLimit(head_buf_->write_cur_, rest_header_size);
+        ret = recvBuffer(recv_head_buf_);
         // 接收错误，断开连接了
         if (ret == -1)
             return -1;
-
-        head_buf_->skipWrite(ret);
         // 还未接收完毕
         if (ret < rest_header_size)
             return 0;
         // 接收完包头
         if (ret == rest_header_size)
         {
-            uint32_t seed, len;
-            getPacketInfo(head_buf_, seed, len);
-            if (seed != packet_seed_)
+            PacketHeader header;
+            readPacketInfo(recv_head_buf_, header);
+            if (header.seed != packet_seed_)
             {
                 // 收到错误包
                 recvClear();
@@ -199,34 +217,100 @@ int32_t ISocket::doRecv()
             if (recv_buf_)
                 recv_buf_->release();
             recv_buf_ = new Buffer();
+            recv_buf_->init(header.length);
         }
     }
     // 接收包体
     uint32_t rest_size = recv_buf_->getWritableSize();
     if (rest_size > 0)
     {
-        ret = recvLimit(recv_buf_->write_cur_, rest_size);
+        ret = recvBuffer(recv_buf_);
         // 接收错误，断开连接了
         if (ret == -1)
             return -1;
-        recv_buf_->skipWrite(ret);
         // 还未接收完毕
         if (ret < rest_size)
             return 0;
-        // 接收完包体
     }
-    // 放进包队列，等待处理
-    if (pushPacket(recv_buf_))
-    {
-        head_buf_->
-        recv_buf_->release();
-        recv_buf_ = NULL;
 
-        // 重置包头
-        head_buf_->reset();
-        return 1;
+    // 接收完包体
+    // 放进包队列，等待处理
+    if (recv_list_.count() > 0 || !recv_que_.push(recv_buf_))
+    {
+        recv_list_.push(recv_buf_);
     }
-    return 0;
+    recv_buf_ = NULL;
+    recv_head_buf_->reset();
+    return 1;
+}
+
+int32_t ISocket::doSend()
+{
+    uint32_t rest_size = 0;
+    uint32_t nsend = 0;
+    if (send_bufs_ == NULL)
+    {
+        send_bufs_ = g_BufPool->createBuffer(PACKET_SIZE);
+        rest_size = PACKET_SIZE;
+    }
+    else
+        rest_size = send_bufs_->getWritableSize();
+
+    uint32_t rest_header_size = send_head_buf_->getReadableSize();
+    if (rest_header_size > 0)
+    {
+        int len = send_bufs_->writeBuffer(send_head_buf_->read_cur_, min(rest_header_size, rest_size));
+        if (len == -1)
+            return -1;
+        if (len == 0)
+            return 0;
+        nsend = len;
+        rest_size -= len;
+    }
+    if (send_buf_ == 0)
+    {
+        if (!send_que_.pop(send_buf_) || !send_list_.pop(send_buf_))
+        {
+            return nsend;
+        }
+        PacketHeader header;
+        header.seed = packet_seed_;
+        header.length = send_buf_->getReadableSize();
+        int len = send_buf_->getWritableSize();
+        send_head_buf_->reset();
+    }
+
+    // 先把缓存列队的放进que
+    Buffer* p = send_buf_;
+    while (p || send_que_.pop(p) || send_list_.pop(p))
+    {
+        // 发送包头
+        rest_size = send_head_buf_->getReadableSize();
+    }
+    while (send_list_.count() > 0)
+    {
+        if (!send_list_.front(p) || !send_que_.push(p))
+            break;
+        send_list_.pop(p);
+    }
+    g_BufPool->destroyBuffer(sbuf);
+
+    return 1;
+}
+
+int32_t ISocket::sendPacket(Buffer* buf)
+{
+    // 先把缓存里的发送完毕
+    int32_t ret = 0;
+    do {
+        ret = doSend();
+    } while(ret > 0);
+
+    buf->retain();
+    if (send_list_.count() > 0 || !send_que_.push(buf))
+    {
+        send_list_.push(buf);
+    }
 }
 
 int32_t ISocket::send(const char* buf, int32_t size, int32_t mode)
@@ -261,22 +345,40 @@ void ISocket::setAddr(SockAddr* addr)
     addr_->retain();
 }
 
-int32_t ISocket::recvLimit(char* buf, uint32_t size)
+int32_t ISocket::recvBuffer(Buffer* buf)
 {
-    int32_t len = -1;
-    int32_t nrecv = 0;
-    do {
-        len = this->recv(buf + nrecv, size - nrecv, 0);
-        if (len > 0)
-        {
-            nrecv += len;
-        }
-    } while ( len > 0 && nrecv < size)
+    uint32_t size = buf->getWritableSize();
+    uint32_t nrecv = 0;
+    int32_t len = 0;
+    while (nrecv < size)
+    {
+        len = this->recv(buf->write_cur_, size - nrecv, 0);
+        if (len < 0)
+            return -1;
+        if (len == 0)
+            break;
+        nrecv += len;
+        buf->skipWrite(len);
+    }
+    return nrecv;
+}
 
-    if (len < 0)
-        return -1;
-    else
-        return nrecv;
+int32_t ISocket::sendBuffer(Buffer* buf)
+{
+    uint32_t size = buf->getReadableSize();
+    uint32_t nsend = 0;
+    int32_t len = 0;
+    while (nsend < size)
+    {
+        len = this->send(buf->read_cur_, size - nsend, 0);
+        if (len < 0)
+            return -1;
+        if (len == 0)
+            break;
+        nsend += len;
+        buf->skipRead(len);
+    }
+    return nsend;
 }
 
 void ISocket::recvClear()
@@ -286,27 +388,11 @@ void ISocket::recvClear()
     int32_t len = -1;
     do {
         len = this->recv(buf, BSIZE, 0);
-    } while (len < BSIZE)
+    } while (len < BSIZE);
 }
 
-bool ISocket::pushPacket(Buffer* buf)
+void ISocket::dealRecv()
 {
-    if (packet_que_.push(buf))
-    {
-        buf->retain();
-        return true;
-    }
-    return false;
-}
-
-bool ISocket::popPacket(Buffer*& buf)
-{
-    if (packet_que_.pop(buf))
-    {
-        buf->autorelease();
-        return true;
-    }
-    return false;
 }
 
 } // namespace kit

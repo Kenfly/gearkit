@@ -152,6 +152,87 @@ Client.cpp.s:
 	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Client.cpp.s
 .PHONY : Client.cpp.s
 
+Packet.o: Packet.cpp.o
+
+.PHONY : Packet.o
+
+# target to build an object file
+Packet.cpp.o:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o
+.PHONY : Packet.cpp.o
+
+Packet.i: Packet.cpp.i
+
+.PHONY : Packet.i
+
+# target to preprocess a source file
+Packet.cpp.i:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Packet.cpp.i
+.PHONY : Packet.cpp.i
+
+Packet.s: Packet.cpp.s
+
+.PHONY : Packet.s
+
+# target to generate assembly for a file
+Packet.cpp.s:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Packet.cpp.s
+.PHONY : Packet.cpp.s
+
+SockAddr.o: SockAddr.cpp.o
+
+.PHONY : SockAddr.o
+
+# target to build an object file
+SockAddr.cpp.o:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o
+.PHONY : SockAddr.cpp.o
+
+SockAddr.i: SockAddr.cpp.i
+
+.PHONY : SockAddr.i
+
+# target to preprocess a source file
+SockAddr.cpp.i:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.i
+.PHONY : SockAddr.cpp.i
+
+SockAddr.s: SockAddr.cpp.s
+
+.PHONY : SockAddr.s
+
+# target to generate assembly for a file
+SockAddr.cpp.s:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.s
+.PHONY : SockAddr.cpp.s
+
+Socket.o: Socket.cpp.o
+
+.PHONY : Socket.o
+
+# target to build an object file
+Socket.cpp.o:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o
+.PHONY : Socket.cpp.o
+
+Socket.i: Socket.cpp.i
+
+.PHONY : Socket.i
+
+# target to preprocess a source file
+Socket.cpp.i:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Socket.cpp.i
+.PHONY : Socket.cpp.i
+
+Socket.s: Socket.cpp.s
+
+.PHONY : Socket.s
+
+# target to generate assembly for a file
+Socket.cpp.s:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Socket.cpp.s
+.PHONY : Socket.cpp.s
+
 platform/linux/Client_linux.o: platform/linux/Client_linux.cpp.o
 
 .PHONY : platform/linux/Client_linux.o
@@ -179,59 +260,59 @@ platform/linux/Client_linux.cpp.s:
 	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Client_linux.cpp.s
 .PHONY : platform/linux/Client_linux.cpp.s
 
-platform/linux/SockAddr.o: platform/linux/SockAddr.cpp.o
+platform/linux/SockAddr_linux.o: platform/linux/SockAddr_linux.cpp.o
 
-.PHONY : platform/linux/SockAddr.o
-
-# target to build an object file
-platform/linux/SockAddr.cpp.o:
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr.cpp.o
-.PHONY : platform/linux/SockAddr.cpp.o
-
-platform/linux/SockAddr.i: platform/linux/SockAddr.cpp.i
-
-.PHONY : platform/linux/SockAddr.i
-
-# target to preprocess a source file
-platform/linux/SockAddr.cpp.i:
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr.cpp.i
-.PHONY : platform/linux/SockAddr.cpp.i
-
-platform/linux/SockAddr.s: platform/linux/SockAddr.cpp.s
-
-.PHONY : platform/linux/SockAddr.s
-
-# target to generate assembly for a file
-platform/linux/SockAddr.cpp.s:
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr.cpp.s
-.PHONY : platform/linux/SockAddr.cpp.s
-
-platform/linux/Socket.o: platform/linux/Socket.cpp.o
-
-.PHONY : platform/linux/Socket.o
+.PHONY : platform/linux/SockAddr_linux.o
 
 # target to build an object file
-platform/linux/Socket.cpp.o:
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket.cpp.o
-.PHONY : platform/linux/Socket.cpp.o
+platform/linux/SockAddr_linux.cpp.o:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o
+.PHONY : platform/linux/SockAddr_linux.cpp.o
 
-platform/linux/Socket.i: platform/linux/Socket.cpp.i
+platform/linux/SockAddr_linux.i: platform/linux/SockAddr_linux.cpp.i
 
-.PHONY : platform/linux/Socket.i
+.PHONY : platform/linux/SockAddr_linux.i
 
 # target to preprocess a source file
-platform/linux/Socket.cpp.i:
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket.cpp.i
-.PHONY : platform/linux/Socket.cpp.i
+platform/linux/SockAddr_linux.cpp.i:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.i
+.PHONY : platform/linux/SockAddr_linux.cpp.i
 
-platform/linux/Socket.s: platform/linux/Socket.cpp.s
+platform/linux/SockAddr_linux.s: platform/linux/SockAddr_linux.cpp.s
 
-.PHONY : platform/linux/Socket.s
+.PHONY : platform/linux/SockAddr_linux.s
 
 # target to generate assembly for a file
-platform/linux/Socket.cpp.s:
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket.cpp.s
-.PHONY : platform/linux/Socket.cpp.s
+platform/linux/SockAddr_linux.cpp.s:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.s
+.PHONY : platform/linux/SockAddr_linux.cpp.s
+
+platform/linux/Socket_linux.o: platform/linux/Socket_linux.cpp.o
+
+.PHONY : platform/linux/Socket_linux.o
+
+# target to build an object file
+platform/linux/Socket_linux.cpp.o:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o
+.PHONY : platform/linux/Socket_linux.cpp.o
+
+platform/linux/Socket_linux.i: platform/linux/Socket_linux.cpp.i
+
+.PHONY : platform/linux/Socket_linux.i
+
+# target to preprocess a source file
+platform/linux/Socket_linux.cpp.i:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.i
+.PHONY : platform/linux/Socket_linux.cpp.i
+
+platform/linux/Socket_linux.s: platform/linux/Socket_linux.cpp.s
+
+.PHONY : platform/linux/Socket_linux.s
+
+# target to generate assembly for a file
+platform/linux/Socket_linux.cpp.s:
+	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.s
+.PHONY : platform/linux/Socket_linux.cpp.s
 
 # Help Target
 help:
@@ -245,15 +326,24 @@ help:
 	@echo "... Client.o"
 	@echo "... Client.i"
 	@echo "... Client.s"
+	@echo "... Packet.o"
+	@echo "... Packet.i"
+	@echo "... Packet.s"
+	@echo "... SockAddr.o"
+	@echo "... SockAddr.i"
+	@echo "... SockAddr.s"
+	@echo "... Socket.o"
+	@echo "... Socket.i"
+	@echo "... Socket.s"
 	@echo "... platform/linux/Client_linux.o"
 	@echo "... platform/linux/Client_linux.i"
 	@echo "... platform/linux/Client_linux.s"
-	@echo "... platform/linux/SockAddr.o"
-	@echo "... platform/linux/SockAddr.i"
-	@echo "... platform/linux/SockAddr.s"
-	@echo "... platform/linux/Socket.o"
-	@echo "... platform/linux/Socket.i"
-	@echo "... platform/linux/Socket.s"
+	@echo "... platform/linux/SockAddr_linux.o"
+	@echo "... platform/linux/SockAddr_linux.i"
+	@echo "... platform/linux/SockAddr_linux.s"
+	@echo "... platform/linux/Socket_linux.o"
+	@echo "... platform/linux/Socket_linux.i"
+	@echo "... platform/linux/Socket_linux.s"
 .PHONY : help
 
 

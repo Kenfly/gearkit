@@ -81,9 +81,33 @@ out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o.provides: out/network/CMake
 out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o.provides.build: out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o
 
 
+out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o: out/network/CMakeFiles/libnetwork.dir/flags.make
+out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o: ../../network/Packet.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o"
+	cd /home/kenfly/gearkit/test/server/out/network && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/libnetwork.dir/Packet.cpp.o -c /home/kenfly/gearkit/network/Packet.cpp
+
+out/network/CMakeFiles/libnetwork.dir/Packet.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/libnetwork.dir/Packet.cpp.i"
+	cd /home/kenfly/gearkit/test/server/out/network && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kenfly/gearkit/network/Packet.cpp > CMakeFiles/libnetwork.dir/Packet.cpp.i
+
+out/network/CMakeFiles/libnetwork.dir/Packet.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/libnetwork.dir/Packet.cpp.s"
+	cd /home/kenfly/gearkit/test/server/out/network && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kenfly/gearkit/network/Packet.cpp -o CMakeFiles/libnetwork.dir/Packet.cpp.s
+
+out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o.requires:
+
+.PHONY : out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o.requires
+
+out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o.provides: out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o.requires
+	$(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o.provides.build
+.PHONY : out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o.provides
+
+out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o.provides.build: out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o
+
+
 out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o: out/network/CMakeFiles/libnetwork.dir/flags.make
 out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o: ../../network/Socket.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o"
 	cd /home/kenfly/gearkit/test/server/out/network && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/libnetwork.dir/Socket.cpp.o -c /home/kenfly/gearkit/network/Socket.cpp
 
 out/network/CMakeFiles/libnetwork.dir/Socket.cpp.i: cmake_force
@@ -107,7 +131,7 @@ out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o.provides.build: out/network/C
 
 out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o: out/network/CMakeFiles/libnetwork.dir/flags.make
 out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o: ../../network/platform/linux/SockAddr_linux.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o"
 	cd /home/kenfly/gearkit/test/server/out/network && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o -c /home/kenfly/gearkit/network/platform/linux/SockAddr_linux.cpp
 
 out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.i: cmake_force
@@ -131,7 +155,7 @@ out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o.provid
 
 out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o: out/network/CMakeFiles/libnetwork.dir/flags.make
 out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o: ../../network/platform/linux/Socket_linux.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o"
 	cd /home/kenfly/gearkit/test/server/out/network && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o -c /home/kenfly/gearkit/network/platform/linux/Socket_linux.cpp
 
 out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.i: cmake_force
@@ -155,7 +179,7 @@ out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o.provides
 
 out/network/CMakeFiles/libnetwork.dir/Server.cpp.o: out/network/CMakeFiles/libnetwork.dir/flags.make
 out/network/CMakeFiles/libnetwork.dir/Server.cpp.o: ../../network/Server.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object out/network/CMakeFiles/libnetwork.dir/Server.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object out/network/CMakeFiles/libnetwork.dir/Server.cpp.o"
 	cd /home/kenfly/gearkit/test/server/out/network && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/libnetwork.dir/Server.cpp.o -c /home/kenfly/gearkit/network/Server.cpp
 
 out/network/CMakeFiles/libnetwork.dir/Server.cpp.i: cmake_force
@@ -179,7 +203,7 @@ out/network/CMakeFiles/libnetwork.dir/Server.cpp.o.provides.build: out/network/C
 
 out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.o: out/network/CMakeFiles/libnetwork.dir/flags.make
 out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.o: ../../network/platform/linux/Server_linux.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.o"
 	cd /home/kenfly/gearkit/test/server/out/network && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.o -c /home/kenfly/gearkit/network/platform/linux/Server_linux.cpp
 
 out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.i: cmake_force
@@ -204,6 +228,7 @@ out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.o.provides
 # Object files for target libnetwork
 libnetwork_OBJECTS = \
 "CMakeFiles/libnetwork.dir/SockAddr.cpp.o" \
+"CMakeFiles/libnetwork.dir/Packet.cpp.o" \
 "CMakeFiles/libnetwork.dir/Socket.cpp.o" \
 "CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o" \
 "CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o" \
@@ -214,6 +239,7 @@ libnetwork_OBJECTS = \
 libnetwork_EXTERNAL_OBJECTS =
 
 out/network/libnetwork.a: out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o
+out/network/libnetwork.a: out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o
 out/network/libnetwork.a: out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o
 out/network/libnetwork.a: out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o
 out/network/libnetwork.a: out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o
@@ -221,7 +247,7 @@ out/network/libnetwork.a: out/network/CMakeFiles/libnetwork.dir/Server.cpp.o
 out/network/libnetwork.a: out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.o
 out/network/libnetwork.a: out/network/CMakeFiles/libnetwork.dir/build.make
 out/network/libnetwork.a: out/network/CMakeFiles/libnetwork.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX static library libnetwork.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX static library libnetwork.a"
 	cd /home/kenfly/gearkit/test/server/out/network && $(CMAKE_COMMAND) -P CMakeFiles/libnetwork.dir/cmake_clean_target.cmake
 	cd /home/kenfly/gearkit/test/server/out/network && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/libnetwork.dir/link.txt --verbose=$(VERBOSE)
 
@@ -231,6 +257,7 @@ out/network/CMakeFiles/libnetwork.dir/build: out/network/libnetwork.a
 .PHONY : out/network/CMakeFiles/libnetwork.dir/build
 
 out/network/CMakeFiles/libnetwork.dir/requires: out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o.requires
+out/network/CMakeFiles/libnetwork.dir/requires: out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o.requires
 out/network/CMakeFiles/libnetwork.dir/requires: out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o.requires
 out/network/CMakeFiles/libnetwork.dir/requires: out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o.requires
 out/network/CMakeFiles/libnetwork.dir/requires: out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o.requires

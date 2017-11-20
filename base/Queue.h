@@ -3,7 +3,7 @@
 
 namespace kit {
 
-template <class Type, const int Length>
+template<typename Type, const int Length>
 class Queue
 {
 public:
@@ -32,6 +32,14 @@ public:
         tail_ %= Length;
         ++count_;
 
+        return true;
+    }
+
+    bool front(Type& value)
+    {
+        if (count_ == 0)
+            return false;
+        value = que_[head_];
         return true;
     }
 

@@ -9,5 +9,6 @@
 #include "HashList.h"
 #include "Queue.h"
 #include "Buffer.h"
+#include "Array.h"
 
 #endif

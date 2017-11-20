@@ -3,11 +3,16 @@
 
 namespace kit {
 
-void getPacketInfo(Buffer* buf, uint32_t& seed, uint32_t& lenght)
+void readPacketInfo(Buffer* buf, PacketHeader& header)
 {
-    PacketHeader header;
-    buf >> (uint32_t)header;
-    getPacketInfo(header, seed, lenght);
+    (*buf) >> header.seed;
+    (*buf) >> header.length;
+}
+
+void writePacketInfo(Buffer* buf, const PacketHeader& header)
+{
+    (*buf) << header.seed;
+    (*buf) << header.length;
 }
 
 } // namespace kit

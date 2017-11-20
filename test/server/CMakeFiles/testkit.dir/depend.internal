@@ -4,8 +4,8 @@
 CMakeFiles/testkit.dir/app_server.cpp.o
  ../.././Application.h
  ../.././base/Buffer.h
+ ../.././base/HashList.h
  ../.././base/Logger.h
- ../.././base/Queue.h
  ../.././base/RefPool.h
  ../.././base/Singleton.h
  ../.././base/base.h
@@ -14,7 +14,9 @@ CMakeFiles/testkit.dir/app_server.cpp.o
  ../.././network/SockAddr.h
  ../.././network/Socket.h
  ../.././network/network.h
- ../../base/HashList.h
+ ../../base/Array.h
+ ../../base/List.h
+ ../../base/Queue.h
  ../../base/Ref.h
  ../../base/kitsys.h
  ../../network/Server.h
@@ -26,6 +28,7 @@ CMakeFiles/testkit.dir/app_server.cpp.o
  /home/kenfly/gearkit/test/app_server.h
 CMakeFiles/testkit.dir/main_server.cpp.o
  ../.././Application.h
+ ../.././base/Array.h
  ../.././base/Buffer.h
  ../.././base/HashList.h
  ../.././base/Logger.h
@@ -39,6 +42,7 @@ CMakeFiles/testkit.dir/main_server.cpp.o
  ../.././network/SockAddr.h
  ../.././network/Socket.h
  ../.././network/network.h
+ ../../base/List.h
  ../../base/Queue.h
  ../../base/debugfunc.h
  ../../network/Server.h

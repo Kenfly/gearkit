@@ -3,8 +3,8 @@
 
 CMakeFiles/testkit.dir/app_server.cpp.o: ../.././Application.h
 CMakeFiles/testkit.dir/app_server.cpp.o: ../.././base/Buffer.h
+CMakeFiles/testkit.dir/app_server.cpp.o: ../.././base/HashList.h
 CMakeFiles/testkit.dir/app_server.cpp.o: ../.././base/Logger.h
-CMakeFiles/testkit.dir/app_server.cpp.o: ../.././base/Queue.h
 CMakeFiles/testkit.dir/app_server.cpp.o: ../.././base/RefPool.h
 CMakeFiles/testkit.dir/app_server.cpp.o: ../.././base/Singleton.h
 CMakeFiles/testkit.dir/app_server.cpp.o: ../.././base/base.h
@@ -13,7 +13,9 @@ CMakeFiles/testkit.dir/app_server.cpp.o: ../.././network/Packet.h
 CMakeFiles/testkit.dir/app_server.cpp.o: ../.././network/SockAddr.h
 CMakeFiles/testkit.dir/app_server.cpp.o: ../.././network/Socket.h
 CMakeFiles/testkit.dir/app_server.cpp.o: ../.././network/network.h
-CMakeFiles/testkit.dir/app_server.cpp.o: ../../base/HashList.h
+CMakeFiles/testkit.dir/app_server.cpp.o: ../../base/Array.h
+CMakeFiles/testkit.dir/app_server.cpp.o: ../../base/List.h
+CMakeFiles/testkit.dir/app_server.cpp.o: ../../base/Queue.h
 CMakeFiles/testkit.dir/app_server.cpp.o: ../../base/Ref.h
 CMakeFiles/testkit.dir/app_server.cpp.o: ../../base/kitsys.h
 CMakeFiles/testkit.dir/app_server.cpp.o: ../../network/Server.h
@@ -25,6 +27,7 @@ CMakeFiles/testkit.dir/app_server.cpp.o: ../app_server.cpp
 CMakeFiles/testkit.dir/app_server.cpp.o: ../app_server.h
 
 CMakeFiles/testkit.dir/main_server.cpp.o: ../.././Application.h
+CMakeFiles/testkit.dir/main_server.cpp.o: ../.././base/Array.h
 CMakeFiles/testkit.dir/main_server.cpp.o: ../.././base/Buffer.h
 CMakeFiles/testkit.dir/main_server.cpp.o: ../.././base/HashList.h
 CMakeFiles/testkit.dir/main_server.cpp.o: ../.././base/Logger.h
@@ -38,6 +41,7 @@ CMakeFiles/testkit.dir/main_server.cpp.o: ../.././network/Packet.h
 CMakeFiles/testkit.dir/main_server.cpp.o: ../.././network/SockAddr.h
 CMakeFiles/testkit.dir/main_server.cpp.o: ../.././network/Socket.h
 CMakeFiles/testkit.dir/main_server.cpp.o: ../.././network/network.h
+CMakeFiles/testkit.dir/main_server.cpp.o: ../../base/List.h
 CMakeFiles/testkit.dir/main_server.cpp.o: ../../base/Queue.h
 CMakeFiles/testkit.dir/main_server.cpp.o: ../../base/debugfunc.h
 CMakeFiles/testkit.dir/main_server.cpp.o: ../../network/Server.h

@@ -6,6 +6,8 @@
 
 #IncludeRegexTransform: 
 
+../../base/Array.h
+
 ../../base/Buffer.h
 Ref.h
 ../../base/Ref.h
@@ -21,6 +23,8 @@ memory.h
 -
 stdio.h
 -
+
+../../base/List.h
 
 ../../base/Logger.h
 stdarg.h
@@ -63,6 +67,8 @@ Queue.h
 ../../base/Queue.h
 Buffer.h
 ../../base/Buffer.h
+Array.h
+../../base/Array.h
 
 ../../base/kitsys.h
 stdint.h
@@ -82,6 +88,10 @@ platform/linux/Client_linux.h
 platform/win/Client_win.h
 -
 
+../../network/Packet.h
+kitsys.h
+../../network/kitsys.h
+
 ../../network/SockAddr.h
 Ref.h
 ../../network/Ref.h
@@ -89,15 +99,43 @@ kitsys.h
 ../../network/kitsys.h
 string
 -
+platform/linux/SockAddr_linux.h
+-
+platform/win/SockAddr_win.h
+-
 
 ../../network/Socket.h
 Ref.h
 ../../network/Ref.h
 kitsys.h
 ../../network/kitsys.h
+Packet.h
+../../network/Packet.h
+Queue.h
+../../network/Queue.h
+List.h
+../../network/List.h
+platform/linux/Socket_linux.h
+-
+platform/win/Socket_win.h
+-
 
 ../../network/netsys.h
+unistd.h
+-
+netdb.h
+-
+sys/ioctl.h
+-
 sys/socket.h
+-
+sys/epoll.h
+-
+arpa/inet.h
+-
+netinet/in.h
+-
+netinet/tcp.h
 -
 kitsys.h
 ../../network/kitsys.h
@@ -111,6 +149,14 @@ Queue.h
 ../../network/platform/linux/Queue.h
 sys/epoll.h
 -
+
+../../network/platform/linux/SockAddr_linux.h
+SockAddr.h
+../../network/platform/linux/SockAddr.h
+
+../../network/platform/linux/Socket_linux.h
+Socket.h
+../../network/platform/linux/Socket.h
 
 /home/kenfly/gearkit/network/Client.cpp
 Client.h
@@ -136,6 +182,20 @@ platform/linux/Client_linux.h
 platform/win/Client_win.h
 -
 
+/home/kenfly/gearkit/network/Packet.cpp
+Packet.h
+/home/kenfly/gearkit/network/Packet.h
+Buffer.h
+/home/kenfly/gearkit/network/Buffer.h
+
+/home/kenfly/gearkit/network/Packet.h
+kitsys.h
+/home/kenfly/gearkit/network/kitsys.h
+
+/home/kenfly/gearkit/network/SockAddr.cpp
+SockAddr.h
+/home/kenfly/gearkit/network/SockAddr.h
+
 /home/kenfly/gearkit/network/SockAddr.h
 Ref.h
 /home/kenfly/gearkit/network/Ref.h
@@ -143,15 +203,59 @@ kitsys.h
 /home/kenfly/gearkit/network/kitsys.h
 string
 -
+platform/linux/SockAddr_linux.h
+-
+platform/win/SockAddr_win.h
+-
+
+/home/kenfly/gearkit/network/Socket.cpp
+Socket.h
+/home/kenfly/gearkit/network/Socket.h
+SockAddr.h
+/home/kenfly/gearkit/network/SockAddr.h
+netsys.h
+/home/kenfly/gearkit/network/netsys.h
+base.h
+/home/kenfly/gearkit/network/base.h
+errno.h
+-
+stdio.h
+-
+stdlib.h
+-
 
 /home/kenfly/gearkit/network/Socket.h
 Ref.h
 /home/kenfly/gearkit/network/Ref.h
 kitsys.h
 /home/kenfly/gearkit/network/kitsys.h
+Packet.h
+/home/kenfly/gearkit/network/Packet.h
+Queue.h
+/home/kenfly/gearkit/network/Queue.h
+List.h
+/home/kenfly/gearkit/network/List.h
+platform/linux/Socket_linux.h
+-
+platform/win/Socket_win.h
+-
 
 /home/kenfly/gearkit/network/netsys.h
+unistd.h
+-
+netdb.h
+-
+sys/ioctl.h
+-
 sys/socket.h
+-
+sys/epoll.h
+-
+arpa/inet.h
+-
+netinet/in.h
+-
+netinet/tcp.h
 -
 kitsys.h
 /home/kenfly/gearkit/network/kitsys.h
@@ -198,9 +302,9 @@ Queue.h
 sys/epoll.h
 -
 
-/home/kenfly/gearkit/network/platform/linux/SockAddr.cpp
-SockAddr.h
-/home/kenfly/gearkit/network/platform/linux/SockAddr.h
+/home/kenfly/gearkit/network/platform/linux/SockAddr_linux.cpp
+SockAddr_linux.h
+/home/kenfly/gearkit/network/platform/linux/SockAddr_linux.h
 sys/socket.h
 -
 netdb.h
@@ -210,9 +314,13 @@ arpa/inet.h
 base.h
 /home/kenfly/gearkit/network/platform/linux/base.h
 
-/home/kenfly/gearkit/network/platform/linux/Socket.cpp
-Socket.h
-/home/kenfly/gearkit/network/platform/linux/Socket.h
+/home/kenfly/gearkit/network/platform/linux/SockAddr_linux.h
+SockAddr.h
+/home/kenfly/gearkit/network/platform/linux/SockAddr.h
+
+/home/kenfly/gearkit/network/platform/linux/Socket_linux.cpp
+Socket_linux.h
+/home/kenfly/gearkit/network/platform/linux/Socket_linux.h
 SockAddr.h
 /home/kenfly/gearkit/network/platform/linux/SockAddr.h
 unistd.h
@@ -235,4 +343,8 @@ stdio.h
 -
 base.h
 /home/kenfly/gearkit/network/platform/linux/base.h
+
+/home/kenfly/gearkit/network/platform/linux/Socket_linux.h
+Socket.h
+/home/kenfly/gearkit/network/platform/linux/Socket.h
 

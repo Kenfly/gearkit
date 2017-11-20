@@ -4,11 +4,9 @@
 #include "Server.h"
 #include "netsys.h"
 #include "Queue.h"
-#include <sys/epoll.h>
 
 namespace kit {
 
-const uint16_t SERVER_EVENT_CNT = 512;
 
 class Server : public IServer
 {
@@ -33,10 +31,6 @@ private:
 private:
     int32_t poll_fd_;
     int64_t thread_id_;
-
-    // event que
-    typedef Queue<PollEvent, SERVER_EVENT_CNT> EventQue;
-    EventQue event_que_;
 };
 
 } // namespcae kit

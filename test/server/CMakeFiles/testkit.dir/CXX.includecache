@@ -10,6 +10,8 @@
 kitsys.h
 ../.././kitsys.h
 
+../.././base/Array.h
+
 ../.././base/Buffer.h
 Ref.h
 ../.././base/Ref.h
@@ -35,8 +37,6 @@ string.h
 -
 Singleton.h
 ../.././base/Singleton.h
-
-../.././base/Queue.h
 
 ../.././base/Ref.h
 new
@@ -67,6 +67,8 @@ Queue.h
 ../.././base/Queue.h
 Buffer.h
 ../.././base/Buffer.h
+Array.h
+../.././base/Array.h
 
 ../.././base/kitsys.h
 stdint.h
@@ -105,6 +107,8 @@ Packet.h
 ../.././network/Packet.h
 Queue.h
 ../.././network/Queue.h
+List.h
+../.././network/List.h
 platform/linux/Socket_linux.h
 -
 platform/win/Socket_win.h
@@ -118,13 +122,9 @@ Socket.h
 Server.h
 ../.././network/Server.h
 
-../../base/HashList.h
-assert.h
--
-memory.h
--
-stdio.h
--
+../../base/Array.h
+
+../../base/List.h
 
 ../../base/Queue.h
 
@@ -147,10 +147,12 @@ intrin.h
 ../../network/Server.h
 Ref.h
 ../../network/Ref.h
-kitsys.h
-../../network/kitsys.h
-HashList.h
-../../network/HashList.h
+netsys.h
+../../network/netsys.h
+Queue.h
+../../network/Queue.h
+Array.h
+../../network/Array.h
 platform/linux/Server_linux.h
 -
 platform/win/Server_win.h
@@ -164,6 +166,8 @@ netdb.h
 sys/ioctl.h
 -
 sys/socket.h
+-
+sys/epoll.h
 -
 arpa/inet.h
 -
@@ -181,8 +185,6 @@ netsys.h
 ../../network/platform/linux/netsys.h
 Queue.h
 ../../network/platform/linux/Queue.h
-sys/epoll.h
--
 
 ../../network/platform/linux/SockAddr_linux.h
 SockAddr.h
