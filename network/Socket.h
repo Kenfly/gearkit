@@ -50,12 +50,11 @@ public:
     void setAddr(SockAddr* addr);
     SockAddr* getAddr() const { return addr_; }
 
-    // 接收缓冲区
-    // 返回-1，接收错误，返回0，接收完毕，返回1，还可以继续接收
-    int32_t doRecv();
-    // 发送缓冲区
-    // 返回-1，发送错误，返回0，发送完毕, 返回1，还可以继续发送
-    int32_t doSend();
+	// flush recv/send列表，尽可能地清空缓冲
+	// -1断开,否则返回总字节数
+	int32_t flushRecv();
+	int32_t flushSend();
+
     // 发送一个包
     // 返回-1，发送错误，返回0，发送完毕, 返回1，还可以继续发送
     int32_t sendPacket(Buffer* buf);
@@ -73,8 +72,15 @@ protected:
     // 成功返回已接收的字节数，-1掉线
     int32_t recvBuffer(Buffer* buf);
     int32_t sendBuffer(Buffer* buf);
-    // 清空recv缓冲区,抛弃掉错误包
+    // 清空recv/send缓冲区,抛弃掉错误包
     void recvClear();
+	void sendClear();
+    // 接收缓冲区
+    // 返回-1，接收错误，返回0, 结束或未收到完整包，否则返回接收字节数
+    int32_t doRecv();
+    // 发送缓冲区
+    // 返回-1，发送错误, 返回0, 结束获未发送完整包，否则返回接收字节数
+    int32_t doSend();
 
 protected:
 	int32_t sock_;

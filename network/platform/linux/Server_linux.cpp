@@ -190,10 +190,7 @@ int32_t Server::handleSocket(Socket* sock, int32_t events)
     // 客户端事件
     if (events & EPOLLIN)
     {
-        int32_t ret = 0;
-        do {
-            ret = sock->doRecv();
-        } while (ret == 1);
+        int32_t ret = sock->flushRecv();
         if (ret == -1)
         {
             // 断开
