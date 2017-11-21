@@ -249,13 +249,7 @@ int32_t ISocket::doRecv()
 int32_t ISocket::doSend()
 {
     uint32_t rest_size = 0;
-    if (send_bufs_ == NULL)
-    {
-        send_bufs_ = g_BufPool->createBuffer(PACKET_SIZE);
-        rest_size = PACKET_SIZE;
-    }
-    else
-        rest_size = send_bufs_->getWritableSize();
+    rest_size = send_bufs_->getWritableSize();
 
     uint32_t rest_header_size = send_head_buf_->getReadableSize();
     if (rest_header_size > 0)
@@ -418,19 +412,44 @@ void ISocket::sendClear()
 
 int32_t ISocket::flushRecv()
 {
-	uint32_t nrecv = 0;
 	int32_t len = 0;
 	do {
 		len = doRecv();
 		if (len < 0)
 			return -1;
-		nrecv += len;
 	} while (len > 0);
-	return nrecv;
+	return 0;
 }
 
 int32_t ISocket::flushSend()
 {
+	int32_t len = 0;
+	int32_t ret = 0;
+	int32_t writable_size = 0;
+	if (send_bufs_ == NULL)
+		send_bufs_ = g_BufPool->createBuffer(PACKET_SIZE);
+	do {
+		len = doSend();
+		if (len == -1)
+		{
+			ret = -1;
+			break;
+		}
+		if (send_bufs_->getWritableSize() == 0 || len == 0)
+		{
+			if (this->sendBuffer(send_bufs_) == -1)
+			{
+				ret = -1;
+				break;
+			}
+		}
+	} while (len > 0);
+	if (ret == -1 || send_bufs_->getReadableSize() == 0)
+	{
+		g_BufPool->destroyBuffer(send_bufs_);
+		send_bufs_ = NULL;
+	}
+	return ret;
 }
 
 void ISocket::dealRecv()
