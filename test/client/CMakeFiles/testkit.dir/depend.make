@@ -3,10 +3,8 @@
 
 CMakeFiles/testkit.dir/app_client.cpp.o: ../.././Application.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../.././base/Array.h
-CMakeFiles/testkit.dir/app_client.cpp.o: ../.././base/Buffer.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../.././base/Logger.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../.././base/RefPool.h
-CMakeFiles/testkit.dir/app_client.cpp.o: ../.././base/Singleton.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../.././base/base.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../.././gearkit.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../.././network/Packet.h
@@ -14,10 +12,13 @@ CMakeFiles/testkit.dir/app_client.cpp.o: ../.././network/Server.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../.././network/SockAddr.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../.././network/Socket.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../.././network/network.h
+CMakeFiles/testkit.dir/app_client.cpp.o: ../../base/Buffer.h
+CMakeFiles/testkit.dir/app_client.cpp.o: ../../base/BufferPool.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../../base/HashList.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../../base/List.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../../base/Queue.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../../base/Ref.h
+CMakeFiles/testkit.dir/app_client.cpp.o: ../../base/Singleton.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../../base/kitsys.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../../network/Client.h
 CMakeFiles/testkit.dir/app_client.cpp.o: ../../network/netsys.h

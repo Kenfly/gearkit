@@ -6,6 +6,7 @@
 
 #include "Buffer.h"
 #include "Queue.h"
+#include "Singleton.h"
 
 namespace kit {
 
@@ -24,9 +25,9 @@ private:
     BufferQue ques_[BUFFER_QUEUE_CNT];
 };
 
-#define g_BufPool (kit::Singleton<kit::BufferPool>::instance())
-
 } // namespace kit
+
+#define g_BufPool (kit::Singleton<kit::BufferPool>::instance())
 
 #endif
 

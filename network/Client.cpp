@@ -11,7 +11,6 @@ const int32_t MAX_LISTEN = 50;
 IClient::IClient()
 : socket_(NULL)
 , active_(false)
-, timeval_(-1)
 {
 }
 
@@ -87,6 +86,10 @@ int32_t IClient::shutdown()
     return 0;
 }
 
+void IClient::sendPacket(Buffer* buf)
+{
+    socket_->sendPacket(buf);
+}
 
 }
 

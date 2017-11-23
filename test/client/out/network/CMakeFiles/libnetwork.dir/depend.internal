@@ -33,6 +33,7 @@ out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o
 out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o
  ../../base/Array.h
  ../../base/Buffer.h
+ ../../base/BufferPool.h
  ../../base/HashList.h
  ../../base/List.h
  ../../base/Logger.h

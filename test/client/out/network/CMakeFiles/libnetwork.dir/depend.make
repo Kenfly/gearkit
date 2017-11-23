@@ -32,6 +32,7 @@ out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o: ../../network/SockAddr.h
 
 out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o: ../../base/Array.h
 out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o: ../../base/Buffer.h
+out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o: ../../base/BufferPool.h
 out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o: ../../base/HashList.h
 out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o: ../../base/List.h
 out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o: ../../base/Logger.h

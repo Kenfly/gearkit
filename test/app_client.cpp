@@ -1,5 +1,6 @@
 #include "app_client.h"
 #include "Client.h"
+#include "BufferPool.h"
 #include "gearkit.h"
 
 
@@ -33,6 +34,10 @@ void App::run()
 
     client_ = client;
     client_->retain();
+
+    kit::Buffer* buf = g_BufPool->createBuffer(64);
+    (*buf) << "hello world";
+    client_->sendPacket(buf);
 
     while (valid_)
     {

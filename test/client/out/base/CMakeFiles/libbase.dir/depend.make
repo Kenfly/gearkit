@@ -11,6 +11,7 @@ out/base/CMakeFiles/libbase.dir/BufferPool.cpp.o: ../../base/BufferPool.cpp
 out/base/CMakeFiles/libbase.dir/BufferPool.cpp.o: ../../base/BufferPool.h
 out/base/CMakeFiles/libbase.dir/BufferPool.cpp.o: ../../base/Queue.h
 out/base/CMakeFiles/libbase.dir/BufferPool.cpp.o: ../../base/Ref.h
+out/base/CMakeFiles/libbase.dir/BufferPool.cpp.o: ../../base/Singleton.h
 out/base/CMakeFiles/libbase.dir/BufferPool.cpp.o: ../../base/kitsys.h
 
 out/base/CMakeFiles/libbase.dir/HashList.cpp.o: ../../base/HashList.cpp

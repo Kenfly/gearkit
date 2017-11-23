@@ -58,13 +58,14 @@ public:
     // 发送一个包
     // 返回-1，发送错误，返回0，发送完毕, 返回1，还可以继续发送
     int32_t sendPacket(Buffer* buf);
-    // 处理接收到的包
-    void dealRecv();
+    // 接收一个包
+    // 返回-1, 接收失败，返回0, 接收完毕，返回1, 还可以继续接收
+    int32_t recvPacket(Buffer*& buf);
 
-    bool valid() const { return valid_; }
+    bool valid() const { return sock_ != DSOCKERR; }
 
-    // 有效标志，没效后删除
-    bool valid_;
+    // 删除标志
+    bool delete_;
     // 可发送标志,不可发送放到队列里去
     bool readyOut_;
 protected:

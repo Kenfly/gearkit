@@ -16,6 +16,12 @@ kitsys.h
 string.h
 -
 
+../../base/BufferPool.h
+Buffer.h
+../../base/Buffer.h
+Queue.h
+../../base/Queue.h
+
 ../../base/HashList.h
 assert.h
 -
@@ -215,6 +221,10 @@ Socket.h
 /home/kenfly/gearkit/network/Socket.h
 SockAddr.h
 /home/kenfly/gearkit/network/SockAddr.h
+Buffer.h
+/home/kenfly/gearkit/network/Buffer.h
+BufferPool.h
+/home/kenfly/gearkit/network/BufferPool.h
 netsys.h
 /home/kenfly/gearkit/network/netsys.h
 base.h

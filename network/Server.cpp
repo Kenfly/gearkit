@@ -11,7 +11,6 @@ const int32_t MAX_LISTEN = 50;
 IServer::IServer()
 : socket_(NULL)
 , active_(false)
-, timeval_(-1)
 {
 }
 
@@ -99,7 +98,11 @@ void IServer::update()
         }
         if (sock_ev & KIT_POLLOUT)
         {
-            sock->doSend();
+            int32_t ret = sock->flushSend();
+            if (ret == -1)
+            {
+                sock_ev |= KIT_POLLERR;
+            }
         }
         if (sock_ev & KIT_POLLERR)
         {
@@ -121,7 +124,7 @@ int32_t IServer::addSocket(int32_t fd, Socket* sock)
         sock->init(fd);
     }
 
-    sock->valid_ = true;
+    sock->delete_ = false;
     sock->retain();
     socket_array_.add(fd, sock);
     return 0;
@@ -134,7 +137,7 @@ int32_t IServer::delSocket(int32_t fd)
     if (sock)
     {
         sock->close();
-        sock->valid_ = false;
+        sock->delete_ = true;
         //不在这里删除，避免漏掉线程传过来的消息处理。
         //sock->release();
         //socket_array_.del(fd);

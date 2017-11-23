@@ -8,6 +8,7 @@
 namespace kit {
 
 class Socket;
+class Buffer;
 
 class IClient : public Ref
 {
@@ -20,14 +21,11 @@ public:
     // 每帧调用
     virtual void update() = 0;
 
-    inline int32_t getTimeval() const { return timeval_; }
-    inline void setTimeval(int32_t timeval) { timeval_ = timeval; }
+    void sendPacket(Buffer* buf);
 protected:
 	Socket* socket_;
+    IPacketHandler* packet_handler_;
     bool active_;
-
-    // wait time
-    int32_t timeval_;
 };
 
 } // namespcae kit

@@ -54,8 +54,8 @@ void test_array()
 int main()
 {
     App app;
-    //app.run();
-    test_array();
+    app.run();
+    //test_array();
 
     return 0;
 }

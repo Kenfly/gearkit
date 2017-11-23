@@ -29,6 +29,8 @@ Buffer.h
 /home/kenfly/gearkit/base/Buffer.h
 Queue.h
 /home/kenfly/gearkit/base/Queue.h
+Singleton.h
+/home/kenfly/gearkit/base/Singleton.h
 
 /home/kenfly/gearkit/base/HashList.cpp
 HashList.h

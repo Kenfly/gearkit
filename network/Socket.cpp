@@ -1,5 +1,7 @@
 #include "Socket.h"
 #include "SockAddr.h"
+#include "Buffer.h"
+#include "BufferPool.h"
 #include "netsys.h"
 #include "base.h"
 #include <errno.h>
@@ -9,8 +11,7 @@
 namespace kit {
 
 ISocket::ISocket()
-: valid_(false) 
-, sock_(DSOCKERR)
+: sock_(DSOCKERR)
 , addr_(NULL)
 , readyOut_(false)
 , recv_head_buf_(NULL)
@@ -254,7 +255,7 @@ int32_t ISocket::doSend()
     uint32_t rest_header_size = send_head_buf_->getReadableSize();
     if (rest_header_size > 0)
     {
-		int len = min(rest_header_size, rest_size);
+		int len = kit::min(rest_header_size, rest_size);
         send_bufs_->writeBuffer(send_head_buf_->read_cur_, len);
         rest_size -= len;
 		send_head_buf_->skipRead(len);
@@ -320,11 +321,14 @@ int32_t ISocket::sendPacket(Buffer* buf)
         send_list_.push(buf);
     }
 
-    // 先把缓存里的发送完毕
-    int32_t ret = 0;
-    do {
-        ret = doSend();
-    } while(ret > 0);
+    return flushSend();
+}
+
+int32_t ISocket::recvPacket(Buffer*& buf)
+{
+    if (send_list_.pop(buf) || send_que_.pop(buf))
+    {
+    }
 }
 
 int32_t ISocket::send(const char* buf, int32_t size, int32_t mode)
@@ -450,10 +454,6 @@ int32_t ISocket::flushSend()
 		send_bufs_ = NULL;
 	}
 	return ret;
-}
-
-void ISocket::dealRecv()
-{
 }
 
 } // namespace kit

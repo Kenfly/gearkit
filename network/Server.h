@@ -23,9 +23,6 @@ public:
 
     // 每帧调用
     virtual void update() = 0;
-
-    inline int32_t getTimeval() const { return timeval_; }
-    inline void setTimeval(int32_t timeval) { timeval_ = timeval; }
 protected:
     virtual int32_t addSocket(int32_t fd, Socket* sock = NULL);
     virtual int32_t delSocket(int32_t fd);
@@ -34,9 +31,6 @@ protected:
 protected:
 	Socket* socket_;
     bool active_;
-
-    // wait time
-    int32_t timeval_;
 
     // socket list
     Array<Socket*, CONNECTION_LIMIT> socket_array_;

@@ -2,6 +2,7 @@
 #define __KIT_PACKET_H__
 
 #include "kitsys.h"
+#include "Ref"
 
 namespace kit {
 
@@ -19,6 +20,12 @@ const uint32_t PACKET_HEADER_SIZE = sizeof(PacketHeader);
 class Buffer;
 void readPacketInfo(Buffer* buf, PacketHeader& header);
 void writePacketInfo(Buffer* buf, const PacketHeader& header);
+
+
+struct IPacketHandler : public Ref
+{
+    virtual void onPacket(int32_t sid, Buffer* buf) = 0;
+};
 
 } // namespace kit
 

@@ -109,7 +109,7 @@ void Server::run()
             continue;
         }
 
-        cnt = epoll_wait(epoll_fd, events, rest, timeval_);
+        cnt = epoll_wait(epoll_fd, events, rest, -1);
         if (cnt == -1 && errno == EINTR)
         {
             // 发生错误，断线

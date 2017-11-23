@@ -94,6 +94,7 @@ void Client::run()
     // 该函数线程运行，用event_que_与主线程通信
     // 如果que push失败，会把未处理事件放到events前面
     int32_t cnt = 0;
+    int32_t ret = 0;
     int32_t rest = 0;
     int32_t epoll_fd = poll_fd_;
 
@@ -114,7 +115,7 @@ void Client::run()
             continue;
         }
 
-        cnt = epoll_wait(epoll_fd, events, rest, timeval_);
+        cnt = epoll_wait(epoll_fd, events, rest, -1);
         if (cnt == -1 && errno == EINTR)
         {
             // 发生错误，断线
@@ -128,7 +129,7 @@ void Client::run()
         for (int i = 0; i != cnt; ++i)
         {
             const struct epoll_event& ev = events[i];
-            handleEvents(ev.events);
+            ret = handleEvents(ev.events);
             //事件通知主线程作处理
             out_ev.events = ev.events;
             out_ev.fd = ev.data.fd;

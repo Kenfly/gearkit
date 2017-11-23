@@ -12,6 +12,7 @@ out/base/CMakeFiles/libbase.dir/BufferPool.cpp.o
  /home/kenfly/gearkit/base/BufferPool.h
  /home/kenfly/gearkit/base/Queue.h
  /home/kenfly/gearkit/base/Ref.h
+ /home/kenfly/gearkit/base/Singleton.h
  /home/kenfly/gearkit/base/kitsys.h
 out/base/CMakeFiles/libbase.dir/HashList.cpp.o
  /home/kenfly/gearkit/base/HashList.cpp

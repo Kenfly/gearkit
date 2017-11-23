@@ -30,7 +30,7 @@
 
 namespace kit {
 
-const uint32_t PACKET_SIZE 512;
+const uint32_t PACKET_SIZE = 512;
 
 struct PollEvent {
     int32_t events;

@@ -31,6 +31,17 @@ void sleep(uint32_t msec);
 // return milliseconds when os started
 uint32_t time();
 
+template <typename T>
+T min(T a, T b)
+{
+    return a < b ? a : b;
+}
+
+template <typename T>
+T max(T a, T b)
+{
+    return a > b ? a : b;
+}
 
 } // namespace ekit
 #endif
