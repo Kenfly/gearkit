@@ -2,6 +2,7 @@
 #include "SockAddr.h"
 #include "Buffer.h"
 #include "BufferPool.h"
+#include "Packet.h"
 #include "netsys.h"
 #include "base.h"
 #include <errno.h>
@@ -13,11 +14,17 @@ namespace kit {
 ISocket::ISocket()
 : sock_(DSOCKERR)
 , addr_(NULL)
+, delete_(false)
 , readyOut_(false)
+, packet_seed_(0)
+, recv_count_(0)
 , recv_head_buf_(NULL)
 , send_head_buf_(NULL)
 , recv_buf_(NULL)
+, recv_packet_(NULL)
 , send_buf_(NULL)
+, send_bufs_(NULL)
+, send_packet_(NULL)
 {
 }
 
@@ -25,45 +32,34 @@ ISocket::~ISocket()
 {
     if (sock_ != DSOCKERR)
 	    close();
-    if (addr_)
-    {
-        addr_->release();
-        addr_ = NULL;
-    }
-    if (recv_head_buf_)
-    {
-        recv_head_buf_->release();
-        recv_head_buf_ = NULL;
-    }
-    if (send_head_buf_)
-    {
-        send_head_buf_->release();
-        send_head_buf_ = NULL;
-    }
-    if (recv_buf_)
-    {
-        recv_buf_->release();
-        recv_buf_ = NULL;
-    }
+    KIT_SAFE_RELEASE(addr_);
+    KIT_SAFE_RELEASE(recv_head_buf_);
+    KIT_SAFE_RELEASE(send_head_buf_);
+    KIT_SAFE_RELEASE(recv_buf_);
+    KIT_SAFE_RELEASE(recv_packet_);
+    KIT_SAFE_RELEASE(send_buf_);
+    KIT_SAFE_RELEASE(send_bufs_);
 }
 
-void ISocket::init(void)
+bool ISocket::baseInit()
 {
-    recv_head_buf_ = new Buffer();
+    if (!recv_head_buf_)
+        recv_head_buf_ = Buffer::create(false);
     recv_head_buf_->init(PACKET_HEADER_SIZE);
-    send_head_buf_ = new Buffer();
+    if (!send_head_buf_)
+        send_head_buf_ = Buffer::create(false);
     send_head_buf_->init(PACKET_HEADER_SIZE);
 
     // 生成随机种子
-    packet_seed_ = ::rand();
+    //packet_seed_ = ::rand();
+    return true;
 }
 
 void ISocket::init(int32_t family, int32_t type, int32_t protocol)
 {
-    init();
     if (sock_ != DSOCKERR)
 	    close();
-	sock_ = (int32_t)::socket(family, type, protocol);
+	sock_ = (SocketID)::socket(family, type, protocol);
 	if (sock_ < 0) 
     {
         sock_ = DSOCKERR;
@@ -73,9 +69,8 @@ void ISocket::init(int32_t family, int32_t type, int32_t protocol)
 	open();
 }
 
-void ISocket::init(int32_t sock)
+void ISocket::init(SocketID sock)
 {
-    init();
     setHandle(sock);
 }
 
@@ -108,7 +103,7 @@ void ISocket::close()
 	sock_ = DSOCKERR;
 }
 
-void ISocket::setHandle(int32_t sock)
+void ISocket::setHandle(SocketID sock)
 {
     if (sock_ != DSOCKERR)
         close();
@@ -184,44 +179,45 @@ int32_t ISocket::getErrno()
 
 int32_t ISocket::doRecv()
 {
-    // 先把缓存列队的放进que
-    Buffer* p = NULL;
-    while (recv_list_.count() > 0)
-    {
-        if (!recv_list_.front(p) || !recv_que_.push(p))
-            break;
-        recv_list_.pop(p);
-    }
-
     // 接收包头
 	uint32_t nrecv = 0;
-    uint32_t rest_header_size = recv_head_buf_->getWritableSize();
-    if (rest_header_size > 0)
+    if (recv_packet_ == NULL)
     {
+        uint32_t rest_header_size = recv_head_buf_->getWritableSize();
         int32_t len = recvBuffer(recv_head_buf_);
         // 接收错误，断开连接了
         if (len == -1)
+        {
             return -1;
+        }
         // 还未接收完毕
         if (len < rest_header_size)
             return 0;
 		else
         {
-			// 接收完包头
 			nrecv += len;
-            PacketHeader header;
-            readPacketInfo(recv_head_buf_, header);
-            if (header.seed != packet_seed_)
+			// 接收完包头
+            Packet* packet = Packet::create(false);
+            packet->unpackHeader(recv_head_buf_);
+            recv_head_buf_->reset();
+            if (packet->getSeed() != packet_seed_)
             {
                 // 收到错误包
                 recvClear();
+                packet->release();
+                return 0;
             }
-            if (recv_buf_)
-                recv_buf_->release();
-            recv_buf_ = new Buffer();
-            recv_buf_->init(header.length);
+            recv_packet_ = packet;
+
+            // 创建接收buf
+            KIT_SAFE_RELEASE(recv_buf_);
+            recv_buf_ = g_BufPoolThread->createBuffer(packet->getLength());
         }
     }
+
+    if (recv_buf_ == NULL || recv_packet_ == NULL)
+        return 0;
+
     // 接收包体
     uint32_t rest_size = recv_buf_->getWritableSize();
     if (rest_size > 0)
@@ -237,13 +233,12 @@ int32_t ISocket::doRecv()
     }
 
     // 接收完包体
-    // 放进包队列，等待处理
-    if (recv_list_.count() > 0 || !recv_que_.push(recv_buf_))
-    {
-        recv_list_.push(recv_buf_);
-    }
-    recv_buf_ = NULL;
-    recv_head_buf_->reset();
+    recv_packet_->setBuffer(recv_buf_);
+    KIT_SAFE_RELEASE(recv_buf_);
+
+    recvPacket(recv_packet_);
+    KIT_SAFE_RELEASE(recv_packet_);
+
     return nrecv;
 }
 
@@ -265,36 +260,37 @@ int32_t ISocket::doSend()
 	if (rest_header_size > 0 || rest_size == 0)
 		return 0;
 
-    if (send_buf_ == NULL)
+    if (send_packet_ == NULL)
     {
-        if (!send_que_.pop(send_buf_) || !send_list_.pop(send_buf_))
+        if (!send_que_.pop(send_packet_))
         {
             return 0;
         }
 		// 先尝试发送包头
-        PacketHeader header;
-        header.seed = packet_seed_;
-        header.length = send_buf_->getReadableSize();
-		if (rest_size >= PACKET_SIZE)
-		{
-			writePacketInfo(send_bufs_, header);
-			rest_size -= PACKET_SIZE;
-		}
-		else
-		{
-			// 包头还未发送, 缓存起来
-			send_head_buf_->reset();
-			writePacketInfo(send_head_buf_, header);
-			return 0;
-		}
+        send_head_buf_->reset();
+        send_packet_->setSeed(packet_seed_);
+        send_packet_->packHeader(send_head_buf_);
+        uint32_t size = kit::min(PACKET_HEADER_SIZE, rest_size);
+        send_bufs_->writeBuffer(send_head_buf_->read_cur_, size);
+        send_head_buf_->skipRead(size);
+        rest_size -= size;
+
+        // 读出内容buf，准备发送
+        KIT_SAFE_RELEASE(send_buf_);
+        send_buf_ = send_packet_->getBuffer();
+        if (send_buf_)
+        {
+            send_buf_->retain();
+            send_packet_->delBuffer();
+        }
     }
-	if (rest_size == 0)
+	if (rest_size == 0 || send_buf_ == NULL)
 		return 0;
 	// 发送buff
 	uint32_t rest_buffer_size = send_buf_->getReadableSize();
 	if (rest_buffer_size > 0)
 	{
-		uint32_t len = (rest_size, rest_buffer_size);
+		uint32_t len = kit::min(rest_size, rest_buffer_size);
 		send_bufs_->writeBuffer(send_buf_->read_cur_, len);
 		rest_size -= len;
 		rest_buffer_size -= len;
@@ -304,6 +300,7 @@ int32_t ISocket::doSend()
 		return 0;
 	else
 	{
+        KIT_SAFE_RELEASE(send_packet_);
 		g_BufPool->destroyBuffer(send_buf_);
 		send_buf_ = NULL;
 	}
@@ -313,31 +310,33 @@ int32_t ISocket::doSend()
     return 1;
 }
 
-int32_t ISocket::sendPacket(Buffer* buf)
+int32_t ISocket::sendPacket(Packet* pack)
 {
-    buf->retain();
-    if (send_list_.count() > 0 || !send_que_.push(buf))
-    {
-        send_list_.push(buf);
-    }
+    pack->retain();
+    send_que_.push(pack);
 
-    return flushSend();
+    if (readyOut_)
+        return flushSend();
+    return 0;
 }
 
-int32_t ISocket::recvPacket(Buffer*& buf)
+int32_t ISocket::recvPacket(Packet* pack)
 {
-    if (send_list_.pop(buf) || send_que_.pop(buf))
-    {
-    }
+    pack->retain();
+    // 放进包队列，等待处理
+    recv_que_.push(pack);
+    return 0;
 }
 
 int32_t ISocket::send(const char* buf, int32_t size, int32_t mode)
 {
+    printf("_______send_______\n");
 	return ::send(sock_, buf, size, mode);
 }
 
 int32_t ISocket::recv(char* buf, int32_t size, int32_t mode)
 {
+    printf("_______recv_______\n");
 	return ::recv(sock_, buf, size, mode);
 }
 
@@ -371,9 +370,9 @@ int32_t ISocket::recvBuffer(Buffer* buf)
     while (nrecv < size)
     {
         len = this->recv(buf->write_cur_, size - nrecv, 0);
-        if (len < 0)
+        if (len < 0 && getErrno() != KIT_WOULDBLOCK)
             return -1;
-        if (len == 0)
+        if (len <= 0)
             break;
         nrecv += len;
         buf->skipWrite(len);
@@ -389,9 +388,9 @@ int32_t ISocket::sendBuffer(Buffer* buf)
     while (nsend < size)
     {
         len = this->send(buf->read_cur_, size - nsend, 0);
-        if (len < 0)
+        if (len < 0 && getErrno() != KIT_WOULDBLOCK)
             return -1;
-        if (len == 0)
+        if (len <= 0)
             break;
         nsend += len;
         buf->skipRead(len);
@@ -406,7 +405,7 @@ void ISocket::recvClear()
     int32_t len = -1;
     do {
         len = this->recv(buf, BSIZE, 0);
-    } while (len < BSIZE);
+    } while (len > 0);
 }
 
 void ISocket::sendClear()
@@ -429,6 +428,7 @@ int32_t ISocket::flushSend()
 {
 	int32_t len = 0;
 	int32_t ret = 0;
+    int32_t send_len = 0;
 	int32_t writable_size = 0;
 	if (send_bufs_ == NULL)
 		send_bufs_ = g_BufPool->createBuffer(PACKET_SIZE);
@@ -439,9 +439,10 @@ int32_t ISocket::flushSend()
 			ret = -1;
 			break;
 		}
-		if (send_bufs_->getWritableSize() == 0 || len == 0)
+		if (send_bufs_->getWritableSize() == 0 || (len == 0 and send_bufs_->getReadableSize() > 0))
 		{
-			if (this->sendBuffer(send_bufs_) == -1)
+            send_len = this->sendBuffer(send_bufs_);
+			if (send_len == -1)
 			{
 				ret = -1;
 				break;
@@ -454,6 +455,15 @@ int32_t ISocket::flushSend()
 		send_bufs_ = NULL;
 	}
 	return ret;
+}
+
+void ISocket::test_packet()
+{
+    Packet* pack = NULL;
+    while (recv_que_.pop(pack))
+    {
+        pack->getBuffer()->debugPrint();
+    }
 }
 
 } // namespace kit

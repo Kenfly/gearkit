@@ -1,10 +1,19 @@
 #ifndef __KIT_SERVER_H__
 #define __KIT_SERVER_H__
 
-#include "Ref.h"
+//
+// 服务器
+// 实现方式：
+//  1.只开一条线程, 线程处理socket listen/accept/recv/, 然后生成事件列队给主线程
+//  2.主线程处理事件.处理socket的关闭/删除。
+//
+//
+
+#include "Terminal.h"
 #include "netsys.h"
 #include "Queue.h"
 #include "Array.h"
+#include "Map.h"
 
 namespace kit {
 
@@ -12,8 +21,9 @@ const uint16_t CONNECTION_LIMIT = 0x7FFF;
 const uint16_t SERVER_EVENT_CNT = 512;
 
 class Socket;
+class Session;
 
-class IServer : public Ref
+class IServer : public Terminal
 {
 public:
 	IServer();
@@ -24,8 +34,13 @@ public:
     // 每帧调用
     virtual void update() = 0;
 protected:
-    virtual int32_t addSocket(int32_t fd, Socket* sock = NULL);
-    virtual int32_t delSocket(int32_t fd);
+    virtual bool baseInit();
+
+    // 主线程处理pollevent
+    virtual void handlePollEvent();
+
+    virtual int32_t addSocket(SocketID fd, Socket* sock = NULL);
+    virtual int32_t delSocket(SocketID fd);
     Socket* getSocket(int32_t fd);
 
 protected:
@@ -33,7 +48,13 @@ protected:
     bool active_;
 
     // socket list
-    Array<Socket*, CONNECTION_LIMIT> socket_array_;
+    //typedef Array<Socket*, CONNECTION_LIMIT> SocketArray;
+    //SocketArray socket_array_;
+    Socket* sockets_[CONNECTION_LIMIT];
+
+    // session list
+    typedef Map<SessionID, Session*, CONNECTION_LIMIT> SessionMap;
+    SessionMap session_map_;
 
     // event que
     typedef Queue<PollEvent, SERVER_EVENT_CNT> EventQue;
@@ -49,3 +70,4 @@ protected:
 #endif
 
 #endif
+

@@ -48,10 +48,10 @@ RM = /usr/local/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/kenfly/gearkit/test
+CMAKE_SOURCE_DIR = /home/kenfly/myspace/gearkit/test
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/kenfly/gearkit/test/server
+CMAKE_BINARY_DIR = /home/kenfly/myspace/gearkit/test/server
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/gearkit/test/server/CMakeFiles /home/kenfly/gearkit/test/server/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/myspace/gearkit/test/server/CMakeFiles /home/kenfly/myspace/gearkit/test/server/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/gearkit/test/server/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/myspace/gearkit/test/server/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named testkit
+# Target rules for targets named server
 
 # Build rule for target.
-testkit: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 testkit
-.PHONY : testkit
+server: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 server
+.PHONY : server
 
 # fast build rule for target.
-testkit/fast:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/build
-.PHONY : testkit/fast
+server/fast:
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
+.PHONY : server/fast
 
 #=============================================================================
 # Target rules for targets named gearkit
@@ -137,17 +137,17 @@ gearkit/fast:
 .PHONY : gearkit/fast
 
 #=============================================================================
-# Target rules for targets named libbase
+# Target rules for targets named libkit
 
 # Build rule for target.
-libbase: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 libbase
-.PHONY : libbase
+libkit: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 libkit
+.PHONY : libkit
 
 # fast build rule for target.
-libbase/fast:
-	$(MAKE) -f out/base/CMakeFiles/libbase.dir/build.make out/base/CMakeFiles/libbase.dir/build
-.PHONY : libbase/fast
+libkit/fast:
+	$(MAKE) -f out/kit/CMakeFiles/libkit.dir/build.make out/kit/CMakeFiles/libkit.dir/build
+.PHONY : libkit/fast
 
 #=============================================================================
 # Target rules for targets named libnetwork
@@ -168,7 +168,7 @@ app_server.o: app_server.cpp.o
 
 # target to build an object file
 app_server.cpp.o:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/app_server.cpp.o
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/app_server.cpp.o
 .PHONY : app_server.cpp.o
 
 app_server.i: app_server.cpp.i
@@ -177,7 +177,7 @@ app_server.i: app_server.cpp.i
 
 # target to preprocess a source file
 app_server.cpp.i:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/app_server.cpp.i
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/app_server.cpp.i
 .PHONY : app_server.cpp.i
 
 app_server.s: app_server.cpp.s
@@ -186,7 +186,7 @@ app_server.s: app_server.cpp.s
 
 # target to generate assembly for a file
 app_server.cpp.s:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/app_server.cpp.s
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/app_server.cpp.s
 .PHONY : app_server.cpp.s
 
 main_server.o: main_server.cpp.o
@@ -195,7 +195,7 @@ main_server.o: main_server.cpp.o
 
 # target to build an object file
 main_server.cpp.o:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/main_server.cpp.o
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/main_server.cpp.o
 .PHONY : main_server.cpp.o
 
 main_server.i: main_server.cpp.i
@@ -204,7 +204,7 @@ main_server.i: main_server.cpp.i
 
 # target to preprocess a source file
 main_server.cpp.i:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/main_server.cpp.i
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/main_server.cpp.i
 .PHONY : main_server.cpp.i
 
 main_server.s: main_server.cpp.s
@@ -213,7 +213,7 @@ main_server.s: main_server.cpp.s
 
 # target to generate assembly for a file
 main_server.cpp.s:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/main_server.cpp.s
+	$(MAKE) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/main_server.cpp.s
 .PHONY : main_server.cpp.s
 
 # Help Target
@@ -224,9 +224,9 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... testkit"
+	@echo "... server"
 	@echo "... gearkit"
-	@echo "... libbase"
+	@echo "... libkit"
 	@echo "... libnetwork"
 	@echo "... app_server.o"
 	@echo "... app_server.i"

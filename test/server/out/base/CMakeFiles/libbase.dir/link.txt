@@ -1,2 +1,0 @@
-/usr/bin/ar qc libbase.a  CMakeFiles/libbase.dir/kitsys.cpp.o CMakeFiles/libbase.dir/Ref.cpp.o CMakeFiles/libbase.dir/RefPool.cpp.o CMakeFiles/libbase.dir/Logger.cpp.o CMakeFiles/libbase.dir/HashList.cpp.o CMakeFiles/libbase.dir/Buffer.cpp.o CMakeFiles/libbase.dir/BufferPool.cpp.o
-/usr/bin/ranlib libbase.a

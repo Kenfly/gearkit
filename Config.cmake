@@ -26,17 +26,21 @@ message("===================================")
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_definitions(-DPLATFORM_WINDOWS)
     set(WINDOWS TRUE)
+    set(PLATFORM_NAME "windows")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     add_definitions(-DPLATFORM_LINUX)
     set(LINUX TRUE)
+    set(PLATFORM_NAME "linux")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	add_definitions(-DPLATFORM_LINUX)
     set(APPLE TRUE)
+    set(PLATFORM_NAME "linux")
 endif()
 
 set(INCLUDE_DIR
     ./
     base
+    kit
     network
 )
 

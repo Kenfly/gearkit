@@ -16,12 +16,24 @@ IServer::IServer()
 
 IServer::~IServer()
 {
+    if (active_)
+    {
+        shutdown();
+    }
     if (socket_ != NULL)
     {
         socket_->release();
         socket_ = NULL;
     }
+}
 
+bool IServer::baseInit()
+{
+    Terminal::baseInit();
+
+    memset(sockets_, 0, sizeof(Socket*) * CONNECTION_LIMIT);
+
+    return true;
 }
 
 int32_t IServer::startup(const char* ip, int32_t port)
@@ -74,12 +86,12 @@ int32_t IServer::startup(const char* ip, int32_t port)
     return 0;
 }
 
-void IServer::update()
+void IServer::handlePollEvent()
 {
     // 处理epoll事件
     PollEvent ev;
     int32_t cnt = event_que_.count();
-    int32_t sock_fd;
+    SocketID sock_fd;
     int32_t sock_ev;
     Socket* sock;
 
@@ -87,17 +99,22 @@ void IServer::update()
     {
         if (!event_que_.pop(ev))
             break;
-        sock_fd = ev.fd;
+        sock_fd = (SocketID)ev.fd;
         sock_ev = ev.events;
         sock = getSocket(sock_fd);
-        if (sock)
+        if (sock == NULL || sock == socket_)
+        {
             continue;
+        }
+        // 客户端消息
         if (sock_ev & KIT_POLLIN)
         {
-            sock->dealRecv();
+            //FIXME: 收到协议包处理
+            sock->test_packet();
         }
         if (sock_ev & KIT_POLLOUT)
         {
+            sock->readyOut_ = true;
             int32_t ret = sock->flushSend();
             if (ret == -1)
             {
@@ -107,16 +124,30 @@ void IServer::update()
         if (sock_ev & KIT_POLLERR)
         {
             // 真正删除
-            sock->release();
-            socket_array_.del(sock_fd);
+            delSocket(sock_fd);
+            // 告诉session掉线
         }
 
         DBG("[Server](update) poll event fd=%d", ev.fd);
     }
 }
 
-int32_t IServer::addSocket(int32_t fd, Socket* sock)
+void IServer::update()
 {
+    Terminal::update();
+
+    handlePollEvent();
+}
+
+//@thread
+int32_t IServer::addSocket(SocketID fd, Socket* sock)
+{
+    Socket* old_sock = getSocket(fd);
+    if (old_sock)
+    {
+        // del old
+        delSocket(fd);
+    }
     if (sock == NULL)
     {
         // create socket
@@ -126,11 +157,12 @@ int32_t IServer::addSocket(int32_t fd, Socket* sock)
 
     sock->delete_ = false;
     sock->retain();
-    socket_array_.add(fd, sock);
+    sockets_[fd] = sock;
     return 0;
 }
 
-int32_t IServer::delSocket(int32_t fd)
+//@thread
+int32_t IServer::delSocket(SocketID fd)
 {
     // del socket
     Socket* sock = getSocket(fd);
@@ -138,9 +170,8 @@ int32_t IServer::delSocket(int32_t fd)
     {
         sock->close();
         sock->delete_ = true;
-        //不在这里删除，避免漏掉线程传过来的消息处理。
-        //sock->release();
-        //socket_array_.del(fd);
+        sock->release();
+        sockets_[fd] = NULL;
         return 0;
     }
     else
@@ -149,11 +180,9 @@ int32_t IServer::delSocket(int32_t fd)
     }
 }
 
-Socket* IServer::getSocket(int32_t fd)
+Socket* IServer::getSocket(SocketID fd)
 {
-    Socket* s = NULL;
-    socket_array_.get(fd, s);
-    return s;
+    return sockets_[fd];
 }
 
 int32_t IServer::shutdown()
@@ -166,17 +195,19 @@ int32_t IServer::shutdown()
 		socket_ = NULL;
 	}
 
-    Socket* sock = NULL;
-    socket_array_.resetNext();
-    while (socket_array_.next(sock))
+    Socket* sock;
+    for (int i = 0; i != CONNECTION_LIMIT; ++i)
     {
-        sock->close();
-        sock->release();
+        sock = sockets_[i];
+        if (sock)
+        {
+            sock->close();
+            sock->release();
+        }
     }
-    socket_array_.clear();
+
     return 0;
 }
-
 
 }
 

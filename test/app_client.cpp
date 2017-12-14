@@ -1,8 +1,30 @@
 #include "app_client.h"
 #include "Client.h"
 #include "BufferPool.h"
+#include "Packet.h"
 #include "gearkit.h"
 
+class TimerFunctor
+{
+public:
+    TimerFunctor(kit::Client* client): client_(client)
+    {
+    }
+    bool operator()(uint32_t id)
+    {
+        kit::Buffer* buf = g_BufPool->createBuffer(64);
+        const char* s = "hello world";
+        (*buf) << s;
+
+        kit::Packet* packet = kit::Packet::create();
+        packet->init(1, buf);
+        client_->sendPacket(packet);
+        return false;
+    }
+
+private:
+    kit::Client* client_;
+};
 
 App::App()
 : client_(NULL)
@@ -35,16 +57,15 @@ void App::run()
     client_ = client;
     client_->retain();
 
-    kit::Buffer* buf = g_BufPool->createBuffer(64);
-    (*buf) << "hello world";
-    client_->sendPacket(buf);
+    TimerFunctor func(client_);
+
+    client_->addTimer(120, func, 120);
 
     while (valid_)
     {
         mainLoop();
     }
 }
-
 
 void App::stop()
 {

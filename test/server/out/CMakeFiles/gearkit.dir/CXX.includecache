@@ -6,7 +6,9 @@
 
 #IncludeRegexTransform: 
 
-../../base/Logger.h
+../../base/Singleton.h
+
+../../kit/Logger.h
 stdarg.h
 -
 stdio.h
@@ -14,31 +16,29 @@ stdio.h
 string.h
 -
 Singleton.h
-../../base/Singleton.h
+../../kit/Singleton.h
 
-../../base/RefPool.h
+../../kit/RefPool.h
 vector
 -
 Singleton.h
-../../base/Singleton.h
+../../kit/Singleton.h
 
-../../base/Singleton.h
-
-../../base/kitsys.h
+../../kit/kitsys.h
 stdint.h
 -
 intrin.h
 -
 
-/home/kenfly/gearkit/Application.cpp
+/home/kenfly/myspace/gearkit/Application.cpp
 Application.h
-/home/kenfly/gearkit/Application.h
+/home/kenfly/myspace/gearkit/Application.h
 RefPool.h
-/home/kenfly/gearkit/RefPool.h
+/home/kenfly/myspace/gearkit/RefPool.h
 Logger.h
-/home/kenfly/gearkit/Logger.h
+/home/kenfly/myspace/gearkit/Logger.h
 
-/home/kenfly/gearkit/Application.h
+/home/kenfly/myspace/gearkit/Application.h
 kitsys.h
-/home/kenfly/gearkit/kitsys.h
+/home/kenfly/myspace/gearkit/kitsys.h
 

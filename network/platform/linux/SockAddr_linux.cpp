@@ -2,7 +2,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#include "base.h"
+#include "Logger.h"
 
 namespace kit {
 

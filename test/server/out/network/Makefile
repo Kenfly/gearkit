@@ -48,10 +48,10 @@ RM = /usr/local/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/kenfly/gearkit/test
+CMAKE_SOURCE_DIR = /home/kenfly/myspace/gearkit/test
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/kenfly/gearkit/test/server
+CMAKE_BINARY_DIR = /home/kenfly/myspace/gearkit/test/server
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/kenfly/gearkit/test/server && $(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/gearkit/test/server/CMakeFiles /home/kenfly/gearkit/test/server/out/network/CMakeFiles/progress.marks
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f CMakeFiles/Makefile2 out/network/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/gearkit/test/server/CMakeFiles 0
+	cd /home/kenfly/myspace/gearkit/test/server && $(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/myspace/gearkit/test/server/CMakeFiles /home/kenfly/myspace/gearkit/test/server/out/network/CMakeFiles/progress.marks
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f CMakeFiles/Makefile2 out/network/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/myspace/gearkit/test/server/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f CMakeFiles/Makefile2 out/network/clean
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f CMakeFiles/Makefile2 out/network/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f CMakeFiles/Makefile2 out/network/preinstall
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f CMakeFiles/Makefile2 out/network/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f CMakeFiles/Makefile2 out/network/preinstall
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f CMakeFiles/Makefile2 out/network/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/kenfly/gearkit/test/server && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/kenfly/myspace/gearkit/test/server && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 out/network/CMakeFiles/libnetwork.dir/rule:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f CMakeFiles/Makefile2 out/network/CMakeFiles/libnetwork.dir/rule
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f CMakeFiles/Makefile2 out/network/CMakeFiles/libnetwork.dir/rule
 .PHONY : out/network/CMakeFiles/libnetwork.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ libnetwork: out/network/CMakeFiles/libnetwork.dir/rule
 
 # fast build rule for target.
 libnetwork/fast:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/build
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/build
 .PHONY : libnetwork/fast
 
 Packet.o: Packet.cpp.o
@@ -131,7 +131,7 @@ Packet.o: Packet.cpp.o
 
 # target to build an object file
 Packet.cpp.o:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o
 .PHONY : Packet.cpp.o
 
 Packet.i: Packet.cpp.i
@@ -140,7 +140,7 @@ Packet.i: Packet.cpp.i
 
 # target to preprocess a source file
 Packet.cpp.i:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Packet.cpp.i
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Packet.cpp.i
 .PHONY : Packet.cpp.i
 
 Packet.s: Packet.cpp.s
@@ -149,7 +149,7 @@ Packet.s: Packet.cpp.s
 
 # target to generate assembly for a file
 Packet.cpp.s:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Packet.cpp.s
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Packet.cpp.s
 .PHONY : Packet.cpp.s
 
 Server.o: Server.cpp.o
@@ -158,7 +158,7 @@ Server.o: Server.cpp.o
 
 # target to build an object file
 Server.cpp.o:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Server.cpp.o
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Server.cpp.o
 .PHONY : Server.cpp.o
 
 Server.i: Server.cpp.i
@@ -167,7 +167,7 @@ Server.i: Server.cpp.i
 
 # target to preprocess a source file
 Server.cpp.i:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Server.cpp.i
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Server.cpp.i
 .PHONY : Server.cpp.i
 
 Server.s: Server.cpp.s
@@ -176,8 +176,35 @@ Server.s: Server.cpp.s
 
 # target to generate assembly for a file
 Server.cpp.s:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Server.cpp.s
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Server.cpp.s
 .PHONY : Server.cpp.s
+
+Session.o: Session.cpp.o
+
+.PHONY : Session.o
+
+# target to build an object file
+Session.cpp.o:
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Session.cpp.o
+.PHONY : Session.cpp.o
+
+Session.i: Session.cpp.i
+
+.PHONY : Session.i
+
+# target to preprocess a source file
+Session.cpp.i:
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Session.cpp.i
+.PHONY : Session.cpp.i
+
+Session.s: Session.cpp.s
+
+.PHONY : Session.s
+
+# target to generate assembly for a file
+Session.cpp.s:
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Session.cpp.s
+.PHONY : Session.cpp.s
 
 SockAddr.o: SockAddr.cpp.o
 
@@ -185,7 +212,7 @@ SockAddr.o: SockAddr.cpp.o
 
 # target to build an object file
 SockAddr.cpp.o:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o
 .PHONY : SockAddr.cpp.o
 
 SockAddr.i: SockAddr.cpp.i
@@ -194,7 +221,7 @@ SockAddr.i: SockAddr.cpp.i
 
 # target to preprocess a source file
 SockAddr.cpp.i:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.i
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.i
 .PHONY : SockAddr.cpp.i
 
 SockAddr.s: SockAddr.cpp.s
@@ -203,7 +230,7 @@ SockAddr.s: SockAddr.cpp.s
 
 # target to generate assembly for a file
 SockAddr.cpp.s:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.s
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.s
 .PHONY : SockAddr.cpp.s
 
 Socket.o: Socket.cpp.o
@@ -212,7 +239,7 @@ Socket.o: Socket.cpp.o
 
 # target to build an object file
 Socket.cpp.o:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o
 .PHONY : Socket.cpp.o
 
 Socket.i: Socket.cpp.i
@@ -221,7 +248,7 @@ Socket.i: Socket.cpp.i
 
 # target to preprocess a source file
 Socket.cpp.i:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Socket.cpp.i
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Socket.cpp.i
 .PHONY : Socket.cpp.i
 
 Socket.s: Socket.cpp.s
@@ -230,8 +257,35 @@ Socket.s: Socket.cpp.s
 
 # target to generate assembly for a file
 Socket.cpp.s:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Socket.cpp.s
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Socket.cpp.s
 .PHONY : Socket.cpp.s
+
+Terminal.o: Terminal.cpp.o
+
+.PHONY : Terminal.o
+
+# target to build an object file
+Terminal.cpp.o:
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Terminal.cpp.o
+.PHONY : Terminal.cpp.o
+
+Terminal.i: Terminal.cpp.i
+
+.PHONY : Terminal.i
+
+# target to preprocess a source file
+Terminal.cpp.i:
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Terminal.cpp.i
+.PHONY : Terminal.cpp.i
+
+Terminal.s: Terminal.cpp.s
+
+.PHONY : Terminal.s
+
+# target to generate assembly for a file
+Terminal.cpp.s:
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/Terminal.cpp.s
+.PHONY : Terminal.cpp.s
 
 platform/linux/Server_linux.o: platform/linux/Server_linux.cpp.o
 
@@ -239,7 +293,7 @@ platform/linux/Server_linux.o: platform/linux/Server_linux.cpp.o
 
 # target to build an object file
 platform/linux/Server_linux.cpp.o:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.o
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.o
 .PHONY : platform/linux/Server_linux.cpp.o
 
 platform/linux/Server_linux.i: platform/linux/Server_linux.cpp.i
@@ -248,7 +302,7 @@ platform/linux/Server_linux.i: platform/linux/Server_linux.cpp.i
 
 # target to preprocess a source file
 platform/linux/Server_linux.cpp.i:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.i
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.i
 .PHONY : platform/linux/Server_linux.cpp.i
 
 platform/linux/Server_linux.s: platform/linux/Server_linux.cpp.s
@@ -257,7 +311,7 @@ platform/linux/Server_linux.s: platform/linux/Server_linux.cpp.s
 
 # target to generate assembly for a file
 platform/linux/Server_linux.cpp.s:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.s
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.s
 .PHONY : platform/linux/Server_linux.cpp.s
 
 platform/linux/SockAddr_linux.o: platform/linux/SockAddr_linux.cpp.o
@@ -266,7 +320,7 @@ platform/linux/SockAddr_linux.o: platform/linux/SockAddr_linux.cpp.o
 
 # target to build an object file
 platform/linux/SockAddr_linux.cpp.o:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o
 .PHONY : platform/linux/SockAddr_linux.cpp.o
 
 platform/linux/SockAddr_linux.i: platform/linux/SockAddr_linux.cpp.i
@@ -275,7 +329,7 @@ platform/linux/SockAddr_linux.i: platform/linux/SockAddr_linux.cpp.i
 
 # target to preprocess a source file
 platform/linux/SockAddr_linux.cpp.i:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.i
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.i
 .PHONY : platform/linux/SockAddr_linux.cpp.i
 
 platform/linux/SockAddr_linux.s: platform/linux/SockAddr_linux.cpp.s
@@ -284,7 +338,7 @@ platform/linux/SockAddr_linux.s: platform/linux/SockAddr_linux.cpp.s
 
 # target to generate assembly for a file
 platform/linux/SockAddr_linux.cpp.s:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.s
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.s
 .PHONY : platform/linux/SockAddr_linux.cpp.s
 
 platform/linux/Socket_linux.o: platform/linux/Socket_linux.cpp.o
@@ -293,7 +347,7 @@ platform/linux/Socket_linux.o: platform/linux/Socket_linux.cpp.o
 
 # target to build an object file
 platform/linux/Socket_linux.cpp.o:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o
 .PHONY : platform/linux/Socket_linux.cpp.o
 
 platform/linux/Socket_linux.i: platform/linux/Socket_linux.cpp.i
@@ -302,7 +356,7 @@ platform/linux/Socket_linux.i: platform/linux/Socket_linux.cpp.i
 
 # target to preprocess a source file
 platform/linux/Socket_linux.cpp.i:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.i
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.i
 .PHONY : platform/linux/Socket_linux.cpp.i
 
 platform/linux/Socket_linux.s: platform/linux/Socket_linux.cpp.s
@@ -311,7 +365,7 @@ platform/linux/Socket_linux.s: platform/linux/Socket_linux.cpp.s
 
 # target to generate assembly for a file
 platform/linux/Socket_linux.cpp.s:
-	cd /home/kenfly/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.s
+	cd /home/kenfly/myspace/gearkit/test/server && $(MAKE) -f out/network/CMakeFiles/libnetwork.dir/build.make out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.s
 .PHONY : platform/linux/Socket_linux.cpp.s
 
 # Help Target
@@ -329,12 +383,18 @@ help:
 	@echo "... Server.o"
 	@echo "... Server.i"
 	@echo "... Server.s"
+	@echo "... Session.o"
+	@echo "... Session.i"
+	@echo "... Session.s"
 	@echo "... SockAddr.o"
 	@echo "... SockAddr.i"
 	@echo "... SockAddr.s"
 	@echo "... Socket.o"
 	@echo "... Socket.i"
 	@echo "... Socket.s"
+	@echo "... Terminal.o"
+	@echo "... Terminal.i"
+	@echo "... Terminal.s"
 	@echo "... platform/linux/Server_linux.o"
 	@echo "... platform/linux/Server_linux.i"
 	@echo "... platform/linux/Server_linux.s"
@@ -355,6 +415,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/kenfly/gearkit/test/server && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/kenfly/myspace/gearkit/test/server && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

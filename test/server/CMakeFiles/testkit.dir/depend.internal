@@ -3,52 +3,54 @@
 
 CMakeFiles/testkit.dir/app_server.cpp.o
  ../.././Application.h
- ../.././base/Buffer.h
- ../.././base/HashList.h
- ../.././base/Logger.h
- ../.././base/RefPool.h
  ../.././base/Singleton.h
  ../.././base/base.h
  ../.././gearkit.h
- ../.././network/Packet.h
+ ../.././kit/BufferPool.h
+ ../.././kit/Logger.h
+ ../.././kit/RefPool.h
+ ../.././kit/kit.h
  ../.././network/SockAddr.h
  ../.././network/Socket.h
  ../.././network/network.h
  ../../base/Array.h
  ../../base/List.h
+ ../../base/Map.h
  ../../base/Queue.h
- ../../base/Ref.h
- ../../base/kitsys.h
+ ../../kit/Buffer.h
+ ../../kit/Ref.h
+ ../../kit/kitsys.h
  ../../network/Server.h
  ../../network/netsys.h
  ../../network/platform/linux/Server_linux.h
  ../../network/platform/linux/SockAddr_linux.h
  ../../network/platform/linux/Socket_linux.h
- /home/kenfly/gearkit/test/app_server.cpp
- /home/kenfly/gearkit/test/app_server.h
+ /home/kenfly/myspace/gearkit/test/app_server.cpp
+ /home/kenfly/myspace/gearkit/test/app_server.h
 CMakeFiles/testkit.dir/main_server.cpp.o
  ../.././Application.h
- ../.././base/Array.h
- ../.././base/Buffer.h
- ../.././base/HashList.h
- ../.././base/Logger.h
- ../.././base/Ref.h
- ../.././base/RefPool.h
  ../.././base/Singleton.h
  ../.././base/base.h
- ../.././base/kitsys.h
  ../.././gearkit.h
- ../.././network/Packet.h
+ ../.././kit/BufferPool.h
+ ../.././kit/Logger.h
+ ../.././kit/Ref.h
+ ../.././kit/RefPool.h
+ ../.././kit/kit.h
  ../.././network/SockAddr.h
  ../.././network/Socket.h
  ../.././network/network.h
+ ../../base/Array.h
  ../../base/List.h
+ ../../base/Map.h
  ../../base/Queue.h
  ../../base/debugfunc.h
+ ../../kit/Buffer.h
+ ../../kit/kitsys.h
  ../../network/Server.h
  ../../network/netsys.h
  ../../network/platform/linux/Server_linux.h
  ../../network/platform/linux/SockAddr_linux.h
  ../../network/platform/linux/Socket_linux.h
- /home/kenfly/gearkit/test/app_server.h
- /home/kenfly/gearkit/test/main_server.cpp
+ /home/kenfly/myspace/gearkit/test/app_server.h
+ /home/kenfly/myspace/gearkit/test/main_server.cpp

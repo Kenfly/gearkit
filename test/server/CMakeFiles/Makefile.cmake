@@ -7,10 +7,11 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
-  "/home/kenfly/gearkit/CMakeLists.txt"
-  "/home/kenfly/gearkit/Config.cmake"
-  "/home/kenfly/gearkit/base/CMakeLists.txt"
-  "/home/kenfly/gearkit/network/CMakeLists.txt"
+  "/home/kenfly/myspace/gearkit/CMakeLists.txt"
+  "/home/kenfly/myspace/gearkit/Config.cmake"
+  "/home/kenfly/myspace/gearkit/base/CMakeLists.txt"
+  "/home/kenfly/myspace/gearkit/kit/CMakeLists.txt"
+  "/home/kenfly/myspace/gearkit/network/CMakeLists.txt"
   "../CMakeLists.txt"
   "CMakeFiles/3.10.0-rc3/CMakeCCompiler.cmake"
   "CMakeFiles/3.10.0-rc3/CMakeCXXCompiler.cmake"
@@ -44,13 +45,14 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   "out/CMakeFiles/CMakeDirectoryInformation.cmake"
   "out/base/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "out/kit/CMakeFiles/CMakeDirectoryInformation.cmake"
   "out/network/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/testkit.dir/DependInfo.cmake"
+  "CMakeFiles/server.dir/DependInfo.cmake"
   "out/CMakeFiles/gearkit.dir/DependInfo.cmake"
-  "out/base/CMakeFiles/libbase.dir/DependInfo.cmake"
+  "out/kit/CMakeFiles/libkit.dir/DependInfo.cmake"
   "out/network/CMakeFiles/libnetwork.dir/DependInfo.cmake"
   )

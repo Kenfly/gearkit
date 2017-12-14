@@ -10,8 +10,13 @@
 #include "app_server.h"
 #include "debugfunc.h"
 #include "Queue.h"
+#include "List.h"
+#include "Map.h"
+#include "Array.h"
 
 #include <unistd.h>
+#include <limits.h>
+#include "QList.h"
 
 
 void test(int a[])
@@ -21,56 +26,25 @@ void test(int a[])
 
 void test_hl_vec()
 {
+    g_RefPool->push(new kit::RefPool());
     const int test_cnt = 100000;
     const int run_cnt = 100000000;
-    kit::Ref* p = kit::Socket::create();
     int index;
-    kit::HashListDef hl[test_cnt];
-    kit::HashList_init(hl, test_cnt);
-    std::vector<void*> vec;
 
-    KIT_BEGIN(hash_list);
-    for(int i = 1; i != test_cnt; ++i)
-    {
-        kit::HashList_addElement(hl, i, p);
-    }
-
-    KIT_RUN(run_cnt);
-    KIT_END(hash_list, "[HashList] init cost:");
-
-    KIT_BEGIN(hash_list_list);
-    index = 0;
-    while (index = kit::HashList_next(hl, index))
-    {
-        void* pp = kit::HashList_getElement(hl, index);
-    }
-    KIT_RUN(run_cnt);
-
-    KIT_END(hash_list_list, "[HashList] list cost:");
-
-    KIT_BEGIN(hash_index);
-    for (int i = 1; i != test_cnt; ++i)
-    {
-        void* pp = kit::HashList_getElement(hl, i);
-    }
-    KIT_RUN(run_cnt);
-    KIT_END(hash_index, "[HashList] index cost:");
-
-    printf("\n");
-
+    std::vector<int> vec;
     KIT_BEGIN(vector);
     for(int i = 1; i != test_cnt; ++i)
     {
-        vec.push_back(p);
+        vec.push_back(i);
     }
     KIT_RUN(run_cnt);
     KIT_END(vector, "[vector] init cost:");
 
     KIT_BEGIN(vector_list);
-    std::vector<void*>::iterator ix = vec.begin();
+    std::vector<int>::iterator ix = vec.begin();
     while (ix != vec.end())
     {
-        void* pp = *ix;
+        int a = *ix;
         ++ix;
     }
     KIT_RUN(run_cnt);
@@ -79,7 +53,7 @@ void test_hl_vec()
     KIT_BEGIN(vector_index);
     for (int i = 1; i != test_cnt; ++i)
     {
-        void* pp = vec[i];
+        int p = vec[i];
     }
     KIT_RUN(run_cnt);
     KIT_END(vector_index, "[vector] index cost:");
@@ -87,19 +61,19 @@ void test_hl_vec()
     printf("\n");
 
     // unorder map
-    std::unordered_map<int, void*> umap;
+    std::unordered_map<int, int> umap;
     KIT_BEGIN(unordered_map_init);
     for (int i = 1; i != test_cnt; ++i)
     {
-        umap[i] = p;
+        umap[i] = i;
     }
     KIT_RUN(run_cnt);
     KIT_END(unordered_map_init, "[unorder_map] init cost:");
 
     KIT_BEGIN(unordered_map_list);
-    for (std::unordered_map<int, void*>::iterator ix = umap.begin(); ix != umap.end(); ++ix)
+    for (std::unordered_map<int, int>::iterator ix = umap.begin(); ix != umap.end(); ++ix)
     {
-        void* pp = ix->second;
+        int pp = ix->second;
     }
     KIT_RUN(run_cnt);
     KIT_END(unordered_map_list, "[unorder_map] list cost");
@@ -107,12 +81,48 @@ void test_hl_vec()
     KIT_BEGIN(map_index);
     for (int i = 1; i != test_cnt; ++i)
     {
-        void* pp = umap[i];
+        int pp = umap[i];
     }
     KIT_RUN(run_cnt);
     KIT_END(map_index, "[unorder_map] index cost:");
 
-    printf("ref cnt:%d\n", p->getReferenceCount());
+    printf("\n");
+    kit::List<int> mylist;
+    KIT_BEGIN(LIST_init);
+    for (int i = 1; i != test_cnt; ++i)
+    {
+        mylist.push(i);
+    }
+    KIT_RUN(run_cnt);
+    KIT_END(LIST_init, "[LIST] init cost:");
+
+    KIT_BEGIN(LIST_list2);
+    for (kit::List<int>::Iterator ix = mylist.begin(); ix != mylist.end(); ++ix)
+    {
+        int pp = *ix;
+    }
+    KIT_RUN(run_cnt);
+    KIT_END(LIST_list2, "[LIST] list2 cost:");
+
+    printf("\n");
+
+    kit::Map<int, int, 512> mymap;
+    KIT_BEGIN(map_init);
+    for (int i = 1; i != test_cnt; ++i)
+    {
+        mymap.set(i, i);
+    }
+    KIT_RUN(run_cnt);
+    KIT_END(map_init, "[map] init cost:");
+
+    int pppp = 0;
+    KIT_BEGIN(map_list);
+    for (int i = 1; i != test_cnt; ++i)
+    {
+        mymap.get(i, pppp);
+    }
+    KIT_RUN(run_cnt);
+    KIT_END(map_list, "[map] list1 cost:");
 }
 
 void test_tick()
@@ -170,20 +180,6 @@ void test_tick()
 
 void test_hash_list()
 {
-    kit::HashListDef a[100];
-    HashList_init(a, 100);
-
-    kit::Ref* p = (kit::Ref*)1;
-
-    kit::HashList_addElement(a, 1, p);
-    kit::HashList_addElement(a, 2, p);
-    kit::HashList_addElement(a, 88, p);
-    kit::HashList_addElement(a, 4, p);
-    kit::HashList_delElement(a, 2);
-    kit::HashList_addElement(a, 2, p);
-
-    kit::Server* cc = (kit::Server*)kit::HashList_getElement(a, 1);
-    kit::HashList_print(a);
 }
 
 class AT : public kit::Ref
@@ -196,10 +192,8 @@ void test_server()
     kit::Server* server1 = kit::Server::create();
     kit::Server* server2 = kit::Server::create();
 
-    server1->setTimeval(2000);
     server1->startup("127.0.0.1", 3333);
 
-    server2->setTimeval(2000);
     server2->startup("127.0.0.1", 3334);
 
     sleep(10);
@@ -239,27 +233,102 @@ void start_server()
 
 void test_array()
 {
-    const int size = 10;
-    int a[size];
-    int* p = a;
-    for (int i = 0; i != size; ++i)
+    typedef kit::Array<int, 512> MyArray;
+    MyArray array;
+    array.set(4, 4);
+    array.set(511, 511);
+    array.set(33, 33);
+
+    int ggg;
+    array.get(33, ggg);
+    printf("get::%d\n", ggg);
+    array.del(33);
+    for(MyArray::Iterator ix = array.begin(); ix != array.end(); ++ix)
     {
-        a[i] = i;
+        printf("%d\n", *ix);
+    }
+    printf("count:%d\n", array.count());
+}
+
+void test_map()
+{
+    kit::Map<int, int, 10> map;
+    map.set(3, 3);
+    map.set(9, 9);
+    map.set(13, 13);
+    map.set(14, 14);
+
+    int a = 111;
+    bool ret = false;
+    ret = map.get(3, a);
+    printf("ret:%d, %d\n", (int)ret, a);
+    ret = map.get(14, a);
+    printf("ret:%d, %d\n", (int)ret, a);
+}
+
+template<typename A, typename B>
+void test_typename(A a, B b)
+{
+    printf("%d\n", a % b);
+}
+
+
+void test_pqueue()
+{
+    kit::MaxQueue<int, 100> que;
+    for (int i = 1; i != 10; ++i)
+    {
+        que.push(i);
     }
 
-    memcpy(p, p + 2, sizeof(int) * 2);
-
-    for (int i = 0; i != size; ++i)
-    {
-        printf("%d ", a[i]);
-    }
     printf("\n");
+    printf("cnt:%d\n", que.count());
+    int a;
+    que.pop(a);
+    printf(":%d\n", a);
+    que.pop(a);
+    printf(":%d\n", a);
+    que.pop(a);
+    printf(":%d\n", a);
+    que.pop(a);
+    printf(":%d\n", a);
+    que.pop(a);
+    printf(":%d\n", a);
+}
+
+struct aaa
+{
+    union {
+        uint8_t a[4];
+        uint32_t b;
+    };
+};
+
+void test_qlist()
+{
+    kit::QList<int, 200> que;
+    for (int i = 1; i != 100; ++i)
+        que.push(i);
+    int o;
+    bool ret;
+    for (int i = 1; i <= 200; ++i)
+    {
+        ret = que.pop(o);
+        if (ret)
+            printf("%d\n", o);
+    }
 }
 
 int main(int argc, char* argv[])
 {
     //test_que();
     //test_array();
+    //test_hl_vec();
+    //test_map();
+    //test_typename(33, 22);
+    //test_pqueue();
+    //test_qlist();
+    
     start_server();
     return 0;
 }

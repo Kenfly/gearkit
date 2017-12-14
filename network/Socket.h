@@ -3,15 +3,13 @@
 
 #include "Ref.h"
 #include "kitsys.h"
-#include "Packet.h"
-#include "Queue.h"
-#include "List.h"
-
-#define DSOCKERR		-1
+#include "netsys.h"
+#include "QList.h"
 
 namespace kit {
 
 class SockAddr;
+class Packet;
 class Buffer;
 
 class ISocket : public Ref
@@ -20,9 +18,9 @@ public:
 	ISocket();
 	virtual ~ISocket();
 
-    virtual void init(void);
+    virtual bool baseInit();
 	virtual void init(int32_t family, int32_t type, int32_t protocol);
-    virtual void init(int32_t sock);
+    virtual void init(SocketID sock);
 
 	void open();
 	void close();
@@ -44,8 +42,8 @@ public:
 	int32_t setOption(int32_t level, int32_t optname, const char* optval, int32_t optlen);
 	int32_t getOption(int32_t level, int32_t optname, char* optval, int32_t* optlen);
 
-	void setHandle(int32_t _sock);
-	inline int32_t getHandle() const { return sock_; }
+	void setHandle(SocketID sock);
+	inline SocketID getHandle() const { return sock_; }
 
     void setAddr(SockAddr* addr);
     SockAddr* getAddr() const { return addr_; }
@@ -57,17 +55,14 @@ public:
 
     // 发送一个包
     // 返回-1，发送错误，返回0，发送完毕, 返回1，还可以继续发送
-    int32_t sendPacket(Buffer* buf);
+    int32_t sendPacket(Packet* pack);
     // 接收一个包
     // 返回-1, 接收失败，返回0, 接收完毕，返回1, 还可以继续接收
-    int32_t recvPacket(Buffer*& buf);
+    int32_t recvPacket(Packet* pack);
 
     bool valid() const { return sock_ != DSOCKERR; }
 
-    // 删除标志
-    bool delete_;
-    // 可发送标志,不可发送放到队列里去
-    bool readyOut_;
+    void test_packet();
 protected:
     // recv/send一个buffer
     // 成功返回已接收的字节数，-1掉线
@@ -84,30 +79,35 @@ protected:
     int32_t doSend();
 
 protected:
-	int32_t sock_;
+	SocketID sock_;
     SockAddr* addr_;
-
+public:
+    // 删除标志
+    bool delete_;
+    // 可发送标志,不可发送放到队列里去
+    bool readyOut_;
 private:
     // 包种子，如果客户端发来的包与服务端的不对应，则认为包不可信
     uint32_t packet_seed_;
     // 统计有效包数量
     uint32_t recv_count_;
+
     // 接收发送包头
     Buffer* recv_head_buf_;
     Buffer* send_head_buf_;
     // 一个完整包接收buf
     Buffer* recv_buf_;
+    Packet* recv_packet_;
+    // 一个完整包发送buf
     Buffer* send_buf_;
     Buffer* send_bufs_;
+    Packet* send_packet_;
 
     // 存储各个完整的包
-    typedef Queue<Buffer*, 200> BufferQue;
+    typedef QList<Packet*, 200> PacketQue;
     // 处理队列
-    BufferQue recv_que_;
-    BufferQue send_que_;
-    // 缓存包
-    List<Buffer*> recv_list_;
-    List<Buffer*> send_list_;
+    PacketQue recv_que_;
+    PacketQue send_que_;
 };
 
 } // namespcae kit

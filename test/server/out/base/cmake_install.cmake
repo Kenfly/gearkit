@@ -1,4 +1,4 @@
-# Install script for directory: /home/kenfly/gearkit/base
+# Install script for directory: /home/kenfly/myspace/gearkit/base
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

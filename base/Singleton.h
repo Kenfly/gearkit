@@ -3,7 +3,8 @@
 
 
 /**	单件模式范型框架。
-  可以对任何已有类型构建一个唯一的全局对象，需要手动销毁。
+  * 可以对任何已有类型构建一个唯一的全局对象，需要手动销毁。
+  * 必须实现init函数 
   */
 
 namespace kit {
@@ -16,7 +17,10 @@ public:
     inline static T* instance(void)
     {
         if( !instance_ )
+        {
             instance_ = new T();
+            instance_->init();
+        }
 
         return instance_;
     }

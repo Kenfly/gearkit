@@ -48,10 +48,10 @@ RM = /usr/local/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/kenfly/gearkit/test
+CMAKE_SOURCE_DIR = /home/kenfly/myspace/gearkit/test
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/kenfly/gearkit/test/client
+CMAKE_BINARY_DIR = /home/kenfly/myspace/gearkit/test/client
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/gearkit/test/client/CMakeFiles /home/kenfly/gearkit/test/client/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/myspace/gearkit/test/client/CMakeFiles /home/kenfly/myspace/gearkit/test/client/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/gearkit/test/client/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/myspace/gearkit/test/client/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named testkit
+# Target rules for targets named client
 
 # Build rule for target.
-testkit: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 testkit
-.PHONY : testkit
+client: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 client
+.PHONY : client
 
 # fast build rule for target.
-testkit/fast:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/build
-.PHONY : testkit/fast
+client/fast:
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/build
+.PHONY : client/fast
 
 #=============================================================================
 # Target rules for targets named gearkit
@@ -137,17 +137,17 @@ gearkit/fast:
 .PHONY : gearkit/fast
 
 #=============================================================================
-# Target rules for targets named libbase
+# Target rules for targets named libkit
 
 # Build rule for target.
-libbase: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 libbase
-.PHONY : libbase
+libkit: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 libkit
+.PHONY : libkit
 
 # fast build rule for target.
-libbase/fast:
-	$(MAKE) -f out/base/CMakeFiles/libbase.dir/build.make out/base/CMakeFiles/libbase.dir/build
-.PHONY : libbase/fast
+libkit/fast:
+	$(MAKE) -f out/kit/CMakeFiles/libkit.dir/build.make out/kit/CMakeFiles/libkit.dir/build
+.PHONY : libkit/fast
 
 #=============================================================================
 # Target rules for targets named libnetwork
@@ -168,7 +168,7 @@ app_client.o: app_client.cpp.o
 
 # target to build an object file
 app_client.cpp.o:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/app_client.cpp.o
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/app_client.cpp.o
 .PHONY : app_client.cpp.o
 
 app_client.i: app_client.cpp.i
@@ -177,7 +177,7 @@ app_client.i: app_client.cpp.i
 
 # target to preprocess a source file
 app_client.cpp.i:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/app_client.cpp.i
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/app_client.cpp.i
 .PHONY : app_client.cpp.i
 
 app_client.s: app_client.cpp.s
@@ -186,7 +186,7 @@ app_client.s: app_client.cpp.s
 
 # target to generate assembly for a file
 app_client.cpp.s:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/app_client.cpp.s
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/app_client.cpp.s
 .PHONY : app_client.cpp.s
 
 main_client.o: main_client.cpp.o
@@ -195,7 +195,7 @@ main_client.o: main_client.cpp.o
 
 # target to build an object file
 main_client.cpp.o:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/main_client.cpp.o
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/main_client.cpp.o
 .PHONY : main_client.cpp.o
 
 main_client.i: main_client.cpp.i
@@ -204,7 +204,7 @@ main_client.i: main_client.cpp.i
 
 # target to preprocess a source file
 main_client.cpp.i:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/main_client.cpp.i
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/main_client.cpp.i
 .PHONY : main_client.cpp.i
 
 main_client.s: main_client.cpp.s
@@ -213,7 +213,7 @@ main_client.s: main_client.cpp.s
 
 # target to generate assembly for a file
 main_client.cpp.s:
-	$(MAKE) -f CMakeFiles/testkit.dir/build.make CMakeFiles/testkit.dir/main_client.cpp.s
+	$(MAKE) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/main_client.cpp.s
 .PHONY : main_client.cpp.s
 
 # Help Target
@@ -224,9 +224,9 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... testkit"
+	@echo "... client"
 	@echo "... gearkit"
-	@echo "... libbase"
+	@echo "... libkit"
 	@echo "... libnetwork"
 	@echo "... app_client.o"
 	@echo "... app_client.i"

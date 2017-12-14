@@ -11,7 +11,6 @@
 #include <netinet/tcp.h>
 #include <errno.h>
 #include <stdlib.h>
-#include <pthread.h>
 #include "Logger.h"
 
 namespace kit {
@@ -20,23 +19,12 @@ const int32_t MAX_LISTEN = 50;
 
 Client::Client()
 : poll_fd_(0)
-, thread_id_(0)
+, thread_(NULL)
 {
 }
 
 Client::~Client()
 {
-}
-
-void* thread_start(void* p)
-{
-    if (!p) 
-        return (void*)-1;
-
-    Client* client = (Client*)p;
-    client->run();
-
-    return 0;
 }
 
 int32_t Client::startup(const char* ip, int32_t port)
@@ -66,25 +54,27 @@ int32_t Client::startup(const char* ip, int32_t port)
     }
 
     // thread
-    pthread_t pid;
-    ret = pthread_create(&pid, NULL, thread_start, (void*)this);
+    Thread* thread = Thread::create();
+    thread->init(this);
+    ret = thread->start();
     if (ret < 0)
     {
         ERR("[Client](startup) create thread error! %s, %d", __FILE__, __LINE__);
         return -7;
     }
-    thread_id_ = (int64_t)pid;
+    thread->retain();
+    thread_ = thread;
 
     return 0;
 }
 
-void Client::run()
+void Client::handleThread()
 {
     auto addr = socket_->getAddr();
     while (socket_->connect(addr) < 0)
     {
         kit::sleep(2000);
-        DBG("[Client](run) connect ip:%s port:%d", addr->ip.c_str(), addr->port);
+        DBG("[Client](handleThread) connect ip:%s port:%d", addr->ip.c_str(), addr->port);
     }
 
     active_ = true;
@@ -111,7 +101,7 @@ void Client::run()
         if (rest == 0)
         {
             kit::sleep(100);
-            DBG("[Client](run) EPOLL WAIT");
+            DBG("[Client](handleThread) EPOLL WAIT");
             continue;
         }
 
@@ -129,13 +119,13 @@ void Client::run()
         for (int i = 0; i != cnt; ++i)
         {
             const struct epoll_event& ev = events[i];
-            ret = handleEvents(ev.events);
+            handleEvents(ev.events);
             //事件通知主线程作处理
             out_ev.events = ev.events;
             out_ev.fd = ev.data.fd;
             if (!que.push(out_ev))
             {
-                DBG("[Client](run) EventQue push ERROR!");
+                DBG("[Client](handleThread) EventQue push ERROR!");
                 break;
             }
         }
@@ -144,16 +134,7 @@ void Client::run()
 
 void Client::update()
 {
-    // 处理epoll事件
-    PollEvent ev;
-    int32_t cnt = event_que_.count();
-
-    for (int i = 0; i != cnt; ++i)
-    {
-        if (!event_que_.pop(ev))
-            break;
-        DBG("[Client](update) poll event fd=%d", ev.fd);
-    }
+    IClient::update();
 }
 
 void Client::handleEvents(int32_t events)
@@ -199,12 +180,7 @@ int32_t Client::delCtrl(int32_t fd)
 int32_t Client::shutdown()
 {
     IClient::shutdown();
-    if (thread_id_)
-    {
-        // 等待处理线程结束
-        pthread_join((pthread_t)thread_id_, NULL);
-        thread_id_ = 0;
-    }
+    KIT_SAFE_RELEASE(thread_)
 
     LOG("[Client](shutdown) successfly!");
     return 0;

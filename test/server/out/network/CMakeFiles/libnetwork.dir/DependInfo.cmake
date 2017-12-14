@@ -4,13 +4,15 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/kenfly/gearkit/network/Packet.cpp" "/home/kenfly/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o"
-  "/home/kenfly/gearkit/network/Server.cpp" "/home/kenfly/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/Server.cpp.o"
-  "/home/kenfly/gearkit/network/SockAddr.cpp" "/home/kenfly/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o"
-  "/home/kenfly/gearkit/network/Socket.cpp" "/home/kenfly/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o"
-  "/home/kenfly/gearkit/network/platform/linux/Server_linux.cpp" "/home/kenfly/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.o"
-  "/home/kenfly/gearkit/network/platform/linux/SockAddr_linux.cpp" "/home/kenfly/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o"
-  "/home/kenfly/gearkit/network/platform/linux/Socket_linux.cpp" "/home/kenfly/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o"
+  "/home/kenfly/myspace/gearkit/network/Packet.cpp" "/home/kenfly/myspace/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/Packet.cpp.o"
+  "/home/kenfly/myspace/gearkit/network/Server.cpp" "/home/kenfly/myspace/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/Server.cpp.o"
+  "/home/kenfly/myspace/gearkit/network/Session.cpp" "/home/kenfly/myspace/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/Session.cpp.o"
+  "/home/kenfly/myspace/gearkit/network/SockAddr.cpp" "/home/kenfly/myspace/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/SockAddr.cpp.o"
+  "/home/kenfly/myspace/gearkit/network/Socket.cpp" "/home/kenfly/myspace/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/Socket.cpp.o"
+  "/home/kenfly/myspace/gearkit/network/Terminal.cpp" "/home/kenfly/myspace/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/Terminal.cpp.o"
+  "/home/kenfly/myspace/gearkit/network/platform/linux/Server_linux.cpp" "/home/kenfly/myspace/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/platform/linux/Server_linux.cpp.o"
+  "/home/kenfly/myspace/gearkit/network/platform/linux/SockAddr_linux.cpp" "/home/kenfly/myspace/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o"
+  "/home/kenfly/myspace/gearkit/network/platform/linux/Socket_linux.cpp" "/home/kenfly/myspace/gearkit/test/server/out/network/CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -22,12 +24,13 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../../base"
+  "../../kit"
   "../../network"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/kenfly/gearkit/test/server/out/base/CMakeFiles/libbase.dir/DependInfo.cmake"
+  "/home/kenfly/myspace/gearkit/test/server/out/kit/CMakeFiles/libkit.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

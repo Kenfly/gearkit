@@ -1,33 +1,29 @@
 project(network)
 
 set(TARGET_NAME libnetwork)
-set(EXTLIB)
 
-if(WINDOWS)
-    set(suffix "win")
-elseif(APPLE)
-    set(suffix "linux")
-    list(APPEND EXTLIB pthread)
-elseif(LINUX)
-    set(suffix "linux")
-    list(APPEND EXTLIB pthread)
-endif()
+set(suffix ${PLATFORM_NAME})
 
 include_directories(${INCLUDE_DIR})
 
 set(HEADER_FILE
-    network.h
+    netsys.h
     SockAddr.h
     Packet.h
+    Session.h
 	Socket.h
+    Terminal.h
+    network.h
     platform/${suffix}/SockAddr_${suffix}.h
     platform/${suffix}/Socket_${suffix}.h
 )
 
 Set(SOURCE_FILE
     SockAddr.cpp
-    Packet.cpp
     Socket.cpp
+    Packet.cpp
+    Session.cpp
+    Terminal.cpp
     platform/${suffix}/SockAddr_${suffix}.cpp
     platform/${suffix}/Socket_${suffix}.cpp
 )
@@ -47,4 +43,5 @@ endif()
 
 add_library(${TARGET_NAME} ${HEADER_FILE} ${SOURCE_FILE})
 set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME "network")
-target_link_libraries(${TARGET_NAME} ${EXTLIB} libbase)
+target_link_libraries(${TARGET_NAME} libkit)
+

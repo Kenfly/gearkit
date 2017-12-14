@@ -3,9 +3,12 @@
 
 // 方便遍历的数组
 
+#include <stdio.h>
+#include <memory.h>
+
 namespace kit {
 
-// item.next为-2标志为空
+// item.next与item.prev都为0标志为空
 // next, prev为负数为空
 
 template<typename Type, const int Length>
@@ -13,28 +16,29 @@ class Array
 {
     struct Item
     {
-        Item(): next(-2) {}
         int next;
         int prev;
         Type value;
     };
 public:
-    Array() : count_(0), head_(-1), tail_(-1), pos_(-1)
+    Array() : count_(0), head_(-1), tail_(-1)
     {
+        clear();
     }
 
     bool get(int index, Type& val)
     {
         Item& item = array_[index];
-        if (item.next == -2)
+        if (itemEmpty(item))
             return false;
         val = item.value;
+        return true;
     }
 
-    void add(int index, const Type& val)
+    void set(int index, const Type& val)
     {
         Item& item = array_[index];
-        if (item.next == -2)
+        if (itemEmpty(item))
         {
             item.prev = tail_;
             item.value = val;
@@ -56,10 +60,10 @@ public:
     void del(int index)
     {
         Item& item = array_[index];
+        if (itemEmpty(item))
+            return;
         int next = item.next;
         int prev = item.prev;
-        if (next == -2)
-            return;
         if (prev != -1)
             array_[prev].next = next;
         if (next != -1)
@@ -68,43 +72,74 @@ public:
             head_ = next;
         if (tail_ == index)
             tail_ = prev;
-        item.next = -2;
-        item.prev = -1;
+        emptyItem(item);
         --count_;
     }
     int count() const { return count_; }
 
-    void resetNext() { pos_ = head_; }
-
-    bool next(Type& val)
-    {
-        if (pos_ < 0)
-            return false;
-        int cur = pos_;
-        pos_ = array_[cur].next;
-        get(cur, val);
-        return get(cur, val);
-    }
     void clear()
     {
-        int pos = head_;
-        while (pos >= 0)
-        {
-            Item& item = array_[pos];
-            pos = item.next;
-            item.next = -2;
-            item.prev = -1;
-        }
+        memset(array_, 0, sizeof(Item) * Length);
         head_ = tail_ = -1;
         count_ = 0;
     }
 
 private:
+    bool itemEmpty(const Item& item) const
+    {
+        return item.next == 0 && item.prev == 0;
+    }
+    void emptyItem(Item& item)
+    {
+        item.next = item.prev = 0;
+    }
     int count_;
     int head_;
     int tail_;
     int pos_;
     Item array_[Length];
+
+public:
+    // iterator
+    class Iterator
+    {
+    public:
+        Iterator(Item* array, int index) 
+        : array_(array)
+        , index_(index)
+        {
+        }
+        Iterator& operator ++()
+        {
+            index_ = array_[index_].next;
+            return *this;
+        }
+        bool operator ==(const Iterator& it)
+        {
+            return index_ == it.index_ ;
+        }
+        bool operator !=(const Iterator& it)
+        {
+            //printf("%d %d\n", index_, it.index_);
+            return index_ != it.index_;
+        }
+        Type& operator *()
+        {
+            return array_[index_].value;
+        }
+    private:
+        Item* array_;
+        int index_;
+    };
+
+    Iterator begin()
+    {
+        return Iterator(array_, head_);
+    }
+    Iterator end()
+    {
+        return Iterator(array_, -1);
+    }
 };
 
 } // namespace kit

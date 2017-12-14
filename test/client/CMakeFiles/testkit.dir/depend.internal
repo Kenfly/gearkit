@@ -4,35 +4,36 @@
 CMakeFiles/testkit.dir/app_client.cpp.o
  ../.././Application.h
  ../.././base/Array.h
- ../.././base/Logger.h
- ../.././base/RefPool.h
  ../.././base/base.h
  ../.././gearkit.h
- ../.././network/Packet.h
+ ../.././kit/Logger.h
+ ../.././kit/RefPool.h
+ ../.././kit/kit.h
  ../.././network/Server.h
  ../.././network/SockAddr.h
  ../.././network/Socket.h
  ../.././network/network.h
- ../../base/Buffer.h
- ../../base/BufferPool.h
- ../../base/HashList.h
  ../../base/List.h
+ ../../base/Map.h
  ../../base/Queue.h
- ../../base/Ref.h
  ../../base/Singleton.h
- ../../base/kitsys.h
+ ../../kit/Buffer.h
+ ../../kit/BufferPool.h
+ ../../kit/Ref.h
+ ../../kit/kitsys.h
  ../../network/Client.h
+ ../../network/Packet.h
  ../../network/netsys.h
  ../../network/platform/linux/Client_linux.h
  ../../network/platform/linux/Server_linux.h
  ../../network/platform/linux/SockAddr_linux.h
  ../../network/platform/linux/Socket_linux.h
- /home/kenfly/gearkit/test/app_client.cpp
- /home/kenfly/gearkit/test/app_client.h
+ /home/kenfly/myspace/gearkit/test/app_client.cpp
+ /home/kenfly/myspace/gearkit/test/app_client.h
 CMakeFiles/testkit.dir/main_client.cpp.o
  ../.././Application.h
  ../../base/Array.h
  ../../base/List.h
- ../../base/kitsys.h
- /home/kenfly/gearkit/test/app_client.h
- /home/kenfly/gearkit/test/main_client.cpp
+ ../../kit/kitsys.h
+ /home/kenfly/myspace/gearkit/test/app_client.h
+ /home/kenfly/myspace/gearkit/test/main_client.cpp

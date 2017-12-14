@@ -1,7 +1,9 @@
 file(REMOVE_RECURSE
   "CMakeFiles/libnetwork.dir/SockAddr.cpp.o"
-  "CMakeFiles/libnetwork.dir/Packet.cpp.o"
   "CMakeFiles/libnetwork.dir/Socket.cpp.o"
+  "CMakeFiles/libnetwork.dir/Packet.cpp.o"
+  "CMakeFiles/libnetwork.dir/Session.cpp.o"
+  "CMakeFiles/libnetwork.dir/Terminal.cpp.o"
   "CMakeFiles/libnetwork.dir/platform/linux/SockAddr_linux.cpp.o"
   "CMakeFiles/libnetwork.dir/platform/linux/Socket_linux.cpp.o"
   "CMakeFiles/libnetwork.dir/Client.cpp.o"

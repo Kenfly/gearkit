@@ -1,16 +1,19 @@
 #ifndef __KIT_CLIENT_H__
 #define __KIT_CLIENT_H__
 
-#include "Ref.h"
-#include "kitsys.h"
-#include "HashList.h"
+#include "Terminal.h"
+#include "Queue.h"
+#include "netsys.h"
 
 namespace kit {
 
 class Socket;
-class Buffer;
+class Packet;
+class IPacketHandler;
 
-class IClient : public Ref
+const uint16_t CLIENT_EVENT_CNT = 128;
+
+class IClient : public Terminal
 {
 public:
 	IClient();
@@ -21,11 +24,18 @@ public:
     // 每帧调用
     virtual void update() = 0;
 
-    void sendPacket(Buffer* buf);
+    void sendPacket(Packet* buf);
+protected:
+    virtual void handlePollEvent();
 protected:
 	Socket* socket_;
+
     IPacketHandler* packet_handler_;
     bool active_;
+
+    // event que
+    typedef Queue<PollEvent,CLIENT_EVENT_CNT> EventQue;
+    EventQue event_que_;
 };
 
 } // namespcae kit

@@ -18,17 +18,36 @@
 #define KIT_POLLOUT EPOLLOUT
 #define KIT_POLLERR EPOLLERR
 
+#define KIT_WOULDBLOCK EWOULDBLOCK
+#define KIT_SOCKERR -1
+
 
 #elif defined PLATFORM_WINDOWS
 
+//FIXME
 #define KIT_AF_INET AF_INET
 #define KIT_SOCK_STREAM SOCK_STREAM
+
+#define KIT_POLLIN EPOLLIN
+#define KIT_POLLOUT EPOLLOUT
+#define KIT_POLLERR EPOLLERR
+
+#define KIT_WOULDBLOCK WSAEWOULDBLOCK
+#define KIT_SOCKERR -1
 
 #endif 
 
 #include "kitsys.h"
 
 namespace kit {
+
+// 定义session id类型
+typedef int32_t SessionID;
+// 定义socket id类型
+typedef int32_t SocketID;
+
+const SessionID DSESSIONERR = -1;
+const SocketID DSOCKERR = -1;
 
 const uint32_t PACKET_SIZE = 512;
 

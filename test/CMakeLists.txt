@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 project(testkit)
-set(TARGET_NAME testkit)
+set(TARGET_NAME ${BUILD_TYPE})
 
 include(../Config.cmake)
 

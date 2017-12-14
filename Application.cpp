@@ -21,9 +21,6 @@ Application::~Application()
 
 void Application::run()
 {
-    // 创建ref pool
-    g_RefPool->push(new RefPool());
-
     begine_time_ = kit::time() - frame_msec_;
     DBG("[Application](run) begin_time:%d frame_msec_:%d", begine_time_, frame_msec_);
 
@@ -91,8 +88,6 @@ void Application::mainLoop()
 void Application::stop()
 {
     valid_ = false;
-    // 清除ref pool
-    g_RefPool->pop();
 }
 
 void Application::setFrameRate(unsigned int rate)

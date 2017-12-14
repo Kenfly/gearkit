@@ -16,7 +16,12 @@ public:
     List(): head_(0), tail_(0), count_(0)
     {
     }
-    int count() { return count_; }
+    ~List()
+    {
+        clear();
+    }
+
+    int count() const { return count_; }
 
     bool front(Type& value)
     {
@@ -59,31 +64,67 @@ public:
         return true;
     }
 
-    // TODO: iterator
-    // TODO: 
-    bool insert(int index, const Type& item)
+    void clear()
     {
-        /*
-        if (count_ < index)
-        {
-            push(item);
-            return true;
-        }
-
         Item* p = head_;
-        for (int i = 0; true; ++i)
+        Item* pn = 0;
+        while (p)
         {
+            pn = p->next;
+            delete p;
+            p = pn;
         }
-        */
     }
 
+    // TODO: insert
+    bool insert(int index, const Type& item)
+    {
+    }
+
+    // TODO: erase
     bool erase(int index)
     {
     }
+
 private:
     Item* head_;
     Item* tail_;
     int count_;
+public:
+    // iterator
+    class Iterator
+    {
+    public:
+        Item* node_;
+        Iterator(Item* node) : node_(node)
+        {
+        }
+        Iterator& operator ++()
+        {
+            node_ = node_->next;
+            return *this;
+        }
+        bool operator ==(const Iterator& it)
+        {
+            return node_ == it.node_;
+        }
+        bool operator !=(const Iterator& it)
+        {
+            return node_ != it.node_;
+        }
+        Type& operator *()
+        {
+            return node_->value;
+        }
+    };
+    Iterator begin() const
+    {
+        return Iterator(head_);
+    }
+    Iterator end() const
+    {
+        return Iterator(NULL);
+    }
 };
 
 }

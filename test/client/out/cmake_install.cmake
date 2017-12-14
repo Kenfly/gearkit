@@ -1,4 +1,4 @@
-# Install script for directory: /home/kenfly/gearkit
+# Install script for directory: /home/kenfly/myspace/gearkit
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,8 +39,9 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/kenfly/gearkit/test/client/out/base/cmake_install.cmake")
-  include("/home/kenfly/gearkit/test/client/out/network/cmake_install.cmake")
+  include("/home/kenfly/myspace/gearkit/test/client/out/base/cmake_install.cmake")
+  include("/home/kenfly/myspace/gearkit/test/client/out/kit/cmake_install.cmake")
+  include("/home/kenfly/myspace/gearkit/test/client/out/network/cmake_install.cmake")
 
 endif()
 

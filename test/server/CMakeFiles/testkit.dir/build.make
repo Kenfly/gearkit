@@ -43,10 +43,10 @@ RM = /usr/local/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/kenfly/gearkit/test
+CMAKE_SOURCE_DIR = /home/kenfly/myspace/gearkit/test
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/kenfly/gearkit/test/server
+CMAKE_BINARY_DIR = /home/kenfly/myspace/gearkit/test/server
 
 # Include any dependencies generated for this target.
 include CMakeFiles/testkit.dir/depend.make
@@ -59,16 +59,16 @@ include CMakeFiles/testkit.dir/flags.make
 
 CMakeFiles/testkit.dir/app_server.cpp.o: CMakeFiles/testkit.dir/flags.make
 CMakeFiles/testkit.dir/app_server.cpp.o: ../app_server.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/testkit.dir/app_server.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/testkit.dir/app_server.cpp.o -c /home/kenfly/gearkit/test/app_server.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/myspace/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/testkit.dir/app_server.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/testkit.dir/app_server.cpp.o -c /home/kenfly/myspace/gearkit/test/app_server.cpp
 
 CMakeFiles/testkit.dir/app_server.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/testkit.dir/app_server.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kenfly/gearkit/test/app_server.cpp > CMakeFiles/testkit.dir/app_server.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kenfly/myspace/gearkit/test/app_server.cpp > CMakeFiles/testkit.dir/app_server.cpp.i
 
 CMakeFiles/testkit.dir/app_server.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/testkit.dir/app_server.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kenfly/gearkit/test/app_server.cpp -o CMakeFiles/testkit.dir/app_server.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kenfly/myspace/gearkit/test/app_server.cpp -o CMakeFiles/testkit.dir/app_server.cpp.s
 
 CMakeFiles/testkit.dir/app_server.cpp.o.requires:
 
@@ -83,16 +83,16 @@ CMakeFiles/testkit.dir/app_server.cpp.o.provides.build: CMakeFiles/testkit.dir/a
 
 CMakeFiles/testkit.dir/main_server.cpp.o: CMakeFiles/testkit.dir/flags.make
 CMakeFiles/testkit.dir/main_server.cpp.o: ../main_server.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/testkit.dir/main_server.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/testkit.dir/main_server.cpp.o -c /home/kenfly/gearkit/test/main_server.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kenfly/myspace/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/testkit.dir/main_server.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/testkit.dir/main_server.cpp.o -c /home/kenfly/myspace/gearkit/test/main_server.cpp
 
 CMakeFiles/testkit.dir/main_server.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/testkit.dir/main_server.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kenfly/gearkit/test/main_server.cpp > CMakeFiles/testkit.dir/main_server.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kenfly/myspace/gearkit/test/main_server.cpp > CMakeFiles/testkit.dir/main_server.cpp.i
 
 CMakeFiles/testkit.dir/main_server.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/testkit.dir/main_server.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kenfly/gearkit/test/main_server.cpp -o CMakeFiles/testkit.dir/main_server.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kenfly/myspace/gearkit/test/main_server.cpp -o CMakeFiles/testkit.dir/main_server.cpp.s
 
 CMakeFiles/testkit.dir/main_server.cpp.o.requires:
 
@@ -118,9 +118,9 @@ testkit: CMakeFiles/testkit.dir/main_server.cpp.o
 testkit: CMakeFiles/testkit.dir/build.make
 testkit: out/libgearkit.a
 testkit: out/network/libnetwork.a
-testkit: out/base/libbase.a
+testkit: out/kit/libkit.a
 testkit: CMakeFiles/testkit.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kenfly/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable testkit"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kenfly/myspace/gearkit/test/server/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable testkit"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/testkit.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -138,6 +138,6 @@ CMakeFiles/testkit.dir/clean:
 .PHONY : CMakeFiles/testkit.dir/clean
 
 CMakeFiles/testkit.dir/depend:
-	cd /home/kenfly/gearkit/test/server && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/kenfly/gearkit/test /home/kenfly/gearkit/test /home/kenfly/gearkit/test/server /home/kenfly/gearkit/test/server /home/kenfly/gearkit/test/server/CMakeFiles/testkit.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/kenfly/myspace/gearkit/test/server && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/kenfly/myspace/gearkit/test /home/kenfly/myspace/gearkit/test /home/kenfly/myspace/gearkit/test/server /home/kenfly/myspace/gearkit/test/server /home/kenfly/myspace/gearkit/test/server/CMakeFiles/testkit.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/testkit.dir/depend
 

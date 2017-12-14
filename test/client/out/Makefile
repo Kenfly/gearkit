@@ -48,10 +48,10 @@ RM = /usr/local/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/kenfly/gearkit/test
+CMAKE_SOURCE_DIR = /home/kenfly/myspace/gearkit/test
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/kenfly/gearkit/test/client
+CMAKE_BINARY_DIR = /home/kenfly/myspace/gearkit/test/client
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/kenfly/gearkit/test/client && $(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/gearkit/test/client/CMakeFiles /home/kenfly/gearkit/test/client/out/CMakeFiles/progress.marks
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f CMakeFiles/Makefile2 out/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/gearkit/test/client/CMakeFiles 0
+	cd /home/kenfly/myspace/gearkit/test/client && $(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/myspace/gearkit/test/client/CMakeFiles /home/kenfly/myspace/gearkit/test/client/out/CMakeFiles/progress.marks
+	cd /home/kenfly/myspace/gearkit/test/client && $(MAKE) -f CMakeFiles/Makefile2 out/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kenfly/myspace/gearkit/test/client/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f CMakeFiles/Makefile2 out/clean
+	cd /home/kenfly/myspace/gearkit/test/client && $(MAKE) -f CMakeFiles/Makefile2 out/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f CMakeFiles/Makefile2 out/preinstall
+	cd /home/kenfly/myspace/gearkit/test/client && $(MAKE) -f CMakeFiles/Makefile2 out/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f CMakeFiles/Makefile2 out/preinstall
+	cd /home/kenfly/myspace/gearkit/test/client && $(MAKE) -f CMakeFiles/Makefile2 out/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/kenfly/gearkit/test/client && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/kenfly/myspace/gearkit/test/client && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 out/CMakeFiles/gearkit.dir/rule:
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f CMakeFiles/Makefile2 out/CMakeFiles/gearkit.dir/rule
+	cd /home/kenfly/myspace/gearkit/test/client && $(MAKE) -f CMakeFiles/Makefile2 out/CMakeFiles/gearkit.dir/rule
 .PHONY : out/CMakeFiles/gearkit.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ gearkit: out/CMakeFiles/gearkit.dir/rule
 
 # fast build rule for target.
 gearkit/fast:
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/CMakeFiles/gearkit.dir/build.make out/CMakeFiles/gearkit.dir/build
+	cd /home/kenfly/myspace/gearkit/test/client && $(MAKE) -f out/CMakeFiles/gearkit.dir/build.make out/CMakeFiles/gearkit.dir/build
 .PHONY : gearkit/fast
 
 Application.o: Application.cpp.o
@@ -131,7 +131,7 @@ Application.o: Application.cpp.o
 
 # target to build an object file
 Application.cpp.o:
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/CMakeFiles/gearkit.dir/build.make out/CMakeFiles/gearkit.dir/Application.cpp.o
+	cd /home/kenfly/myspace/gearkit/test/client && $(MAKE) -f out/CMakeFiles/gearkit.dir/build.make out/CMakeFiles/gearkit.dir/Application.cpp.o
 .PHONY : Application.cpp.o
 
 Application.i: Application.cpp.i
@@ -140,7 +140,7 @@ Application.i: Application.cpp.i
 
 # target to preprocess a source file
 Application.cpp.i:
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/CMakeFiles/gearkit.dir/build.make out/CMakeFiles/gearkit.dir/Application.cpp.i
+	cd /home/kenfly/myspace/gearkit/test/client && $(MAKE) -f out/CMakeFiles/gearkit.dir/build.make out/CMakeFiles/gearkit.dir/Application.cpp.i
 .PHONY : Application.cpp.i
 
 Application.s: Application.cpp.s
@@ -149,7 +149,7 @@ Application.s: Application.cpp.s
 
 # target to generate assembly for a file
 Application.cpp.s:
-	cd /home/kenfly/gearkit/test/client && $(MAKE) -f out/CMakeFiles/gearkit.dir/build.make out/CMakeFiles/gearkit.dir/Application.cpp.s
+	cd /home/kenfly/myspace/gearkit/test/client && $(MAKE) -f out/CMakeFiles/gearkit.dir/build.make out/CMakeFiles/gearkit.dir/Application.cpp.s
 .PHONY : Application.cpp.s
 
 # Help Target
@@ -175,6 +175,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/kenfly/gearkit/test/client && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/kenfly/myspace/gearkit/test/client && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

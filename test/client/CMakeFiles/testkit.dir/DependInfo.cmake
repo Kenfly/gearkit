@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/kenfly/gearkit/test/app_client.cpp" "/home/kenfly/gearkit/test/client/CMakeFiles/testkit.dir/app_client.cpp.o"
-  "/home/kenfly/gearkit/test/main_client.cpp" "/home/kenfly/gearkit/test/client/CMakeFiles/testkit.dir/main_client.cpp.o"
+  "/home/kenfly/myspace/gearkit/test/app_client.cpp" "/home/kenfly/myspace/gearkit/test/client/CMakeFiles/testkit.dir/app_client.cpp.o"
+  "/home/kenfly/myspace/gearkit/test/main_client.cpp" "/home/kenfly/myspace/gearkit/test/client/CMakeFiles/testkit.dir/main_client.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -18,14 +18,15 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../../."
   "../../base"
+  "../../kit"
   "../../network"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/kenfly/gearkit/test/client/out/CMakeFiles/gearkit.dir/DependInfo.cmake"
-  "/home/kenfly/gearkit/test/client/out/network/CMakeFiles/libnetwork.dir/DependInfo.cmake"
-  "/home/kenfly/gearkit/test/client/out/base/CMakeFiles/libbase.dir/DependInfo.cmake"
+  "/home/kenfly/myspace/gearkit/test/client/out/CMakeFiles/gearkit.dir/DependInfo.cmake"
+  "/home/kenfly/myspace/gearkit/test/client/out/network/CMakeFiles/libnetwork.dir/DependInfo.cmake"
+  "/home/kenfly/myspace/gearkit/test/client/out/kit/CMakeFiles/libkit.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

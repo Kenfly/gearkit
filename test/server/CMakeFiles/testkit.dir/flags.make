@@ -6,5 +6,5 @@ CXX_FLAGS =   -std=c++11
 
 CXX_DEFINES = -DPLATFORM_LINUX
 
-CXX_INCLUDES = -I/home/kenfly/gearkit/test/../. -I/home/kenfly/gearkit/test/../base -I/home/kenfly/gearkit/test/../network 
+CXX_INCLUDES = -I/home/kenfly/myspace/gearkit/test/../. -I/home/kenfly/myspace/gearkit/test/../base -I/home/kenfly/myspace/gearkit/test/../kit -I/home/kenfly/myspace/gearkit/test/../network 
 
