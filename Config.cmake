@@ -6,13 +6,25 @@
 #use c++11
 add_compile_options(-std=c++11)
 
-#build type
-set(BUILD_TYPE "server" CACHE STRING "Set Building Type")
-set_property(CACHE BUILD_TYPE PROPERTY STRINGS "server;client")
+# options
+option(DEBUG_MODE "Debug or Release?" ON)
+option(USE_SERVER "Use server module" ON)
+option(USE_CLIENT "Use client module" ON)
 
 #script type
-set(SCRIPT_TYPE "none" CACHE STRING "Choose Script Type")
+set(SCRIPT_TYPE "lua" CACHE STRING "Choose Script Type")
 set_property(CACHE SCRIPT_TYPE PROPERTY STRINGS "none;javascript;lua;python")
+
+if(DEBUG_MODE)
+    set(CMAKE_BUILD_TYPE DEBUG)
+    add_definitions(-DKIT_DEBUG)
+else(DEBUG_MODE)
+    set(CMAKE_BUILD_TYPE RELEASE)
+    add_definitions(-DKIT_RELEASE)
+endif(DEBUG_MODE)
+
+set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
+set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 
 #compiler
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCC)
@@ -23,9 +35,11 @@ endif()
 
 message("===================================")
 message("cmake platform:${CMAKE_SYSTEM_NAME}")
-message("building type:${BUILD_TYPE}")
-message("script type:${SCRIPT_TYPE}")
 message("compilor:${COMPILER}")
+message("debug:${DEBUG_MODE}")
+message("script:${SCRIPT_TYPE}")
+message("server:${USE_SERVER}")
+message("client:${USE_CLIENT}")
 message("===================================")
 
 #platforme define

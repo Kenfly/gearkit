@@ -16,7 +16,7 @@ if(SCRIPT_TYPE STREQUAL "javascript")
     add_subdirectory(js)
 elseif(SCRIPT_TYPE STREQUAL "lua")
     add_subdirectory(lua)
-    list(APPEND EXTLIB liblua)
+    list(APPEND EXTLIB libluacore)
 elseif(SCRIPT_TYPE STREQUAL "python")
 endif()
 

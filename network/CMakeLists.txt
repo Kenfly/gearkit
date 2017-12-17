@@ -29,17 +29,19 @@ Set(SOURCE_FILE
 )
 
 
-if(BUILD_TYPE STREQUAL "server")
+if(USE_SERVER)
     list(APPEND HEADER_FILE Server.h)
     list(APPEND SOURCE_FILE Server.cpp)
     list(APPEND HEADER_FILE platform/${suffix}/Server_${suffix}.h)
     list(APPEND SOURCE_FILE platform/${suffix}/Server_${suffix}.cpp)
-elseif(BUILD_TYPE STREQUAL "client")
+endif(USE_SERVER)
+
+if(USE_CLIENT)
     list(APPEND HEADER_FILE Client.h)
     list(APPEND SOURCE_FILE Client.cpp)
     list(APPEND HEADER_FILE platform/${suffix}/Client_${suffix}.h)
     list(APPEND SOURCE_FILE platform/${suffix}/Client_${suffix}.cpp)
-endif()
+endif(USE_CLIENT)
 
 add_library(${TARGET_NAME} ${HEADER_FILE} ${SOURCE_FILE})
 set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME "network")
