@@ -5,12 +5,17 @@ namespace kit {
 // mutex
 Mutex::Mutex()
 {
+}
+
+bool Mutex::baseInit()
+{
     // 嵌套锁
     pthread_mutexattr_t ma;
     pthread_mutexattr_init( &ma );
     pthread_mutexattr_settype( &ma, PTHREAD_MUTEX_RECURSIVE );
     pthread_mutex_init(&mutex_, &ma);
     pthread_mutexattr_destroy( &ma );
+    return true;
 }
 
 Mutex::~Mutex()
@@ -43,6 +48,12 @@ SpinMutex::SpinMutex()
 SpinMutex::~SpinMutex()
 {
     pthread_spin_destroy(&mutex_);
+}
+
+bool SpinMutex::baseInit()
+{
+    pthread_spin_init(&mutex_, PTHREAD_PROCESS_SHARED);
+    return true;
 }
 
 int32_t SpinMutex::lock()

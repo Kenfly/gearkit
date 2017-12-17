@@ -1,1 +1,0 @@
-/usr/bin/c++    -rdynamic CMakeFiles/client.dir/app_client.cpp.o CMakeFiles/client.dir/main_client.cpp.o  -o client out/libgearkit.a out/network/libnetwork.a out/kit/libkit.a -lpthread 

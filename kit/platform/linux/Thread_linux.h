@@ -9,6 +9,8 @@ namespace kit {
 class Mutex : public IMutex
 {
 public:
+    KIT_CREATE_FUNC(Mutex)
+
     Mutex();
     virtual ~Mutex();
 
@@ -16,12 +18,16 @@ public:
     virtual int32_t unlock(); 
     virtual int32_t tryLock();
 protected:
+    virtual bool baseInit();
+
     pthread_mutex_t mutex_;
 };
 
 class SpinMutex : public IMutex
 {
 public:
+    KIT_CREATE_FUNC(SpinMutex)
+
     SpinMutex();
     virtual ~SpinMutex();
 
@@ -29,6 +35,8 @@ public:
     virtual int32_t unlock(); 
     virtual int32_t tryLock();
 protected:
+    virtual bool baseInit();
+
     pthread_spinlock_t mutex_;
 };
 

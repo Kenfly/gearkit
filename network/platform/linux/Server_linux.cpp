@@ -114,6 +114,7 @@ int32_t Server::handleSocket(Socket* sock, int32_t events)
         if (ret == -1)
         {
             // 断开
+            sock->readyOut_ = false;
             return -1;
         }
         DBG("[Server](handleSocket) EPOLLIN fd:%d", sock->getHandle());
@@ -130,10 +131,6 @@ int32_t Server::handleSocket(Socket* sock, int32_t events)
         // 断开
         DBG("[Server](handleSocket) EPOLLERR fd:%d", sock->getHandle());
         return -1;
-        int32_t fd = sock->getHandle();
-        sock->delete_ = true;
-        //delSocket(fd);
-        delCtrl(fd);
         //TODO: do some disconnect 
     }
     return 0;

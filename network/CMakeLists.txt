@@ -4,7 +4,7 @@ set(TARGET_NAME libnetwork)
 
 set(suffix ${PLATFORM_NAME})
 
-include_directories(${INCLUDE_DIR})
+#add_gearkit_include(${GEARKIT_DIR}/)
 
 set(HEADER_FILE
     netsys.h

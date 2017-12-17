@@ -6,8 +6,13 @@
 #use c++11
 add_compile_options(-std=c++11)
 
+#build type
 set(BUILD_TYPE "server" CACHE STRING "Set Building Type")
 set_property(CACHE BUILD_TYPE PROPERTY STRINGS "server;client")
+
+#script type
+set(SCRIPT_TYPE "none" CACHE STRING "Choose Script Type")
+set_property(CACHE SCRIPT_TYPE PROPERTY STRINGS "none;javascript;lua;python")
 
 #compiler
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCC)
@@ -19,6 +24,7 @@ endif()
 message("===================================")
 message("cmake platform:${CMAKE_SYSTEM_NAME}")
 message("building type:${BUILD_TYPE}")
+message("script type:${SCRIPT_TYPE}")
 message("compilor:${COMPILER}")
 message("===================================")
 
@@ -42,6 +48,7 @@ set(INCLUDE_DIR
     base
     kit
     network
+    script
 )
 
 function(add_gearkit_include prefix)

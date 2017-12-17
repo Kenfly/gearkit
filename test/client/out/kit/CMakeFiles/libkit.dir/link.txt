@@ -1,2 +1,0 @@
-/usr/bin/ar qc libkit.a  CMakeFiles/libkit.dir/kitsys.cpp.o CMakeFiles/libkit.dir/Ref.cpp.o CMakeFiles/libkit.dir/RefPool.cpp.o CMakeFiles/libkit.dir/Buffer.cpp.o CMakeFiles/libkit.dir/BufferPool.cpp.o CMakeFiles/libkit.dir/Logger.cpp.o CMakeFiles/libkit.dir/Timer.cpp.o CMakeFiles/libkit.dir/Thread.cpp.o CMakeFiles/libkit.dir/platform/linux/Thread_linux.cpp.o
-/usr/bin/ranlib libkit.a

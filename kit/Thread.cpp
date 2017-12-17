@@ -28,12 +28,13 @@ IThread::~IThread()
     if (active_)
         stop();
     mutex_->unlock();
-    delete mutex_;
+
+    mutex_->release();
 }
 
 bool IThread::baseInit()
 {
-    mutex_ = new Mutex();
+    mutex_ = Mutex::create(false);
 }
 
 void IThread::init(ThreadHandler* handler)

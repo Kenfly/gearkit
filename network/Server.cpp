@@ -2,6 +2,7 @@
 #include "netsys.h"
 #include "Socket.h"
 #include "SockAddr.h"
+#include "Thread.h"
 #include "Logger.h"
 
 namespace kit {
@@ -11,6 +12,7 @@ const int32_t MAX_LISTEN = 50;
 IServer::IServer()
 : socket_(NULL)
 , active_(false)
+, del_socket_mutex_(NULL)
 {
 }
 
@@ -20,16 +22,16 @@ IServer::~IServer()
     {
         shutdown();
     }
-    if (socket_ != NULL)
-    {
-        socket_->release();
-        socket_ = NULL;
-    }
+
+    KIT_SAFE_RELEASE(socket_)
+    KIT_SAFE_RELEASE(del_socket_mutex_)
 }
 
 bool IServer::baseInit()
 {
     Terminal::baseInit();
+
+    del_socket_mutex_ = Mutex::create(false);
 
     memset(sockets_, 0, sizeof(Socket*) * CONNECTION_LIMIT);
 
@@ -164,7 +166,8 @@ int32_t IServer::addSocket(SocketID fd, Socket* sock)
 //@thread
 int32_t IServer::delSocket(SocketID fd)
 {
-    // del socket
+    AutoLock lock(del_socket_mutex_);
+
     Socket* sock = getSocket(fd);
     if (sock)
     {

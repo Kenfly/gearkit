@@ -1,1 +1,0 @@
-/usr/bin/c++    -rdynamic CMakeFiles/server.dir/app_server.cpp.o CMakeFiles/server.dir/main_server.cpp.o  -o server out/libgearkit.a out/network/libnetwork.a out/kit/libkit.a -lpthread 

@@ -7,7 +7,7 @@
 namespace kit {
 
 // 锁
-class IMutex
+class IMutex : public Ref
 {
 public:
     IMutex() {}

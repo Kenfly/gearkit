@@ -5,7 +5,8 @@
 // 服务器
 // 实现方式：
 //  1.只开一条线程, 线程处理socket listen/accept/recv/, 然后生成事件列队给主线程
-//  2.主线程处理事件.处理socket的关闭/删除。
+//  2.主线程处理事件。
+//  3.主线程与线程均可操作delSocket，所以要加锁，其他地方不需要加锁。
 //
 //
 
@@ -22,6 +23,7 @@ const uint16_t SERVER_EVENT_CNT = 512;
 
 class Socket;
 class Session;
+class Mutex;
 
 class IServer : public Terminal
 {
@@ -46,6 +48,7 @@ protected:
 protected:
 	Socket* socket_;
     bool active_;
+    Mutex* del_socket_mutex_;
 
     // socket list
     //typedef Array<Socket*, CONNECTION_LIMIT> SocketArray;

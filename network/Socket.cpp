@@ -330,13 +330,13 @@ int32_t ISocket::recvPacket(Packet* pack)
 
 int32_t ISocket::send(const char* buf, int32_t size, int32_t mode)
 {
-    printf("_______send_______\n");
+    printf("_______send_______%d\n", size);
 	return ::send(sock_, buf, size, mode);
 }
 
 int32_t ISocket::recv(char* buf, int32_t size, int32_t mode)
 {
-    printf("_______recv_______\n");
+    printf("_______recv_______%d\n", size);
 	return ::recv(sock_, buf, size, mode);
 }
 
