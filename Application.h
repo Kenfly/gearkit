@@ -1,19 +1,21 @@
 #ifndef __KIT_APPLICATION_H__
 #define __KIT_APPLICATION_H__
 
-#include "kitsys.h"
+#include "Ref.h"
 
 namespace kit {
 
-class Application
+class Application : public Ref
 {
 public:
+    KIT_CREATE_FUNC(Application)
+
     Application();
     virtual ~Application();
 
     virtual void run();
     virtual void stop();
-    virtual void logic() = 0;
+    virtual void logic();
     // 空余帧，参数为空闲的时间, 返回剩余时间
     virtual uint32_t spareLogic(uint32_t spare_time) { return spare_time; };
 
@@ -28,7 +30,10 @@ public:
     // 帧delta
     uint32_t getFrameDelta() const { return frame_delta_; }
     void setNextDeltaZero(bool zero) { next_delta_zero_ = zero; }
+
 protected:
+    virtual bool baseInit();
+
     // 当前帧
     uint32_t frame_;
     // 帧率

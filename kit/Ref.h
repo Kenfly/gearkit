@@ -1,7 +1,9 @@
 #ifndef __KIT_REF_H__
 #define __KIT_REF_H__
 
+#include "kitsys.h"
 #include <new>
+#include <vector>
 
 namespace kit {
 
@@ -18,8 +20,19 @@ public:
     void retain();
     void release();
 
+    virtual void update();
+
     Ref* autoRelease();
     unsigned int getReferenceCount() const { return reference_count_; };
+
+    void addChild(Ref* obj);
+    void delChild(Ref* obj);
+    void clearChildren();
+    virtual void removeFromParent();
+private:
+    typedef std::vector<Ref*> RefVec;
+    RefVec children_;
+    Ref* parent_;
 };
 
 #define KIT_SAFE_RELEASE(r) \
@@ -41,9 +54,10 @@ public:
                 ret->autoRelease(); \
             return ret; \
         } \
-        ret = 0; \
+        KIT_SAFE_RELEASE(ret) \
+        return ret; \
     }
-    
+
 } // namespace kit
 
 #endif

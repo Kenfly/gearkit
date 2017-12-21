@@ -84,7 +84,6 @@ void Client::handleThread()
     // 该函数线程运行，用event_que_与主线程通信
     // 如果que push失败，会把未处理事件放到events前面
     int32_t cnt = 0;
-    int32_t ret = 0;
     int32_t rest = 0;
     int32_t epoll_fd = poll_fd_;
 
@@ -92,7 +91,6 @@ void Client::handleThread()
     memset(&events, 0, sizeof(events));
 
     PollEvent out_ev;
-    Socket* socket;
     EventQue& que = event_que_;
 
     while(active_)

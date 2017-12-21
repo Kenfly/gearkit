@@ -44,10 +44,12 @@ int32_t Session::sendPacket(Packet* pack)
     else
     {
     }
+    return 0;
 }
 
 int32_t Session::recvPacket(Packet*& pack)
 {
+    return 0;
 }
 
 } // namespace kit

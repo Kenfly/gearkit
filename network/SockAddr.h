@@ -20,12 +20,13 @@ public:
 
     operator sockaddr_in*() { return (sockaddr_in*)addr_; }
     operator sockaddr*() { return (sockaddr*)addr_; }
-public:
-    std::string ip;
-    uint16_t port;
 protected:
     sockaddr* addr_;
     bool valid_;
+
+public:
+    std::string ip;
+    uint16_t port;
 };
 
 } // namespace kit

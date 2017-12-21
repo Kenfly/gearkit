@@ -191,7 +191,7 @@ int32_t ISocket::doRecv()
             return -1;
         }
         // 还未接收完毕
-        if (len < rest_header_size)
+        if (len < (int32_t)rest_header_size)
             return 0;
 		else
         {
@@ -227,7 +227,7 @@ int32_t ISocket::doRecv()
         if (len == -1)
             return -1;
         // 还未接收完毕
-        if (len < rest_size)
+        if (len < (int32_t)rest_size)
             return 0;
 		nrecv += rest_size;
     }
@@ -429,7 +429,6 @@ int32_t ISocket::flushSend()
 	int32_t len = 0;
 	int32_t ret = 0;
     int32_t send_len = 0;
-	int32_t writable_size = 0;
 	if (send_bufs_ == NULL)
 		send_bufs_ = g_BufPool->createBuffer(PACKET_SIZE);
 	do {

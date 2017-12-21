@@ -79,11 +79,13 @@ public:
     // TODO: insert
     bool insert(int index, const Type& item)
     {
+        return true;
     }
 
     // TODO: erase
     bool erase(int index)
     {
+        return true;
     }
 
 private:

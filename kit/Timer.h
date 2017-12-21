@@ -3,15 +3,16 @@
 
 #include "kitsys.h"
 #include "Ref.h"
+#include "Map.h"
+#include "functional"
+
+#ifndef TIMER_MAP_SIZE
+#define TIMER_MAP_SIZE (512)
+#endif
 
 namespace kit {
 
-
-// 处理器
-struct TimerHandler
-{
-    virtual bool handleTimer(uint32_t id) = 0;
-};
+typedef std::function<bool(uint32_t)> TimerHandler;
 
 class Timer : public Ref
 {
@@ -48,16 +49,13 @@ public:
     Timer();
     virtual ~Timer();
 
-    virtual void init(TimerHandler* handler);
+    virtual void init(TimerHandler handler);
     // cycle > 0循环
-    uint32_t addTimer(uint32_t delay, uint32_t cycle = 0);
-    // TODO: dont call this
+    uint32_t addTimer(uint32_t delay, TimerHandler handler, uint32_t cycle = 0);
     void delTimer(uint32_t id);
 
     void update();
 
-    // 设置handler， 一个timer只有一个
-    void setHandler(TimerHandler* handler);
 private:
     // 旋转某个轮盘
     void wheeling(uint8_t index = 0);
@@ -68,7 +66,7 @@ private:
 private:
     uint32_t id_;
     Wheel wheels_[4];
-    TimerHandler* handler_;
+    Map<uint32_t, TimerHandler, TIMER_MAP_SIZE> handler_map_;
 };
 
 } // namespace kit

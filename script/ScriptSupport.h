@@ -1,6 +1,8 @@
 #ifndef __KIT_SCRIPT_SUPPORT_H__
 #define __KIT_SCRIPT_SUPPORT_H__
 
+#include <string>
+
 namespace kit {
 
 enum ScriptType {
@@ -20,10 +22,15 @@ struct ScriptProtocol
     virtual void init() {}
     virtual void destroy() {}
 
+    virtual void setScriptDir(const char* path) { path_ = path; }
+    virtual const char* getScriptDir() { return path_.c_str(); }
+
     // @return 0 corectly.
     virtual int executeString(const char* codes) = 0;
-    virtual int executeFile(const char* filename) = 0;
+    virtual int executeFile(const char* file_name) = 0;
     virtual int executeFunction(const char* function_name) = 0;
+
+    std::string path_;
 };
 
 class ScriptManager

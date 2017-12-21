@@ -22,7 +22,7 @@ public:
 	virtual int32_t shutdown();
 
     // 每帧调用
-    virtual void update() = 0;
+    virtual void update();
 
     void sendPacket(Packet* buf);
 protected:

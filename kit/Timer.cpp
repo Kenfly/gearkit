@@ -27,7 +27,6 @@ Timer::Wheel::~Wheel()
 
 Timer::Timer()
 : id_(0)
-, handler_(NULL)
 {
 }
 
@@ -35,26 +34,23 @@ Timer::~Timer()
 {
 }
 
-void Timer::init(TimerHandler* handler)
-{
-    setHandler(handler);
-}
-
 void Timer::update()
 {
     wheeling(0);
 }
 
-uint32_t Timer::addTimer(uint32_t delay, uint32_t cycle)
+uint32_t Timer::addTimer(uint32_t delay, TimerHandler handler, uint32_t cycle)
 {
     Node* node = new Node(++id_, delay, cycle);
-
     addNode(3, node);
+
+    handler_map_.set(id_, handler);
     return id_;
 }
 
 void Timer::delTimer(uint32_t id)
 {
+    handler_map_.del(id);
 }
 
 void Timer::wheeling(uint8_t index)
@@ -63,7 +59,6 @@ void Timer::wheeling(uint8_t index)
     ++wheel.pos;
 
     Node* np;
-    uint8_t ni;
     bool ret;
     Node* p = wheel.nodes[wheel.pos];
     while (p)
@@ -89,11 +84,6 @@ void Timer::wheeling(uint8_t index)
     }
 }
 
-void Timer::setHandler(TimerHandler* handler)
-{
-    handler_ = handler;
-}
-
 bool Timer::addNode(uint8_t index, Node* node)
 {
     if (index > 3)
@@ -113,9 +103,12 @@ bool Timer::addNode(uint8_t index, Node* node)
 
 bool Timer::handleTimer(uint32_t id)
 {
-    if (handler_)
-        return handler_->handleTimer(id);
-    return false;
+    TimerHandler handler;
+    if (handler_map_.get(id, handler))
+    {
+        return handler(id);
+    }
+    return true;
 }
 
 } // namespace kit

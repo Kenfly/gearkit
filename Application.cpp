@@ -9,14 +9,24 @@ Application::Application()
 : frame_(0)
 , frame_rate_(DEFAULT_FRAME_RATE)
 , frame_msec_(1000 / DEFAULT_FRAME_RATE)
+, valid_(false)
 , begine_time_(0)
 , wait_time_(0)
-, valid_(false)
 {
 }
 
 Application::~Application()
 {
+}
+
+bool Application::baseInit()
+{
+    return true;
+}
+
+void Application::logic()
+{
+    update();
 }
 
 void Application::run()

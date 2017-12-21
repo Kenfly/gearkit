@@ -13,5 +13,7 @@ void register_Class_Server(lua_State* L);
 
 void register_Class_Client(lua_State* L);
 
+void register_Class_Application(lua_State* L);
+
 #endif
 

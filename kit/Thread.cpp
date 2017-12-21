@@ -35,6 +35,7 @@ IThread::~IThread()
 bool IThread::baseInit()
 {
     mutex_ = Mutex::create(false);
+    return true;
 }
 
 void IThread::init(ThreadHandler* handler)

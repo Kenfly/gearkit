@@ -130,7 +130,8 @@ int32_t IClient::shutdown()
 
 void IClient::sendPacket(Packet* buf)
 {
-    int32_t ret = socket_->sendPacket(buf);
+    socket_->sendPacket(buf);
+    //TODO: may be fail
 }
 
 }

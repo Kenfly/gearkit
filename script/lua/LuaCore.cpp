@@ -32,18 +32,39 @@ void LuaCore::destroy()
 
 int LuaCore::executeString(const char* codes)
 {
-    luaL_loadstring(L, codes);
+    int ret = luaL_loadstring(L, codes);
+    if (ret != LUA_OK)
+    {
+        ERR("[LuaCore](executeString) fail! %s", codes);
+        return -1;
+    }
     return executeFunc(0);
 }
 
-int LuaCore::executeFile(const char* filename)
+int LuaCore::executeFile(const char* file_name)
 {
-    return 0;
+    std::string full_path = path_ + file_name;
+
+    int ret = luaL_loadfile(L, full_path.c_str());
+    if (ret != LUA_OK)
+    {
+        ERR("[LuaCore](executeFile) fail! %s", file_name);
+        return -1;
+    }
+
+    return executeFunc(0);
 }
 
 int LuaCore::executeFunction(const char* function_name)
 {
-    return 0;
+    lua_getglobal(L, function_name);
+    if (!lua_isfunction(L, -1))
+    {
+        ERR("[LuaCore](executeFunction) fail! %s", function_name);
+        lua_pop(L, 1);
+        return -1;
+    }
+    return executeFunc(0);
 }
 
 int LuaCore::executeFunc(int arg_num)
@@ -100,22 +121,4 @@ int LuaCore::executeFunc(int arg_num)
 
     return ret;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

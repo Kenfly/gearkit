@@ -37,6 +37,10 @@ void register_Class_Ref(lua_State* L)
                 .addFunction("release", &kit::Ref::release)
                 .addFunction("autorelease", &kit::Ref::autoRelease)
                 .addFunction("get_reference_count", &kit::Ref::getReferenceCount)
+                .addFunction("add_child", &kit::Ref::addChild)
+                .addFunction("del_child", &kit::Ref::delChild)
+                .addFunction("clear_children", &kit::Ref::clearChildren)
+                .addFunction("remove_from_parent", &kit::Ref::removeFromParent)
             .endClass()
         .endNamespace();
 }
@@ -52,6 +56,10 @@ void register_Class_Server(lua_State* L)
 }
 
 void register_Class_Client(lua_State* L)
+{
+}
+
+void register_Class_Application(lua_State* L)
 {
 }
 

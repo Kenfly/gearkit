@@ -21,5 +21,5 @@ include_directories(${LUA_BRIDGE_SRC})
 
 add_library(${TARGET_NAME} ${HEADER_FILE} ${SOURCE_FILE})
 set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME "luacore")
-target_link_libraries(${TARGET_NAME} liblua)
+target_link_libraries(${TARGET_NAME} libkit libnetwork liblua)
 

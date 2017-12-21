@@ -69,8 +69,8 @@ inline uint32_t Buffer::getReadableSize() const
 template<typename T>
 inline Buffer& Buffer::operator<<(T v)
 {
-	bool res = writeBuffer(&v, sizeof(T));
-	//to do sothing
+	writeBuffer(&v, sizeof(T));
+	//TODO: ret would be false
 	return *this;
 }
 

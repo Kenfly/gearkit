@@ -65,7 +65,7 @@ void Buffer::debugPrint()
 {
     uint32_t size = getWrittenSize();
     printf("[Buffer](%d):\n", size);
-    for(int i = 0; i != size; ++i)
+    for(uint32_t i = 0; i != size; ++i)
     {
         printf("%c", head_[i]);
     }

@@ -8,6 +8,10 @@
 #include "Queue.h"
 #include "Singleton.h"
 
+#ifndef BUFFER_POOL_SIZE
+#define BUFFER_POOL_SIZE (200)
+#endif
+
 namespace kit {
 
 const int32_t BUFFER_QUEUE_CNT = 8;
@@ -23,7 +27,7 @@ public:
 
     void clear();
 private:
-    typedef Queue<Buffer*, 200> BufferQue;
+    typedef Queue<Buffer*, BUFFER_POOL_SIZE> BufferQue;
     BufferQue ques_[BUFFER_QUEUE_CNT];
 };
 
