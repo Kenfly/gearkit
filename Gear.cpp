@@ -1,11 +1,16 @@
-#include "Application.h"
+#include "Gear.h"
 #include "RefPool.h"
 #include "Logger.h"
+#include "Gear.h"
+#include "BufferPool.h"
+#include "RefPool.h"
+#include "Logger.h"
+#include "Singleton.h"
 
 #define DEFAULT_FRAME_RATE 60
 namespace kit {
 
-Application::Application()
+Gear::Gear()
 : frame_(0)
 , frame_rate_(DEFAULT_FRAME_RATE)
 , frame_msec_(1000 / DEFAULT_FRAME_RATE)
@@ -15,29 +20,43 @@ Application::Application()
 {
 }
 
-Application::~Application()
+Gear::~Gear()
 {
 }
 
-bool Application::baseInit()
+bool Gear::baseInit()
 {
     return true;
 }
 
-void Application::logic()
+void Gear::logic()
 {
     update();
 }
 
-void Application::run()
+void Gear::begin()
 {
     begine_time_ = kit::time() - frame_msec_;
-    DBG("[Application](run) begin_time:%d frame_msec_:%d", begine_time_, frame_msec_);
+    DBG("[Gear](start) begin_time:%d frame_msec_:%d", begine_time_, frame_msec_);
 
     valid_ = true;
 }
 
-void Application::mainLoop()
+void Gear::stop()
+{
+    valid_ = false;
+}
+
+void Gear::end()
+{
+    Singleton<BufferPoolManager>::destroyInstance();
+    Singleton<RefPoolManager>::destroyInstance();
+    Singleton<Logger>::destroyInstance();
+
+    Singleton<Gear>::destroyInstance();
+}
+
+void Gear::mainLoop()
 {
     begine_time_ += frame_msec_;
 
@@ -81,7 +100,7 @@ void Application::mainLoop()
         }
     }
     if (wait_time_ > 0)
-        DBG("[Application](mainLoop) WAIT TIME:%d, %d\n", wait_time_, frame_);
+        DBG("[Gear](mainLoop) WAIT TIME:%d, %d\n", wait_time_, frame_);
 
     // 空闲时间处理
     if (spare > 0)
@@ -89,18 +108,13 @@ void Application::mainLoop()
         // ret pool 不作时间计算了
         g_RefPool->getCurrentPool()->clear();
         spare = spareLogic(spare);
-        //DBG("[Application](mainLoop) SPARE TIME:%d", spare);
+        //DBG("[Gear](mainLoop) SPARE TIME:%d", spare);
         if (spare > 0)
             kit::sleep(spare);
     }
 }
 
-void Application::stop()
-{
-    valid_ = false;
-}
-
-void Application::setFrameRate(unsigned int rate)
+void Gear::setFrameRate(unsigned int rate)
 {
     frame_rate_ = rate;
     frame_msec_ = (1000 / frame_rate_);

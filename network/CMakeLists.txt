@@ -10,10 +10,12 @@ set(HEADER_FILE
     netsys.h
     SockAddr.h
     Packet.h
+    Protocol.h
     Session.h
 	Socket.h
     Terminal.h
     network.h
+    PacketHandler.h
     platform/${suffix}/SockAddr_${suffix}.h
     platform/${suffix}/Socket_${suffix}.h
 )
@@ -22,8 +24,10 @@ Set(SOURCE_FILE
     SockAddr.cpp
     Socket.cpp
     Packet.cpp
+    Protocol.cpp
     Session.cpp
     Terminal.cpp
+    PacketHandler.cpp
     platform/${suffix}/SockAddr_${suffix}.cpp
     platform/${suffix}/Socket_${suffix}.cpp
 )

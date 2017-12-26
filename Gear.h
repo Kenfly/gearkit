@@ -1,20 +1,22 @@
-#ifndef __KIT_APPLICATION_H__
-#define __KIT_APPLICATION_H__
+#ifndef __KIT_GEAR_H__
+#define __KIT_GEAR_H__
 
 #include "Ref.h"
 
 namespace kit {
 
-class Application : public Ref
+class Gear : public Ref
 {
 public:
-    KIT_CREATE_FUNC(Application)
+    //KIT_CREATE_FUNC(Gear)
+    Gear();
+    virtual ~Gear();
 
-    Application();
-    virtual ~Application();
+    virtual bool baseInit();
 
-    virtual void run();
+    virtual void begin();
     virtual void stop();
+    virtual void end();
     virtual void logic();
     // 空余帧，参数为空闲的时间, 返回剩余时间
     virtual uint32_t spareLogic(uint32_t spare_time) { return spare_time; };
@@ -31,9 +33,8 @@ public:
     uint32_t getFrameDelta() const { return frame_delta_; }
     void setNextDeltaZero(bool zero) { next_delta_zero_ = zero; }
 
+    bool isValid() const { return valid_; }
 protected:
-    virtual bool baseInit();
-
     // 当前帧
     uint32_t frame_;
     // 帧率
@@ -54,4 +55,7 @@ private:
 
 } // namespace kit
 
+#define g_Gear (kit::Singleton<kit::Gear>::instance())
+
 #endif
+

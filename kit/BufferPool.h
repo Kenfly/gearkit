@@ -16,7 +16,7 @@ namespace kit {
 
 const int32_t BUFFER_QUEUE_CNT = 8;
 
-class BufferPool
+class BufferPool : public Ref
 {
 public:
     BufferPool();
@@ -31,13 +31,13 @@ private:
     BufferQue ques_[BUFFER_QUEUE_CNT];
 };
 
-class BufferPoolManager
+class BufferPoolManager : public Ref
 {
 public:
     BufferPoolManager();
-    ~BufferPoolManager();
+    virtual ~BufferPoolManager();
 
-    void init();
+    virtual bool baseInit();
 
     BufferPool* getPool() const { return pool_; }
     BufferPool* getThreadPool() const { return thread_pool_; }

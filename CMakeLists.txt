@@ -11,17 +11,23 @@ add_gearkit_include(${GEARKIT_DIR}/)
 add_subdirectory(base)
 add_subdirectory(kit)
 add_subdirectory(network)
+
+if(DEBUG_MODE)
+    add_subdirectory(debug)
+    list(APPEND EXTLIB libdebug)
+endif(DEBUG_MODE)
+
 if (NOT (${SCRIPT_TYPE} MATCHES "none"))
     add_subdirectory(script)
     list(APPEND EXTLIB libscript)
 endif()
 
 set(HEADER_FILE
-    Application.h
+    Gear.h
 )
 
 Set(SOURCE_FILE
-    Application.cpp
+    Gear.cpp
 )
 
 add_library(${TARGET_NAME} ${HEADER_FILE} ${SOURCE_FILE})

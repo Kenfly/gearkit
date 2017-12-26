@@ -2,21 +2,31 @@ project(luacore)
 
 set(TARGET_NAME libluacore)
 
+set(LUA_SRC ${PROJECT_SOURCE_DIR}/lua-5.3.4/src)
+set(LUA_INTF_SRC ${PROJECT_SOURCE_DIR}/lua-intf/)
+
 set(HEADER_FILE
     LuaCore.h
+    LuaBuffer.h
+    LuaProtocol.cpp
     LuaBinding.h
 )
 
 Set(SOURCE_FILE
     LuaCore.cpp
+    LuaBuffer.cpp
+    LuaProtocol.cpp
     LuaBinding.cpp
 )
 
-set(LUA_SRC ${PROJECT_SOURCE_DIR}/lua-5.3.4/src)
-set(LUA_BRIDGE_SRC ${PROJECT_SOURCE_DIR}/LuaBridge/Source)
 add_subdirectory(${LUA_SRC})
+
+#aux_source_directory(${LUA_INTF_SRC}/LuaIntf/src LUAINF)
+
+#add_definitions(-DLUAINTF_HEADERS_ONLY)
+
 include_directories(${LUA_SRC})
-include_directories(${LUA_BRIDGE_SRC})
+include_directories(${LUA_INTF_SRC})
 
 
 add_library(${TARGET_NAME} ${HEADER_FILE} ${SOURCE_FILE})

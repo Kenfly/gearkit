@@ -16,12 +16,22 @@ LuaCore::~LuaCore()
 
 bool LuaCore::baseInit()
 {
+    // TODO: might set outcope
     L = luaL_newstate();
     luaL_openlibs(L);
 
     register_NormalFunction(L);
     register_Class_Ref(L);
+    register_Class_Timer(L);
+    register_Class_Buffer(L);
+    register_Class_BufferPool(L);
+    register_Class_Protocol(L);
+    register_Class_Client(L);
     register_Class_Server(L);
+    register_Class_ScriptCore(L);
+    register_Class_ScriptManager(L);
+    register_Class_Gear(L);
+
     return true;
 }
 

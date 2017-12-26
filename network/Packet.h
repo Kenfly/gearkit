@@ -12,7 +12,7 @@ struct PacketHeader
 {
     uint16_t seed; //验证种子
     uint16_t length; //包体长度
-    int16_t pid; //协义
+    uint16_t pid; //协义
 };
 
 // 包最大在小
@@ -27,10 +27,10 @@ public:
     Packet();
     virtual ~Packet();
 
-    void init(int16_t pid, Buffer* buf);
+    void init(uint16_t pid, Buffer* buf);
 
     void setSeed(uint16_t seed) { header_.seed = seed; }
-    int16_t getPID() const { return header_.pid; }
+    uint16_t getPID() const { return header_.pid; }
     uint16_t getSeed() const { return header_.seed; }
     uint16_t getLength() const { return header_.length; }
     void setBuffer(Buffer* buf);
@@ -42,11 +42,6 @@ public:
 public:
     PacketHeader header_;
     Buffer* buf_;
-};
-
-struct IPacketHandler : public Ref
-{
-    virtual void onPacket(int32_t sid, Buffer* buf) = 0;
 };
 
 } // namespace kit

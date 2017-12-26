@@ -19,16 +19,20 @@ public:
         if( !instance_ )
         {
             instance_ = new T();
-            instance_->init();
+            instance_->baseInit();
         }
 
         return instance_;
     }
 
     // 手动销毁实例。
-    static void release(void)
+    static void destroyInstance(void)
     {
-        SAFE_DELETE(instance_);
+        if (instance_)
+        {
+            delete instance_;
+            instance_ = 0;
+        }
     }
 
     // 判断实例是否已经存在

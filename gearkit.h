@@ -4,6 +4,7 @@
 #include "base/base.h"
 #include "kit/kit.h"
 #include "network/network.h"
+#include "Gear.h"
 
 #endif
 

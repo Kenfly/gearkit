@@ -1,6 +1,7 @@
 #ifndef __KIT_SCRIPT_SUPPORT_H__
 #define __KIT_SCRIPT_SUPPORT_H__
 
+#include "Ref.h"
 #include <string>
 
 namespace kit {
@@ -10,16 +11,18 @@ enum ScriptType {
     SCRIPT_TYPE_JAVASCRIPT,
     SCRIPT_TYPE_LUA,
     SCRIPT_TYPE_PYTHON,
+
+    SCRIPT_TYPE_MAX,
 };
 
-struct ScriptProtocol
+class ScriptCore : public Ref
 {
-    ScriptProtocol() {}
-    virtual ~ScriptProtocol() {}
+public:
+    ScriptCore() {}
+    virtual ~ScriptCore() {}
 
     virtual ScriptType getScriptType() { return SCRIPT_TYPE_NONE; }
 
-    virtual void init() {}
     virtual void destroy() {}
 
     virtual void setScriptDir(const char* path) { path_ = path; }
@@ -30,6 +33,7 @@ struct ScriptProtocol
     virtual int executeFile(const char* file_name) = 0;
     virtual int executeFunction(const char* function_name) = 0;
 
+protected:
     std::string path_;
 };
 
@@ -39,9 +43,16 @@ public:
     ScriptManager();
     virtual ~ScriptManager();
 
-    virtual void init();
+    virtual bool baseInit();
+    virtual ScriptCore* getCore(ScriptType type) const { return cores_[type]; }
+    virtual void addCore(ScriptCore* core);
+private:
+    ScriptCore* cores_[SCRIPT_TYPE_MAX];
 };
 
 } // namespace kit
 
+#define g_ScriptManager (kit::Singleton<kit::ScriptManager>::instance())
+
 #endif
+

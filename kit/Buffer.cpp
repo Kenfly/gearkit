@@ -48,6 +48,7 @@ bool Buffer::writeBuffer(const void* buf, uint32_t size)
         write_cur_ = read_cur_ + rsz;
         memcpy(write_cur_, buf, size);
         write_cur_ += size;
+        return true;
     }
     return false;
 }
@@ -67,10 +68,111 @@ void Buffer::debugPrint()
     printf("[Buffer](%d):\n", size);
     for(uint32_t i = 0; i != size; ++i)
     {
-        printf("%c", head_[i]);
+        printf("[%x]", (uint8_t)head_[i]);
     }
     printf("\n");
 }
+
+// varints
+void Buffer::writeVarint(int32_t v)
+{
+    writeVarint(zigZagEncode(v));
+}
+
+void Buffer::writeVarint(uint32_t v)
+{
+    uint8_t* p = reinterpret_cast<uint8_t*>(write_cur_);
+    while (v >= 0x80)
+    {
+        *p = static_cast<uint8_t>(v | 0x80);
+        v >>= 7;
+        ++p;
+    }
+    *p++ = static_cast<uint8_t>(v);
+    write_cur_ = reinterpret_cast<char*>(p);
+}
+
+void Buffer::writeVarint(int64_t v)
+{
+    writeVarint(zigZagEncode(v));
+}
+
+void Buffer::writeVarint(uint64_t v)
+{
+    uint8_t* p = reinterpret_cast<uint8_t*>(write_cur_);
+    while (v >= 0x80)
+    {
+        *p = static_cast<uint8_t>(v | 0x80);
+        v >>= 7;
+        ++p;
+    }
+    *p++ = static_cast<uint8_t>(v);
+    write_cur_ = reinterpret_cast<char*>(p);
+}
+
+void Buffer::readVarint(int32_t* v)
+{
+    uint32_t res;
+    readVarint(&res);
+    *v = zigZagDecode(res);
+}
+
+void Buffer::readVarint(uint32_t* v)
+{
+    // TODO: might fail
+    const uint8_t* p = reinterpret_cast<const uint8_t*>(read_cur_);
+    uint32_t b;
+    uint32_t result;
+    b = *(p++); result = b; if (!(b & 0x80)) goto done;
+    result &= 0x7F;
+    b = *(p++); result |= b <<  7; if (!(b & 0x80)) goto done;
+    result &= 0x3FFF;
+    b = *(p++); result |= b << 14; if (!(b & 0x80)) goto done;
+    result &= 0x1FFFFF;
+    b = *(p++); result |= b << 21; if (!(b & 0x80)) goto done;
+    result &= 0xFFFFFFF;
+    b = *(p++); result += b << 28; goto done;
+
+done:
+    *v = result;
+    read_cur_ = reinterpret_cast<char*>(const_cast<uint8_t*>(p));
+}
+
+void Buffer::readVarint(int64_t* v)
+{
+    uint64_t res;
+    readVarint(&res);
+    *v = zigZagDecode(res);
+}
+
+void Buffer::readVarint(uint64_t* v)
+{
+    // TODO: might fail
+    const uint8_t* p = reinterpret_cast<const uint8_t*>(read_cur_);
+    uint64_t b;
+    uint64_t result;
+    b = *(p++); result = b; if (!(b & 0x80)) goto done;
+    result &= 0x7F;
+    b = *(p++); result |= b <<  7; if (!(b & 0x80)) goto done;
+    result &= 0x7FFF;
+    b = *(p++); result |= b << 14; if (!(b & 0x80)) goto done;
+    result &= 0x7FFFFF;
+    b = *(p++); result |= b << 21; if (!(b & 0x80)) goto done;
+    result &= 0x7FFFFFFF;
+    b = *(p++); result |= b << 28; if (!(b & 0x80)) goto done;
+    result &= 0x7FFFFFFFF;
+    b = *(p++); result |= b << 35; if (!(b & 0x80)) goto done;
+    result &= 0x7FFFFFFFFFF;
+    b = *(p++); result |= b << 43; if (!(b & 0x80)) goto done;
+    result &= 0x7FFFFFFFFFFFF;
+    b = *(p++); result |= b << 50; if (!(b & 0x80)) goto done;
+    result &= 0x7FFFFFFFFFFFFFF;
+    b = *(p++); result += b << 57; goto done;
+done:
+    *v = result;
+    read_cur_ = reinterpret_cast<char*>(const_cast<uint8_t*>(p));
+}
+
 
 } //namespace kit
 

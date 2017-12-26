@@ -1,6 +1,7 @@
 #ifndef __KIT_LOGGER_H__
 #define __KIT_LOGGER_H__
 
+#include "Ref.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -21,20 +22,20 @@ enum
 
 const int MAX_LOG_BUFFER_LEN = 1024 * 16;
 
-#define g_log (kit::Singleton<kit::Logger>::instance())
+#define g_Log (kit::Singleton<kit::Logger>::instance())
 
-#define LOG ( g_log->*( g_log->getAPI( kit::LOG_TYPE_LOG ) ) )
-#define DBG ( g_log->*( g_log->getAPI( kit::LOG_TYPE_DBG ) ) )
-#define ERR ( g_log->*( g_log->getAPI( kit::LOG_TYPE_ERR ) ) )
-#define SQL ( g_log->*( g_log->getAPI( kit::LOG_TYPE_SQL ) ) )
+#define LOG ( g_Log->*( g_Log->getAPI( kit::LOG_TYPE_LOG ) ) )
+#define DBG ( g_Log->*( g_Log->getAPI( kit::LOG_TYPE_DBG ) ) )
+#define ERR ( g_Log->*( g_Log->getAPI( kit::LOG_TYPE_ERR ) ) )
+#define SQL ( g_Log->*( g_Log->getAPI( kit::LOG_TYPE_SQL ) ) )
 
-class Logger
+class Logger : public Ref
 {
 public:
     Logger();
     ~Logger();
 
-    void init();
+    virtual bool baseInit();
 
     typedef void (Logger::* LoggerAPI)(const char* format, ...);
     

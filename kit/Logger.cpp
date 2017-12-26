@@ -14,8 +14,9 @@ Logger::~Logger()
 {
 }
 
-void Logger::init()
+bool Logger::baseInit()
 {
+    return true;
 }
 
 Logger::LoggerAPI Logger::getAPI(int t)

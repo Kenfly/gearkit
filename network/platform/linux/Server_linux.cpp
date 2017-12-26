@@ -114,7 +114,7 @@ int32_t Server::handleSocket(Socket* sock, int32_t events)
         if (ret == -1)
         {
             // 断开
-            sock->readyOut_ = false;
+            sock->ready_out = false;
             return -1;
         }
         DBG("[Server](handleSocket) EPOLLIN fd:%d", sock->getHandle());
@@ -122,7 +122,7 @@ int32_t Server::handleSocket(Socket* sock, int32_t events)
     if (events & EPOLLOUT)
     {
         // 可以写
-        sock->readyOut_ = true;
+        sock->ready_out = true;
         DBG("[Server](handleSocket) EPOLLOUT fd:%d", sock->getHandle());
     }
 

@@ -4,7 +4,7 @@
 #include "kitsys.h"
 #include "Ref.h"
 #include "Map.h"
-#include "functional"
+#include <functional>
 
 #ifndef TIMER_MAP_SIZE
 #define TIMER_MAP_SIZE (512)
@@ -49,7 +49,6 @@ public:
     Timer();
     virtual ~Timer();
 
-    virtual void init(TimerHandler handler);
     // cycle > 0循环
     uint32_t addTimer(uint32_t delay, TimerHandler handler, uint32_t cycle = 0);
     void delTimer(uint32_t id);

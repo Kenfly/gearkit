@@ -63,9 +63,10 @@ RefPoolManager::~RefPoolManager()
     }
 }
 
-void RefPoolManager::init()
+bool RefPoolManager::baseInit()
 {
     push(new RefPool());
+    return true;
 }
 
 void RefPoolManager::push(RefPool* pool)

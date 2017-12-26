@@ -3,11 +3,10 @@
 
 #include "ScriptSupport.h"
 #include "kitsys.h"
-#include "Ref.h"
 
 struct lua_State;
 
-class LuaCore : public kit::Ref, public kit::ScriptProtocol
+class LuaCore : public kit::ScriptCore
 {
 public:
     KIT_CREATE_FUNC(LuaCore)

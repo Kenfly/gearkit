@@ -4,7 +4,10 @@
 
 
 #use c++11
-add_compile_options(-std=c++11)
+if(CMAKE_COMPILER_IS_GNUCXX)
+    #add_compile_options(-std=c++11)
+    set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
 # options
 option(DEBUG_MODE "Debug or Release?" ON)
@@ -63,6 +66,7 @@ set(INCLUDE_DIR
     kit
     network
     script
+    debug
 )
 
 function(add_gearkit_include prefix)

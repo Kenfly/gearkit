@@ -92,22 +92,15 @@ BufferPoolManager::BufferPoolManager()
 
 BufferPoolManager::~BufferPoolManager()
 {
-    if (pool_)
-    {
-        delete pool_;
-        pool_ = NULL;
-    }
-    if (thread_pool_)
-    {
-        delete thread_pool_;
-        thread_pool_ = NULL;
-    }
+    KIT_SAFE_RELEASE(pool_)
+    KIT_SAFE_RELEASE(thread_pool_)
 }
 
-void BufferPoolManager::init()
+bool BufferPoolManager::baseInit()
 {
     pool_ = new BufferPool();
     thread_pool_ = new BufferPool();
+    return true;
 }
 
 } // namespace kit

@@ -4,6 +4,7 @@
 #include "Ref.h"
 #include "kitsys.h"
 #include <string.h>
+#include <string>
 
 // not safe for thread
 
@@ -37,6 +38,21 @@ public:
 	template<typename T>
 	Buffer& operator>>(T& v);
 
+    // varints
+    void writeVarint(int32_t v);
+    void writeVarint(uint32_t v);
+    void writeVarint(int64_t v);
+    void writeVarint(uint64_t v);
+    void readVarint(int32_t* v);
+    void readVarint(uint32_t* v);
+    void readVarint(int64_t* v);
+    void readVarint(uint64_t* v);
+
+    int32_t zigZagDecode(uint32_t v);
+    uint32_t zigZagEncode(int32_t v);
+    int64_t zigZagDecode(uint64_t v);
+    uint64_t zigZagEncode(int64_t v);
+
     void debugPrint();
 public:
     uint32_t mem_size_;
@@ -69,6 +85,7 @@ inline uint32_t Buffer::getReadableSize() const
 template<typename T>
 inline Buffer& Buffer::operator<<(T v)
 {
+    // TODO: little endian or big endian
 	writeBuffer(&v, sizeof(T));
 	//TODO: ret would be false
 	return *this;
@@ -100,6 +117,49 @@ inline Buffer& Buffer::operator>> <char*>(char*& v)
 	(*this) >> size;
 	readBuffer(buf, size);
 	return *this;
+}
+
+template<>
+inline Buffer& Buffer::operator>> <std::string>(std::string& v)
+{
+    uint16_t size;
+    (*this) >> size;
+    if (size < 512)
+    {
+        char buf[512];
+        readBuffer(buf, size);
+        buf[size] = 0;
+        v = buf;
+    }
+    else
+    {
+        char* buf = new char[size + 1];
+        readBuffer(buf, size);
+        buf[size] = 0;
+        v = buf;
+        delete [] buf;
+    }
+    return *this;
+}
+
+inline int32_t Buffer::zigZagDecode(uint32_t v)
+{
+    return static_cast<int32_t>((v >> 1) ^ (~(v & 1) + 1));
+}
+
+inline uint32_t Buffer::zigZagEncode(int32_t v)
+{
+    return (static_cast<uint32_t>(v) << 1) ^ static_cast<uint32_t>(v >> 31);
+}
+
+inline int64_t Buffer::zigZagDecode(uint64_t v)
+{
+    return static_cast<int64_t>((v >> 1) ^ (~(v & 1) + 1));
+}
+
+inline uint64_t Buffer::zigZagEncode(int64_t v)
+{
+    return (static_cast<uint64_t>(v) << 1) ^ static_cast<uint64_t>(v >> 63);
 }
 
 } // namespace kit

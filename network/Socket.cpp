@@ -14,8 +14,6 @@ namespace kit {
 ISocket::ISocket()
 : sock_(DSOCKERR)
 , addr_(NULL)
-, delete_(false)
-, readyOut_(false)
 , packet_seed_(0)
 , recv_count_(0)
 , recv_head_buf_(NULL)
@@ -25,6 +23,8 @@ ISocket::ISocket()
 , send_buf_(NULL)
 , send_bufs_(NULL)
 , send_packet_(NULL)
+, deleted(false)
+, ready_out(false)
 {
 }
 
@@ -315,7 +315,7 @@ int32_t ISocket::sendPacket(Packet* pack)
     pack->retain();
     send_que_.push(pack);
 
-    if (readyOut_)
+    if (ready_out)
         return flushSend();
     return 0;
 }

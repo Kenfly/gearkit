@@ -13,7 +13,7 @@ Packet::~Packet()
     KIT_SAFE_RELEASE(buf_);
 }
 
-void Packet::init(int16_t pid, Buffer* buf)
+void Packet::init(uint16_t pid, Buffer* buf)
 {
     buf_ = buf;
     buf_->retain();

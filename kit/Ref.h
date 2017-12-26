@@ -37,12 +37,16 @@ private:
 
 #define KIT_SAFE_RELEASE(r) \
     if (r) \
+    { \
         r->release(); \
-    r = 0;
+        r = 0; \
+    }
 
 #define KIT_SAFE_RETAIN(r) \
     if (r) \
-        r->retain();
+    { \
+        r->retain(); \
+    }
 
 #define KIT_CREATE_FUNC(__TYPE__) \
     static __TYPE__* create(bool inpool = true) \

@@ -86,11 +86,11 @@ void IClient::handlePollEvent()
         if (sock_ev & KIT_POLLIN)
         {
             //FIXME: 收到协议包处理
-            sock->test_packet();
+            handleRecvPackets(sock);
         }
         if (sock_ev & KIT_POLLOUT)
         {
-            sock->readyOut_ = true;
+            sock->ready_out = true;
             int32_t ret = sock->flushSend();
             if (ret == -1)
             {

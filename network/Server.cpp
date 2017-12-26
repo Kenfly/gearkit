@@ -111,12 +111,12 @@ void IServer::handlePollEvent()
         // 客户端消息
         if (sock_ev & KIT_POLLIN)
         {
-            //FIXME: 收到协议包处理
-            sock->test_packet();
+            // 收到协议包处理
+            handleRecvPackets(sock);
         }
         if (sock_ev & KIT_POLLOUT)
         {
-            sock->readyOut_ = true;
+            sock->ready_out = true;
             int32_t ret = sock->flushSend();
             if (ret == -1)
             {
@@ -157,7 +157,7 @@ int32_t IServer::addSocket(SocketID fd, Socket* sock)
         sock->init(fd);
     }
 
-    sock->delete_ = false;
+    sock->deleted = false;
     sock->retain();
     sockets_[fd] = sock;
     return 0;
@@ -172,7 +172,7 @@ int32_t IServer::delSocket(SocketID fd)
     if (sock)
     {
         sock->close();
-        sock->delete_ = true;
+        sock->deleted = true;
         sock->release();
         sockets_[fd] = NULL;
         return 0;

@@ -6,11 +6,17 @@
 #include "netsys.h"
 #include "QList.h"
 
+#ifndef PACKET_QUEUE_LENGTH
+#define PACKET_QUEUE_LENGTH (200)
+#endif
+
 namespace kit {
 
 class SockAddr;
 class Packet;
 class Buffer;
+
+typedef QList<Packet*, PACKET_QUEUE_LENGTH> PacketQue;
 
 class ISocket : public Ref
 {
@@ -48,6 +54,8 @@ public:
     void setAddr(SockAddr* addr);
     SockAddr* getAddr() const { return addr_; }
 
+    PacketQue& getRecvQueue() { return recv_que_; }
+
 	// flush recv/send列表，尽可能地清空缓冲
 	// -1断开,否则返回总字节数
 	int32_t flushRecv();
@@ -81,11 +89,6 @@ protected:
 protected:
 	SocketID sock_;
     SockAddr* addr_;
-public:
-    // 删除标志
-    bool delete_;
-    // 可发送标志,不可发送放到队列里去
-    bool readyOut_;
 private:
     // 包种子，如果客户端发来的包与服务端的不对应，则认为包不可信
     uint32_t packet_seed_;
@@ -104,10 +107,15 @@ private:
     Packet* send_packet_;
 
     // 存储各个完整的包
-    typedef QList<Packet*, 200> PacketQue;
     // 处理队列
     PacketQue recv_que_;
     PacketQue send_que_;
+
+public:
+    // 删除标志
+    bool deleted;
+    // 可发送标志,不可发送放到队列里去
+    bool ready_out;
 };
 
 } // namespcae kit

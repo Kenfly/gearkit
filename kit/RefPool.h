@@ -8,6 +8,7 @@
  *
  **/
 
+#include "Ref.h"
 #include <vector>
 #include "Singleton.h"
 
@@ -15,7 +16,7 @@ namespace kit {
 
 class Ref;
 
-class RefPool
+class RefPool : public Ref
 {
 public:
     RefPool();
@@ -29,13 +30,13 @@ private:
     RefVec ref_vec_;
 };
 
-class RefPoolManager
+class RefPoolManager : public Ref
 {
 public:
     RefPoolManager();
     virtual ~RefPoolManager();
 
-    void init();
+    virtual bool baseInit();
 
     RefPool* getCurrentPool() const { return cur_pool_; }
     void push(RefPool* pool);
