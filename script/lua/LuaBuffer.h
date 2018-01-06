@@ -2,11 +2,9 @@
 #define __LUA_BUFFER_H__
 
 #include "kitsys.h"
-struct lua_State;
+#include <Buffer.h>
 
-namespace kit {
-class Buffer;
-}
+struct lua_State;
 
 /*
  * b: int8
@@ -24,8 +22,16 @@ class Buffer;
  * s: string
  */
 
-int32_t buffer_write_format(kit::Buffer* buffer, lua_State* L);
-int32_t buffer_read_format(kit::Buffer* buffer, lua_State* L);
+class LuaBuffer : public kit::Buffer
+{
+public:
+    KIT_CREATE_FUNC(LuaBuffer)
+    int32_t luaWriteVector(lua_State* L);
+    int32_t luaReadVector(lua_State* L);
+
+    int32_t luaWriteFormat(lua_State* L);
+    int32_t luaReadFormat(lua_State* L);
+};
 
 #endif
 

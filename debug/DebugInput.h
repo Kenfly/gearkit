@@ -18,6 +18,7 @@ typedef std::function<void(const std::string& cmd)> DebugCmdHandler;
 class DebugInput : public Ref
 {
 public:
+    KIT_CREATE_FUNC(DebugInput)
     DebugInput();
     virtual ~DebugInput();
 

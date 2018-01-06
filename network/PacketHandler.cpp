@@ -18,16 +18,26 @@ PacketProtocolHandler::~PacketProtocolHandler()
 
 void PacketProtocolHandler::onPacket(int32_t sid, Packet* pack)
 {
-    uint16_t pto_id = pack->getPID() - PT_PACKET_ID_MAX;
-    Protocol* pto = NULL;
-    if (protocol_map_.get(pto_id, pto))
+    uint16_t pid = pack->getPID() - PT_PACKET_ID_MAX;
+    if (protocol_handler_ == NULL)
     {
-        pto->unserialize(pack->getBuffer());
-        // TODO: handle protocol
+        LOG("[PacketProtocolHandler](onPacket) no protocol handler! pid:%d", pid);
+        return;
+    }
+
+    Protocol* pto = NULL;
+    if (protocol_map_.get(pid, pto))
+    {
+        if (!pto->unserialize(pack->getBuffer()))
+        {
+            LOG("[PacketProtocolHandler](onPacket) protocol unserialize error! pid: %d", pid);
+            return;
+        }
+        protocol_handler_->onProtocol(sid, pto);
     }
     else
     {
-        LOG("[PacketProtocolHandler](onPacket) no protocol: %d\n", pto_id);
+        LOG("[PacketProtocolHandler](onPacket) no protocol: %d", pid);
     }
 }
 

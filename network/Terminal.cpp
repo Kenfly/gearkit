@@ -2,6 +2,7 @@
 #include "Packet.h"
 #include "PacketHandler.h"
 #include "Socket.h"
+#include "Logger.h"
 
 namespace kit {
 
@@ -23,6 +24,11 @@ bool Terminal::baseInit()
 void Terminal::handleRecvPackets(Socket* socket)
 {
     PacketHandler* handler = packet_handler_;
+    if (handler == NULL)
+    {
+        ERR("[Terminal](handleRecvPackets) no packet handler!");
+        return;
+    }
 
     PacketQue& que = socket->getRecvQueue();
     Packet* pack = NULL;
@@ -31,8 +37,8 @@ void Terminal::handleRecvPackets(Socket* socket)
     {
         if (!que.pop(pack))
             break;
-        if (handler)
-            handler->onPacket(0, pack);
+        // TODO: sid
+        handler->onPacket(0, pack);
         pack->release();
     }
 }

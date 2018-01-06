@@ -27,6 +27,9 @@ void register_Class_PacketHandler(lua_State* L);
 // protocol
 void register_Class_Protocol(lua_State* L);
 
+// terminal
+void register_Class_Terminal(lua_State* L);
+
 // server
 void register_Class_Server(lua_State* L);
 
@@ -41,7 +44,6 @@ void register_Class_ScriptManager(lua_State* L);
 
 // gear
 void register_Class_Gear(lua_State* L);
-
 
 #endif
 

@@ -20,7 +20,7 @@ set_property(CACHE SCRIPT_TYPE PROPERTY STRINGS "none;javascript;lua;python")
 
 if(DEBUG_MODE)
     set(CMAKE_BUILD_TYPE DEBUG)
-    add_definitions(-DKIT_DEBUG)
+    add_definitions(-DKIT_DEBUG_MODE)
 else(DEBUG_MODE)
     set(CMAKE_BUILD_TYPE RELEASE)
     add_definitions(-DKIT_RELEASE)
