@@ -17,6 +17,7 @@ set(HEADER_FILE
     Logger.h
     Timer.h
     Thread.h
+    Functions.h
     platform/${suffix}/Thread_${suffix}.h
 )
 
@@ -29,6 +30,7 @@ Set(SOURCE_FILE
     Logger.cpp
     Timer.cpp
     Thread.cpp
+    Functions.cpp
     platform/${suffix}/Thread_${suffix}.cpp
 )
 

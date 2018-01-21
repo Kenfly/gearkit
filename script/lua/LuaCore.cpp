@@ -25,6 +25,7 @@ bool LuaCore::baseInit()
     register_CommonConstant(L);
     register_NormalFunction(L);
     register_Class_Ref(L);
+    register_Class_Logger(L);
     register_Class_Timer(L);
     register_Class_Buffer(L);
     register_Class_BufferPool(L);

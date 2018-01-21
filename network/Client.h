@@ -34,7 +34,7 @@ protected:
     bool active_;
 
     // event que
-    typedef Queue<PollEvent,CLIENT_EVENT_CNT> EventQue;
+    typedef Queue<PollEvent, CLIENT_EVENT_CNT> EventQue;
     EventQue event_que_;
 };
 

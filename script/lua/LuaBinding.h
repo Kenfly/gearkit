@@ -8,6 +8,9 @@ void register_CommonConstant(lua_State* L);
 
 void register_NormalFunction(lua_State* L);
 
+// logger
+void register_Class_Logger(lua_State* L);
+
 // ref
 void register_Class_Ref(lua_State* L);
 

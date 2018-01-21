@@ -2,6 +2,7 @@
 #include "Packet.h"
 #include "PacketHandler.h"
 #include "Socket.h"
+#include "Session.h"
 #include "Logger.h"
 
 namespace kit {
@@ -48,6 +49,20 @@ void Terminal::setPacketHandler(PacketHandler* handler)
     KIT_SAFE_RELEASE(packet_handler_)
     packet_handler_ = handler;
     KIT_SAFE_RETAIN(packet_handler_)
+}
+
+Session* Terminal::getSession(SessionID sid) const
+{
+    Session* sd = NULL;
+    session_map_.get(sid, sd);
+    return sd;
+}
+
+SessionID Terminal::addSession(Socket* sock)
+{
+    Session* sed = Session::create();
+    sed->init(sock);
+    return sed->getID();
 }
 
 } // namespace kit

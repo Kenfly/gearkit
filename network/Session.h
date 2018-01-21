@@ -24,6 +24,8 @@ public:
     //每帖调用
     void update();
 
+    SessionID getID() const { return sid_; }
+
     void setSocket(Socket* sock);
     Socket* getSocket() const { return socket_; }
 

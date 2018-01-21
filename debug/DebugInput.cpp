@@ -27,12 +27,21 @@ void DebugInput::update()
     if (len > 0)
     {
         buf_[len - 1] = '\0';
-        auto ix = handler_map_.find(buf_);
-        if (ix != handler_map_.end())
+        auto ix1 = handler_map_.find(buf_);
+        if (ix1 != handler_map_.end())
         {
-            ix->second(buf_);
+            ix1->second(buf_);
+        }
+        for (auto ix2 = handler_vec_.begin(); ix2 != handler_vec_.end(); ++ix2)
+        {
+            (*ix2)(buf_);
         }
     }
+}
+
+void DebugInput::addHandler(DebugCmdHandler handler)
+{
+    handler_vec_.push_back(handler);
 }
 
 void DebugInput::setHandler(const std::string& cmd, DebugCmdHandler handler)

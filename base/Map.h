@@ -30,6 +30,22 @@ public:
     {
         clear();
     }
+    bool has(KeyType key) const
+    {
+        int index = key % Length;
+        ItemList plist = vec_[index];
+        if (plist == 0)
+            return false;
+        while (plist)
+        {
+            if (plist->key == key)
+            {
+                return true;
+            }
+            plist = plist->next;
+        }
+        return false;
+    }
     bool get(KeyType key, ValueType& v) const
     {
         int index = key % Length;
@@ -108,6 +124,21 @@ public:
             }
             vec_[i] = 0;
         }
+    }
+
+    ValueType& operator [] (KeyType key)
+    {
+        int index = key % Length;
+        ItemList plist = vec_[index];
+        while (plist)
+        {
+            if (plist->key == key)
+            {
+                return plist->value;
+            }
+            plist = plist->next;
+        }
+        return ValueType();
     }
 private:
     ItemList vec_[Length];

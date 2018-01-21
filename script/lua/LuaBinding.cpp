@@ -4,6 +4,7 @@
 #include "LuaIntf/LuaIntf.h"
 #include "Logger.h"
 
+#include "LuaFunctions.h"
 #include "Ref.h"
 #include "Timer.h"
 #include "Buffer.h"
@@ -44,6 +45,14 @@ void register_NormalFunction(lua_State* L)
     LuaIntf::LuaBinding(L)
         .beginModule("kit")
             .addFunction("test_table", test_table)
+            .addFunction("split", luaSplit)
+        .endModule();
+}
+
+void register_Class_Logger(lua_State* L)
+{
+    LuaIntf::LuaBinding(L)
+        .beginModule("kit")
         .endModule();
 }
 

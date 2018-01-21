@@ -11,6 +11,7 @@ set(HEADER_FILE
     LuaBuffer.h
     LuaProtocol.h
     LuaBinding.h
+    LuaFunctions.h
 )
 
 Set(SOURCE_FILE
@@ -18,6 +19,7 @@ Set(SOURCE_FILE
     LuaBuffer.cpp
     LuaProtocol.cpp
     LuaBinding.cpp
+    LuaFunctions.cpp
 )
 
 if(DEBUG_MODE)

@@ -18,6 +18,7 @@ void register_Class_DebugInput(lua_State* L)
             .beginExtendClass<kit::DebugInput, kit::Ref>("debuginput")
                 .addStaticFunction("create", &kit::DebugInput::create)
                 .addFunction("set_handler", &kit::DebugInput::setHandler)
+                .addFunction("add_handler", &kit::DebugInput::addHandler)
             .endClass()
         .endModule();
 }

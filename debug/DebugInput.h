@@ -13,7 +13,7 @@
 
 namespace kit {
 
-typedef std::function<void(const std::string& cmd)> DebugCmdHandler;
+typedef std::function<void(const std::string&)> DebugCmdHandler;
 
 class DebugInput : public Ref
 {
@@ -26,10 +26,12 @@ public:
 
     virtual void update();
 
+    virtual void addHandler(DebugCmdHandler handler);
     virtual void setHandler(const std::string& cmd, DebugCmdHandler handler);
 private:
     char buf_[DEBUG_INPUT_SIZE];
 
+    std::vector<DebugCmdHandler> handler_vec_;
     std::unordered_map<std::string, DebugCmdHandler> handler_map_;
 };
 

@@ -13,6 +13,27 @@ namespace kit {
 
 class Packet;
 
+class PacketReader : public Ref
+{
+};
+
+class PacketWriter : public Ref
+{
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // handler base
 struct PacketHandler : public Ref
 {

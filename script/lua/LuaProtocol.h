@@ -28,6 +28,7 @@ public:
     virtual bool baseInit();
 
     virtual void onProtocol(int32_t sid, kit::Protocol* pto);
+
     // 用lua table配置方式注册协议
     void registerProtocol(int32_t pid, lua_State* L);
     void unregisterProtocol(int32_t pid);
