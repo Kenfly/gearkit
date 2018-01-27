@@ -45,8 +45,12 @@ namespace kit {
 typedef int32_t SessionID;
 // 定义socket id类型
 typedef int32_t SocketID;
+typedef int32_t ProtocolID;
 
 const SessionID DSESSIONERR = -1;
+const SessionID SIDNULL = 0;
+const ProtocolID DPROTOCOLERR = -1;
+const ProtocolID PIDNULL = 0;
 const SocketID DSOCKERR = -1;
 
 const uint32_t PACKET_SIZE = 512;

@@ -19,19 +19,19 @@ public:
     Buffer();
     virtual ~Buffer();
 
-    bool init(uint32_t size);
+    bool init(size_t size);
 
     void reset() { write_cur_ = head_; read_cur_ = head_; };
-    uint32_t getSize() const;
-    uint32_t getMemorySize() const { return mem_size_; }
-    uint32_t getWrittenSize() const;
-    uint32_t getWritableSize() const;
-    uint32_t getReadableSize() const;
-    void skipWrite(uint32_t size) { write_cur_ += size; }
-    void skipRead(uint32_t size) { read_cur_ += size; }
+    size_t getSize() const;
+    size_t getCapacity() const;
+    size_t getWrittenSize() const;
+    size_t getWritableSize() const;
+    size_t getReadableSize() const;
+    void skipWrite(size_t size) { write_cur_ += size; }
+    void skipRead(size_t size) { read_cur_ += size; }
 
-    bool writeBuffer(const void* buf, uint32_t size);
-	bool readBuffer(void* buf, uint32_t size);
+    bool writeBuffer(const void* buf, size_t size);
+	bool readBuffer(void* buf, size_t size);
 
 	template<typename T>
 	bool operator<<(T v);
@@ -45,47 +45,57 @@ public:
     bool readVector(std::vector<T>& vec);
 
     // varints
+    template<typename T>
+    bool writeVaruint(T value);
+    bool writeVarint(T value);
+
     bool writeVar_int32_t(int32_t v);
-    bool writeVar_uint32_t(uint32_t v);
+    bool writeVar_size_t(size_t v);
     bool writeVar_int64_t(int64_t v);
     bool writeVar_uint64_t(uint64_t v);
     bool readVar_int32_t(int32_t* v);
-    bool readVar_uint32_t(uint32_t* v);
+    bool readVar_size_t(size_t* v);
     bool readVar_int64_t(int64_t* v);
     bool readVar_uint64_t(uint64_t* v);
 
-    int32_t zigZagDecode32(uint32_t v);
-    uint32_t zigZagEncode32(int32_t v);
+    int32_t zigZagDecode32(size_t v);
+    size_t zigZagEncode32(int32_t v);
     int64_t zigZagDecode64(uint64_t v);
     uint64_t zigZagEncode64(int64_t v);
 
     void debugPrint();
 public:
-    uint32_t mem_size_;
-    char* head_;
-    char* tail_;
-    char* write_cur_;
-    char* read_cur_;
+    size_t size_;
+    size_t capacity_;
+    uint8_t* head_;
+    uint8_t* tail_;
+    uint8_t* write_cur_;
+    uint8_t* read_cur_;
 };
 
-inline uint32_t Buffer::getSize() const
+inline size_t Buffer::getSize() const
 {
-    return (uint32_t)(tail_ - head_);
+    return buffer_size_;
 }
 
-inline uint32_t Buffer::getWrittenSize() const
+inline size_t Buffer::getCapacity() const
 {
-    return (uint32_t)(write_cur_ - head_);
+    return capacity_;
 }
 
-inline uint32_t Buffer::getWritableSize() const
+inline size_t Buffer::getWrittenSize() const
 {
-    return (uint32_t)(tail_ - write_cur_);
+    return static_cast<size_t>(write_cur_ - head_);
 }
 
-inline uint32_t Buffer::getReadableSize() const
+inline size_t Buffer::getWritableSize() const
 {
-    return (uint32_t)(write_cur_ - read_cur_);
+    return static_cast<size_t>(tail_ - write_cur_);
+}
+
+inline size_t Buffer::getReadableSize() const
+{
+    return static_cast<size_t>(write_cur_ - read_cur_);
 }
 
 template<typename T>
@@ -98,9 +108,9 @@ inline bool Buffer::operator<<(T v)
 template<>
 inline bool Buffer::operator<< <const char*>(const char* v)
 {
-	uint32_t size = (uint32_t)strlen(v);
-    this->writeVar_uint32_t(size);
-	return writeBuffer(v, (uint32_t)size);
+	size_t size = strlen(v);
+    this->writeVar_size_t(size);
+	return writeBuffer(v, (size_t)size);
 }
 
 template<typename T>
@@ -120,8 +130,8 @@ template<>
 inline bool Buffer::operator>> <char*>(char*& v)
 {
 	char* buf = v;
-	uint32_t size;
-    this->readVar_uint32_t(&size);
+	size_t size;
+    this->readVar_size_t(&size);
 	return readBuffer(buf, size);
 }
 
@@ -153,10 +163,10 @@ inline bool Buffer::operator>> <std::string>(std::string& v)
 template<typename T>
 inline bool Buffer::writeVector(const std::vector<T>& vec)
 {
-    uint32_t size = static_cast<uint32_t>(vec.size());
-    if (!writeVar_uint32_t(size))
+    size_t size = static_cast<size_t>(vec.size());
+    if (!writeVar_size_t(size))
         return false;
-    for (uint32_t i = 0; i != size; ++i)
+    for (size_t i = 0; i != size; ++i)
     {
         if (!((*this) << vec[i]))
             return false;
@@ -167,11 +177,11 @@ inline bool Buffer::writeVector(const std::vector<T>& vec)
 template<typename T>
 inline bool Buffer::readVector(std::vector<T>& vec)
 {
-    uint32_t size = 0;
-    if (!readVar_uint32_t(&size))
+    size_t size = 0;
+    if (!readVar_size_t(&size))
         return false;
     vec.resize(size);
-    for (uint32_t i = 0; i != size; ++i)
+    for (size_t i = 0; i != size; ++i)
     {
         if (!((*this) >> vec[i]))
             return false;
@@ -179,14 +189,14 @@ inline bool Buffer::readVector(std::vector<T>& vec)
     return true;
 }
 
-inline int32_t Buffer::zigZagDecode32(uint32_t v)
+inline int32_t Buffer::zigZagDecode32(size_t v)
 {
     return static_cast<int32_t>((v >> 1) ^ (~(v & 1) + 1));
 }
 
-inline uint32_t Buffer::zigZagEncode32(int32_t v)
+inline size_t Buffer::zigZagEncode32(int32_t v)
 {
-    return (static_cast<uint32_t>(v) << 1) ^ static_cast<uint32_t>(v >> 31);
+    return (static_cast<size_t>(v) << 1) ^ static_cast<size_t>(v >> 31);
 }
 
 inline int64_t Buffer::zigZagDecode64(uint64_t v)

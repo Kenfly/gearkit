@@ -6,6 +6,7 @@
  */
 
 #include <memory.h>
+#include <functional>
 
 namespace kit {
 
@@ -84,7 +85,7 @@ public:
         else
             vec_[index] = plist;
     }
-    bool del(KeyType key)
+    bool del(KeyType key, std::function<void(ValueType&)> del_callback = nullptr)
     {
         int index = (key % Length);
         ItemList plist = vec_[index];
@@ -104,13 +105,17 @@ public:
                 pprev->next = plist->next;
             else
                 vec_[index] = 0;
+            if (del_callback != nullptr)
+                del_callback(plist->value);
             delete plist;
             return true;
         }
         return false;
     }
-    void clear()
+    void clear(std::function<void(ValueType&)> del_callback = nullptr)
     {
+        if (del_callback == nullptr)
+            del_callback = [](ValueType& v){ };
         ItemList plist = 0;
         ItemList pnext = 0;
         for (int i = 0; i != Length; ++i)
@@ -119,6 +124,7 @@ public:
             while (plist)
             {
                 pnext = plist->next;
+                del_callback(plist->value);
                 delete plist;
                 plist = pnext;
             }

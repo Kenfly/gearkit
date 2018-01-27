@@ -22,7 +22,6 @@ const uint16_t CONNECTION_LIMIT = 0x7FFF;
 const uint16_t SERVER_EVENT_CNT = 512;
 
 class Socket;
-class Session;
 class Mutex;
 
 class IServer : public Terminal
@@ -54,10 +53,6 @@ protected:
     //typedef Array<Socket*, CONNECTION_LIMIT> SocketArray;
     //SocketArray socket_array_;
     Socket* sockets_[CONNECTION_LIMIT];
-
-    // session list
-    typedef Map<SessionID, Session*, CONNECTION_LIMIT> SessionMap;
-    SessionMap session_map_;
 
     // event que
     typedef Queue<PollEvent, SERVER_EVENT_CNT> EventQue;

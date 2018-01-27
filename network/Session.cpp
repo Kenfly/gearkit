@@ -18,6 +18,7 @@ Session::~Session()
 
 void Session::init(Socket* sock)
 {
+    setSocket(sock);
 }
 
 void Session::update()
@@ -30,6 +31,7 @@ void Session::setSocket(Socket* sock)
         socket_->release();
     socket_ = sock;
     socket_->retain();
+
     time_ = kit::time();
 }
 

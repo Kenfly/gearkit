@@ -5,7 +5,8 @@
 namespace kit {
 
 Buffer::Buffer()
-: mem_size_(0)
+: size_(0)
+, capacity_(0)
 , head_(NULL)
 , tail_(NULL)
 , write_cur_(NULL)
@@ -21,7 +22,7 @@ Buffer::~Buffer()
     }
 }
 
-bool Buffer::init(uint32_t size)
+bool Buffer::init(size_t size)
 {
     mem_size_ = size;
     head_ = (char*)malloc(sizeof(char) * size);
@@ -50,6 +51,10 @@ bool Buffer::writeBuffer(const void* buf, uint32_t size)
         write_cur_ += size;
         return true;
     }
+    else
+    {
+        // 重新分配
+    }
     return false;
 }
 
@@ -74,6 +79,13 @@ void Buffer::debugPrint()
 }
 
 // varints
+template<typename T>
+bool Buffer::writeVarint(T v)
+{
+    static_assert(std::is_integral<T>::value && std::is_unsigned<T>::value,
+            "Only unsigned integer types can be written as varints.");
+    uint8_t stack_buf[sizeof(T) * 8 / 7 + 1];
+}
 // TODO: might false
 bool Buffer::writeVar_int32_t(int32_t v)
 {
