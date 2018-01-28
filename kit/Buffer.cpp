@@ -5,8 +5,7 @@
 namespace kit {
 
 Buffer::Buffer()
-: size_(0)
-, capacity_(0)
+: capacity_(0)
 , head_(NULL)
 , tail_(NULL)
 , write_cur_(NULL)
@@ -24,7 +23,7 @@ Buffer::~Buffer()
 
 bool Buffer::init(size_t size)
 {
-    mem_size_ = size;
+	capacity_ = size;
     head_ = (char*)malloc(sizeof(char) * size);
 	tail_ = head_ + size;
 	write_cur_ = head_;
@@ -32,7 +31,31 @@ bool Buffer::init(size_t size)
     return true;
 }
 
-bool Buffer::writeBuffer(const void* buf, uint32_t size)
+bool Buffer::expandBuffer(size_t required_capacity)
+{
+	size_t requested_capacity = std::max(requested_capacity, capacity_ * 2) + 64;
+	size_t written_size = getWrittenSize();
+	size_t read_size = getReadSize();
+	void* new_buf = realloc(head_, requested_capacity);
+	if (new_buf)
+	{
+		head_ = new_buf;
+		tail_ = head_ + requested_capacity;
+		write_cur_ = head_ + written_size;
+		read_cur_ = head_ + read_size;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool Buffer::reserveBuffer(size_t size)
+{
+	if (write_cur_ + size <= tail_)
+		return true;
+}
+
+bool Buffer::writeBuffer(const void* buf, size_t size)
 {
     if(write_cur_ + size <= tail_)
     {
@@ -50,9 +73,9 @@ bool Buffer::writeBuffer(const void* buf, uint32_t size)
         memcpy(write_cur_, buf, size);
         write_cur_ += size;
         return true;
-    }
-    else
-    {
+    } else {
+		if (!expandBuffer())
+			return false;
         // 重新分配
     }
     return false;
@@ -80,11 +103,20 @@ void Buffer::debugPrint()
 
 // varints
 template<typename T>
-bool Buffer::writeVarint(T v)
+bool Buffer::writeVaruint(T v)
 {
     static_assert(std::is_integral<T>::value && std::is_unsigned<T>::value,
             "Only unsigned integer types can be written as varints.");
     uint8_t stack_buf[sizeof(T) * 8 / 7 + 1];
+	uint8_t* next_byte = &stack_buf[0];
+	do
+	{
+		*next_byte = (value & 0x7f) | 0x80;
+		next_byte++;
+		value >>= 7;
+	} while (value);
+	*(next_byte - 1) &= 0x7f;
+	writeBytes(stack_buffer, next_byte - stack_buf);
 }
 // TODO: might false
 bool Buffer::writeVar_int32_t(int32_t v)
@@ -193,7 +225,6 @@ done:
     read_cur_ = reinterpret_cast<char*>(const_cast<uint8_t*>(p));
     return true;
 }
-
 
 } //namespace kit
 

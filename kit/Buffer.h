@@ -26,10 +26,12 @@ public:
     size_t getCapacity() const;
     size_t getWrittenSize() const;
     size_t getWritableSize() const;
+	size_t getReadSize() const;
     size_t getReadableSize() const;
     void skipWrite(size_t size) { write_cur_ += size; }
     void skipRead(size_t size) { read_cur_ += size; }
 
+	bool expandBuffer(size_t require_size);
     bool writeBuffer(const void* buf, size_t size);
 	bool readBuffer(void* buf, size_t size);
 
@@ -65,7 +67,6 @@ public:
 
     void debugPrint();
 public:
-    size_t size_;
     size_t capacity_;
     uint8_t* head_;
     uint8_t* tail_;
@@ -75,7 +76,7 @@ public:
 
 inline size_t Buffer::getSize() const
 {
-    return buffer_size_;
+    return static_cast<size_t>(tail_ - head_);
 }
 
 inline size_t Buffer::getCapacity() const
@@ -91,6 +92,11 @@ inline size_t Buffer::getWrittenSize() const
 inline size_t Buffer::getWritableSize() const
 {
     return static_cast<size_t>(tail_ - write_cur_);
+}
+
+inline size_t Buffer::getReadSize() const
+{
+	return static_cast<size_t>(read_cur_ - head_);
 }
 
 inline size_t Buffer::getReadableSize() const
@@ -109,7 +115,7 @@ template<>
 inline bool Buffer::operator<< <const char*>(const char* v)
 {
 	size_t size = strlen(v);
-    this->writeVar_size_t(size);
+    this->writeVaruint(size);
 	return writeBuffer(v, (size_t)size);
 }
 
@@ -131,7 +137,7 @@ inline bool Buffer::operator>> <char*>(char*& v)
 {
 	char* buf = v;
 	size_t size;
-    this->readVar_size_t(&size);
+    this->writeVaruint(&size);
 	return readBuffer(buf, size);
 }
 

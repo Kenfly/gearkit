@@ -11,11 +11,11 @@ BufferPool::~BufferPool()
     clear();
 }
 
-Buffer* BufferPool::createBuffer(uint32_t size)
+Buffer* BufferPool::createBuffer(size_t size)
 {
-    int32_t index = 0;
-    uint32_t fix_size = 1;
-    uint32_t size_tmp = size;
+    int index = 0;
+    size_t fix_size = 1;
+    size_t size_tmp = size;
     while (size_tmp >>= 1)
     {
         ++index;
@@ -23,19 +23,10 @@ Buffer* BufferPool::createBuffer(uint32_t size)
     }
 
     Buffer* buf = NULL;
-    if (index < BUFFER_QUEUE_CNT)
+    if (index < BUFFER_QUEUE_CNT || !ques_[index].pop(buf))
     {
-        BufferQue& que = ques_[index];
-        if (!que.pop(buf))
-        {
-            buf = Buffer::create(false);
-            buf->init(fix_size);
-        }
-    }
-    if (buf == NULL)
-    {
-        buf = Buffer::create(false);;
-        buf->init(fix_size);
+		buf = Buffer::create(false);
+		buf->init(fix_size);
     }
     buf->reset();
     //动态修改tail_，改成跟size一样大小
@@ -46,23 +37,17 @@ Buffer* BufferPool::createBuffer(uint32_t size)
 
 void BufferPool::destroyBuffer(Buffer* buffer)
 {
-    uint32_t size = buffer->getMemorySize();
-    int32_t index = 0;
-    uint32_t fix_size = 8;
+    size_t size = buffer->getCapacity();
+    int index = 0;
+    size_t fix_size = 8;
     while (fix_size >= size)
     {
         ++index;
         fix_size <<= 1;
     }
-    if (index < BUFFER_QUEUE_CNT)
+    if (index < BUFFER_QUEUE_CNT || !ques_[index].push(buffer))
     {
-        BufferQue& que = ques_[index];
-        if (que.push(buffer))
-            buffer = NULL;
-    }
-    if (buffer)
-    {
-        buffer->release();
+		buffer->release();
     }
 }
 
@@ -78,7 +63,6 @@ void BufferPool::clear()
         }
     }
 }
-
 
 ///////////////////////////////////////////////////
 // BufferPoolManager
