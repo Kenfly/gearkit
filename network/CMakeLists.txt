@@ -15,7 +15,6 @@ set(HEADER_FILE
 	Socket.h
     Terminal.h
     network.h
-    PacketHandler.h
     platform/${suffix}/SockAddr_${suffix}.h
     platform/${suffix}/Socket_${suffix}.h
 )
@@ -27,7 +26,6 @@ Set(SOURCE_FILE
     Protocol.cpp
     Session.cpp
     Terminal.cpp
-    PacketHandler.cpp
     platform/${suffix}/SockAddr_${suffix}.cpp
     platform/${suffix}/Socket_${suffix}.cpp
 )

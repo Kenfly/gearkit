@@ -2,25 +2,72 @@
 
 namespace kit {
 
+// value
+template<typename T>
+bool PTValue<T>::serialize(Buffer* buffer) const
+{
+    return (*buffer) << value_;
+}
+
+template<typename T>
+bool PTValue<T>::unserialize(Buffer* buffer)
+{
+    return (*buffer) >> value_;
+}
+
+template<typename T>
+PTData* PTValue<T>::clone() const
+{
+    return PTValue<T>::create();
+}
+
+template<typename T>
+std::string PTValue<T>::toString() const
+{
+    return std::string("{") + key_ + ":" + std::to_string(value_) + "}";
+}
+
+template<>
+std::string PTValue<std::string>::toString() const
+{
+    return std::string("{") + key_ + ":" + value_ + "}";
+}
+
+// varint
+bool PTVarint::serialize(Buffer* buffer) const
+{
+    return buffer->writeVaruint(value_);
+}
+
+bool PTVarint::unserialize(Buffer* buffer)
+{
+    return buffer->readVaruint(value_);
+}
+
+PTData* PTVarint::clone() const
+{
+    return PTVarint::create();
+}
+
 // pt data array
-PTDataArray::PTDataArray()
+PTArray::PTArray()
 : item_template(NULL)
 {
 }
 
-PTDataArray::~PTDataArray()
+PTArray::~PTArray()
 {
     clear();
     KIT_SAFE_RELEASE(item_template);
 }
 
-bool PTDataArray::serialize(Buffer* buffer)
+bool PTArray::serialize(Buffer* buffer) const
 {
-    uint32_t len = static_cast<uint32_t>(datas.size());
-    if (!buffer->writeVar_uint32_t(len))
+    size_t len = datas_.size();
+    if (!buffer->writeVaruint<size_t>(len))
         return false;
 
-    for(DataVec::iterator ix = datas.begin(); ix != datas.end(); ++ix)
+    for(DataVec::const_iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
     {
         if (!(*ix)->serialize(buffer))
             return false;
@@ -29,15 +76,15 @@ bool PTDataArray::serialize(Buffer* buffer)
     return true;
 }
 
-bool PTDataArray::unserialize(Buffer* buffer)
+bool PTArray::unserialize(Buffer* buffer)
 {
     if (item_template == NULL)
         return false;
-    uint32_t len;
-    if (!buffer->readVar_uint32_t(&len))
+    size_t len;
+    if (!buffer->readVaruint<size_t>(len))
         return false;
     clear();
-    datas.resize(len);
+    datas_.resize(len);
     PTData* data;
     for (uint32_t i = 0; i != len; ++i)
     {
@@ -50,15 +97,15 @@ bool PTDataArray::unserialize(Buffer* buffer)
     return true;
 }
 
-void PTDataArray::addData(PTData* data)
+void PTArray::addData(PTData* data)
 {
     KIT_SAFE_RETAIN(data);
-    datas.push_back(data);
+    datas_.push_back(data);
 }
 
-PTData* PTDataArray::clone() const
+PTData* PTArray::clone() const
 {
-    PTDataArray* pt = PTDataArray::create();
+    PTArray* pt = PTArray::create();
     if (this->item_template)
     {
         PTData* data = this->item_template->clone();
@@ -67,7 +114,18 @@ PTData* PTDataArray::clone() const
     return pt;
 }
 
-void PTDataArray::setTemplate(PTData* data)
+std::string PTArray::toString() const
+{
+    std::string s = "{" + key_ + ":[";
+    for (DataVec::const_iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
+    {
+        s += (*ix)->toString();
+    }
+    s += "]}";
+    return s;
+}
+
+void PTArray::setTemplate(PTData* data)
 {
     if (item_template == data)
         return;
@@ -76,27 +134,27 @@ void PTDataArray::setTemplate(PTData* data)
     KIT_SAFE_RETAIN(item_template);
 }
 
-void PTDataArray::clear()
+void PTArray::clear()
 {
     PTData* p;
-    for(DataVec::iterator ix = datas.begin(); ix != datas.end(); ++ix)
+    for(DataVec::iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
     {
         p = (*ix);
         if (p)
             p->release();
     }
-    datas.clear();
+    datas_.clear();
 }
 
 // pt data table
-PTDataTable::~PTDataTable()
+PTTable::~PTTable()
 {
     clear();
 }
 
-bool PTDataTable::serialize(Buffer* buffer)
+bool PTTable::serialize(Buffer* buffer) const
 {
-    for(DataVec::iterator ix = datas.begin(); ix != datas.end(); ++ix)
+    for(DataVec::const_iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
     {
         if (!(*ix)->serialize(buffer))
             return false;
@@ -104,14 +162,25 @@ bool PTDataTable::serialize(Buffer* buffer)
     return true;
 }
 
-PTData* PTDataTable::clone() const
+PTData* PTTable::clone() const
 {
     return NULL;
 }
 
-bool PTDataTable::unserialize(Buffer* buffer)
+std::string PTTable::toString() const
 {
-    for(DataVec::iterator ix = datas.begin(); ix != datas.end(); ++ix)
+    std::string s = "{" + key_ + ":\n";
+    for (DataVec::const_iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
+    {
+        s += (*ix)->toString() + "\n";
+    }
+    s += "}";
+    return s;
+}
+
+bool PTTable::unserialize(Buffer* buffer)
+{
+    for(DataVec::iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
     {
         if (!(*ix)->unserialize(buffer))
             return false;
@@ -119,35 +188,35 @@ bool PTDataTable::unserialize(Buffer* buffer)
     return true;
 }
 
-void PTDataTable::addData(PTData* data)
+void PTTable::addData(PTData* data)
 {
     KIT_SAFE_RETAIN(data);
-    datas.push_back(data);
+    datas_.push_back(data);
 }
 
-void PTDataTable::delData(PTData* data)
+void PTTable::delData(PTData* data)
 {
-    for(DataVec::iterator ix = datas.begin(); ix != datas.end(); ++ix)
+    for(DataVec::iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
     {
         if (*ix == data)
         {
             (*ix)->release();
-            datas.erase(ix);
+            datas_.erase(ix);
             break;
         }
     }
 }
 
-void PTDataTable::clear()
+void PTTable::clear()
 {
     PTData* p;
-    for(DataVec::iterator ix = datas.begin(); ix != datas.end(); ++ix)
+    for(DataVec::iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
     {
         p = (*ix);
         if (p)
             p->release();
     }
-    datas.clear();
+    datas_.clear();
 }
 
 
@@ -160,94 +229,71 @@ Protocol::~Protocol()
 {
 }
 
-void Protocol::init(int32_t _pid)
+void Protocol::init(int32_t pid)
 {
-    pid = _pid;
+    pid_ = pid;
 }
 
+std::string Protocol::toString() const
+{
+    std::string s = "[" + std::to_string(pid_) + "]\n";
+    s += PTTable::toString();
+    return s;
+}
 
 // PTDataCreator
 PTDataCreator::PTDataCreator()
 {
-    api_table_[PT_TYPE_INT8] = &PTDataCreator::createPTData_int8_t;
-    api_table_[PT_TYPE_UINT8] = &PTDataCreator::createPTData_uint8_t;
-    api_table_[PT_TYPE_INT16] = &PTDataCreator::createPTData_int16_t;
-    api_table_[PT_TYPE_UINT16] = &PTDataCreator::createPTData_uint16_t;
-    api_table_[PT_TYPE_INT32] = &PTDataCreator::createPTData_int32_t;
-    api_table_[PT_TYPE_UINT32] = &PTDataCreator::createPTData_uint32_t;
-    api_table_[PT_TYPE_INT64] = &PTDataCreator::createPTData_int64_t;
-    api_table_[PT_TYPE_UINT64] = &PTDataCreator::createPTData_uint64_t;
-    api_table_[PT_TYPE_STRING] = &PTDataCreator::createPTData_string;
+    using pt = PTValueType ;
+    api_table_[toint(pt::INT8)] = &PTDataCreator::createValue<int8_t>;
+    api_table_[toint(pt::UINT8)] = &PTDataCreator::createValue<uint8_t>;
+    api_table_[toint(pt::INT16)] = &PTDataCreator::createValue<int16_t>;
+    api_table_[toint(pt::UINT16)] = &PTDataCreator::createValue<uint16_t>;
+    api_table_[toint(pt::INT32)] = &PTDataCreator::createValue<int32_t>;
+    api_table_[toint(pt::UINT32)] = &PTDataCreator::createValue<uint32_t>;
+    api_table_[toint(pt::INT64)] = &PTDataCreator::createValue<int64_t>;
+    api_table_[toint(pt::UINT64)] = &PTDataCreator::createValue<uint64_t>;
+    api_table_[toint(pt::VARINT)] = &PTDataCreator::createVarint;
+    api_table_[toint(pt::STRING)] = &PTDataCreator::createValue<std::string>;
 
-    api_table_[PT_TYPE_ARRAY] = &PTDataCreator::createPTData_array;
-    api_table_[PT_TYPE_TABLE] = &PTDataCreator::createPTData_table;
+    api_table_[toint(pt::ARRAY)] = &PTDataCreator::createArray;
+    api_table_[toint(pt::TABLE)] = &PTDataCreator::createTable;
 }
 
 PTDataCreator::~PTDataCreator()
 {
 }
 
-PTData* PTDataCreator::createPTData(int32_t value_type)
+PTData* PTDataCreator::createPTData(PTValueType value_type)
 {
-    if (value_type < 0 || value_type >= PT_TYPE_MAX)
-        return NULL;
-    PTDataAPI func = api_table_[value_type];
-    return ((this->*(func))());
+    DCHECK(value_type != PTValueType::NONE && value_type != PTValueType::MAX,
+        "[PTDataCreator](createPTData) value_type invalid!");
+    PTDataAPI func = api_table_[toint(value_type)];
+    PTData* data = ((this->*(func))());
+    data->setValueType(value_type);
+    return data;
 }
 
-PTData* PTDataCreator::createPTData_int8_t()
+template<typename T>
+PTData* PTDataCreator::createValue()
 {
-    return PTDataNormal<int8_t>::create();
+    return PTValue<T>::create();
 }
 
-PTData* PTDataCreator::createPTData_uint8_t()
+
+PTData* PTDataCreator::createVarint()
 {
-    return PTDataNormal<uint8_t>::create();
+    return PTVarint::create();
 }
 
-PTData* PTDataCreator::createPTData_int16_t()
+PTData* PTDataCreator::createArray()
 {
-    return PTDataNormal<int16_t>::create();
+    return PTArray::create();
 }
 
-PTData* PTDataCreator::createPTData_uint16_t()
+PTData* PTDataCreator::createTable()
 {
-    return PTDataNormal<uint16_t>::create();
-}
-
-PTData* PTDataCreator::createPTData_int32_t()
-{
-    return PTDataNormal<int32_t>::create();
-}
-
-PTData* PTDataCreator::createPTData_uint32_t()
-{
-    return PTDataNormal<uint32_t>::create();
-}
-
-PTData* PTDataCreator::createPTData_int64_t()
-{
-    return PTDataNormal<int64_t>::create();
-}
-
-PTData* PTDataCreator::createPTData_uint64_t()
-{
-    return PTDataNormal<uint64_t>::create();
-}
-
-PTData* PTDataCreator::createPTData_string()
-{
-    return PTDataNormal<std::string>::create();
-}
-
-PTData* PTDataCreator::createPTData_array()
-{
-    return PTDataArray::create();
-}
-
-PTData* PTDataCreator::createPTData_table()
-{
-    return PTDataTable::create();
+    return PTTable::create();
 }
 
 } // namespace kit

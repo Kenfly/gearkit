@@ -22,7 +22,7 @@ public:
     BufferPool();
     virtual ~BufferPool();
 
-    Buffer* createBuffer(uint32_t size);
+    Buffer* createBuffer(size_t size);
     void destroyBuffer(Buffer* buffer);
 
     void clear();

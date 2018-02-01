@@ -32,9 +32,9 @@ public:
 } // namespace kit
 
 #ifdef PLATFORM_LINUX
-#include <platform/linux/SockAddr_linux.h>
+#include "platform/linux/SockAddr_linux.h"
 #elif defined PLATFORM_WINDOWS
-#include <platform/win/SockAddr_win.h>
+#include "platform/win/SockAddr_win.h"
 #endif
 
 #endif

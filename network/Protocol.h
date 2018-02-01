@@ -7,141 +7,179 @@
 #include <string>
 #include <functional>
 
-#define PT_TYPE_INT8   1
-#define PT_TYPE_UINT8  2
-#define PT_TYPE_INT16  3
-#define PT_TYPE_UINT16 4
-#define PT_TYPE_INT32  5
-#define PT_TYPE_UINT32 6
-#define PT_TYPE_INT64  7
-#define PT_TYPE_UINT64 8
-#define PT_TYPE_STRING 9
-
-#define PT_TYPE_ARRAY  10
-#define PT_TYPE_TABLE  11
-
-#define PT_TYPE_MAX 12
-
 namespace kit {
 
-// data
-
-enum PTDataType
+enum class PTValueType : uint8_t
 {
-    PTDATA_TYPE_NONE = 0,
-    PTDATA_TYPE_NORMAL = 1,
-    PTDATA_TYPE_ARRAY = 2,
-    PTDATA_TYPE_TABLE = 3,
-    PTDATA_TYPE_PROTOCOL = 4,
+    NONE,
+    INT8,
+    UINT8,
+    INT16,
+    UINT16,
+    INT32,
+    UINT32,
+    INT64,
+    UINT64,
+    VARINT,
+    STRING,
+
+    ARRAY,
+    TABLE,
+    MAX,
 };
 
+enum class PTDataType : uint8_t
+{
+    NONE,
+    VALUE,
+    ARRAY,
+    TABLE,
+    PROTOCOL,
+};
+
+inline constexpr int toint(PTValueType t)
+{
+    return static_cast<int>(t);
+}
+
+inline constexpr int toint(PTDataType t)
+{
+    return static_cast<int>(t);
+}
+
+// data
 class PTData : public Ref
 {
 public:
     virtual ~PTData() {}
 
-    virtual PTDataType getType() const { return PTDATA_TYPE_NONE; }
+    virtual PTDataType getType() const { return PTDataType::NONE; }
 
-    virtual bool serialize(Buffer* buffer) = 0;
+    virtual bool serialize(Buffer* buffer) const = 0;
     virtual bool unserialize(Buffer* buffer) = 0;
+
+    const std::string& getKey() const { return key_; }
+    void setKey(const std::string& k) { key_ = k; }
+
+    PTValueType getValueType() const { return value_type_; }
+    void setValueType(PTValueType type) { value_type_ = type; }
+
     virtual PTData* clone() const { return NULL; }
-    virtual void setFixed(bool v) {}
+
+protected:
+    PTValueType value_type_;
+    std::string key_;
 };
 
 // normal value
-template<typename ValueType>
-class PTDataNormal : public PTData
+template<typename T>
+class PTValue : public PTData
 {
 public:
-    KIT_CREATE_FUNC(PTDataNormal<ValueType>)
-    PTDataNormal() : fixed(false) { }
+    KIT_CREATE_FUNC(PTValue<T>)
 
-    virtual PTDataType getType() const { return PTDATA_TYPE_NORMAL; }
-    virtual const std::string& getKey() const { return key; }
+    virtual PTDataType getType() const { return PTDataType::VALUE; }
+    const T& getValue() const { return value_; }
+    void setValue(const T& v) { value_ = v; }
+    void resetValue() { value_ = 0; }
+    void reset();
 
-    virtual bool serialize(Buffer* buffer)
-    {
-        return (*buffer) << value;
-    }
-    virtual bool unserialize(Buffer* buffer)
-    {
-        return (*buffer) >> value;
-    }
+    virtual bool serialize(Buffer* buffer) const;
+    virtual bool unserialize(Buffer* buffer);
 
-    virtual PTData* clone() const
-    {
-        return PTDataNormal<ValueType>::create();
-    }
+    virtual PTData* clone() const;
+    virtual std::string toString() const;
 
-    virtual void setFixed(bool v) { this->fixed = v; }
-
-    virtual const ValueType& getValue() const { return value; }
-
-    std::string key;
-    ValueType value;
-    bool fixed;
+protected:
+    T value_;
 };
 
+template<>
+inline void PTValue<std::string>::resetValue()
+{
+    value_ = "";
+}
 
-// array
-class PTDataArray : public PTData
+// varint
+class PTVarint : public PTValue<uint32_t>
 {
 public:
-    KIT_CREATE_FUNC(PTDataArray)
+    KIT_CREATE_FUNC(PTVarint);
+    virtual bool serialize(Buffer* buffer) const;
+    virtual bool unserialize(Buffer* buffer);
+    virtual PTData* clone() const;
+};
 
-    PTDataArray();
-    virtual ~PTDataArray();
+// array
+class PTArray : public PTData
+{
+public:
+    KIT_CREATE_FUNC(PTArray)
 
-    virtual PTDataType getType() const { return PTDATA_TYPE_ARRAY; }
-    virtual bool serialize(Buffer* buffer);
+    PTArray();
+    virtual ~PTArray();
+
+    virtual PTDataType getType() const { return PTDataType::ARRAY; }
+    virtual bool serialize(Buffer* buffer) const; 
     virtual bool unserialize(Buffer* Buffer);
     virtual PTData* clone() const;
+    virtual std::string toString() const;
 
     void addData(PTData* data);
     // 设置模版
     void setTemplate(PTData* data);
     void clear();
 
+protected:
     typedef std::vector<PTData*> DataVec;
-    DataVec datas;
+    DataVec datas_;
     PTData* item_template;
 };
 
 // Table
-class PTDataTable : public PTData
+class PTTable : public PTData
 {
 public:
-    KIT_CREATE_FUNC(PTDataTable)
+    KIT_CREATE_FUNC(PTTable)
 
-    virtual ~PTDataTable();
+    virtual ~PTTable();
 
-    virtual PTDataType getType() const { return PTDATA_TYPE_TABLE; }
+    virtual PTDataType getType() const { return PTDataType::TABLE; }
 
-    virtual bool serialize(Buffer* buffer);
+    virtual bool serialize(Buffer* buffer) const;
     virtual bool unserialize(Buffer* buffer);
     virtual PTData* clone() const;
+    virtual std::string toString() const;
 
     void addData(PTData* data);
     void delData(PTData* data);
     virtual void clear();
 
+protected:
     typedef std::vector<PTData*> DataVec;
-    DataVec datas;
+    DataVec datas_;
 };
 
 // protocol
-class Protocol : public PTDataTable
+class Protocol : public PTTable
 {
 public:
     KIT_CREATE_FUNC(Protocol)
     Protocol();
     virtual ~Protocol();
 
-    virtual PTDataType getType() const { return PTDATA_TYPE_PROTOCOL; }
+    virtual PTDataType getType() const { return PTDataType::PROTOCOL; }
 
-    virtual void init(int32_t _pid);
-public:
-    int32_t pid;
+    virtual void init(int32_t pid);
+
+    int32_t getPID() const { return pid_; }
+    size_t getBudgetSize() const { return budget_size_; }
+    void setBudgetSize(size_t size) { budget_size_ = size; }
+
+    virtual std::string toString() const;
+protected:
+    int32_t pid_;
+    size_t budget_size_ = 64;
 };
 
 class PTDataCreator : public Ref
@@ -152,23 +190,18 @@ public:
     PTDataCreator();
     virtual ~PTDataCreator();
 
-    PTData* createPTData(int32_t value_type);
+    PTData* createPTData(PTValueType value_type);
 private:
-    PTData* createPTData_int8_t();
-    PTData* createPTData_uint8_t();
-    PTData* createPTData_int16_t();
-    PTData* createPTData_uint16_t();
-    PTData* createPTData_int32_t();
-    PTData* createPTData_uint32_t();
-    PTData* createPTData_int64_t();
-    PTData* createPTData_uint64_t();
-    PTData* createPTData_string();
+    template<typename T>
+    PTData* createValue();
 
-    PTData* createPTData_array();
-    PTData* createPTData_table();
+    PTData* createVarint();
+
+    PTData* createArray();
+    PTData* createTable();
 
     typedef PTData* (PTDataCreator::* PTDataAPI)();
-    PTDataAPI api_table_[PT_TYPE_MAX];
+    PTDataAPI api_table_[toint(PTValueType::MAX)];
 };
 
 

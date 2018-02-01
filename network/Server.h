@@ -62,9 +62,9 @@ protected:
 } // namespcae kit
 
 #ifdef PLATFORM_LINUX
-#include <platform/linux/Server_linux.h>
+#include "platform/linux/Server_linux.h"
 #elif defined PLATFORM_WINDOWS
-#include <platform/win/Server_win.h>
+#include "platform/win/Server_win.h"
 #endif
 
 #endif

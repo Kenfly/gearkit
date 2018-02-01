@@ -15,6 +15,7 @@ namespace kit {
 class SockAddr;
 class Packet;
 class Buffer;
+class Session;
 
 typedef QList<Packet*, PACKET_QUEUE_LENGTH> PacketQue;
 
@@ -51,6 +52,11 @@ public:
 	void setHandle(SocketID sock);
 	inline SocketID getHandle() const { return sock_; }
 
+    // week ref
+    Session* getSession() const { return session_; }
+    void setSession(Session* session) { session_ = session; }
+    void pullPacketsToSession();
+
     void setAddr(SockAddr* addr);
     SockAddr* getAddr() const { return addr_; }
 
@@ -69,8 +75,6 @@ public:
     int32_t recvPacket(Packet* pack);
 
     bool valid() const { return sock_ != DSOCKERR; }
-
-    void test_packet();
 protected:
     // recv/send一个buffer
     // 成功返回已接收的字节数，-1掉线
@@ -88,6 +92,7 @@ protected:
 
 protected:
 	SocketID sock_;
+    Session* session_;
     SockAddr* addr_;
 private:
     // 包种子，如果客户端发来的包与服务端的不对应，则认为包不可信
@@ -121,9 +126,9 @@ public:
 } // namespcae kit
 
 #ifdef PLATFORM_LINUX
-#include <platform/linux/Socket_linux.h>
+#include "platform/linux/Socket_linux.h"
 #elif defined PLATFORM_WINDOWS
-#include <platform/win/Socket_win.h>
+#include "platform/win/Socket_win.h"
 #endif
 
 

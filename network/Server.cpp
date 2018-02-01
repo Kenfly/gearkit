@@ -112,7 +112,9 @@ void IServer::handlePollEvent()
         if (sock_ev & KIT_POLLIN)
         {
             // 收到协议包处理
-            handleRecvPackets(sock);
+            Session* sd = sock->getSession();
+            if (sd)
+                handleSession(sock->getSession());
         }
         if (sock_ev & KIT_POLLOUT)
         {

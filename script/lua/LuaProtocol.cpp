@@ -1,59 +1,16 @@
 #include "LuaProtocol.h"
 #include <stack>
-#include "Protocol.h"
+#include "lua.hpp"
+#include "LuaIntf/LuaIntf.h"
 #include "Logger.h"
 
-
-class PtoHandler : public kit::ProtocolHandler
-{
-public:
-    PtoHandler(LuaPacketProtocolHandler* parent)
-    : parent_(parent)
-    {
-    }
-    virtual void onProtocol(int32_t sid, kit::Protocol* pto)
-    {
-        parent_->onProtocol(sid, pto);
-    }
-private:
-    LuaPacketProtocolHandler* parent_;
-
-};
-
-// lua protocol
-LuaPacketProtocolHandler::LuaPacketProtocolHandler()
-: handler_(nullptr)
-, creator_(NULL)
-{
-}
-
-LuaPacketProtocolHandler::~LuaPacketProtocolHandler()
-{
-    KIT_SAFE_RELEASE(creator_);
-}
-
-// init protocol handler
-bool LuaPacketProtocolHandler::baseInit()
-{
-    if (!kit::PacketProtocolHandler::baseInit())
-        return false;
-
-    PtoHandler* handler = new PtoHandler(this);
-    setProtocolHandler(handler);
-    handler->release();
-
-
-    KIT_SAFE_RELEASE(creator_);
-    creator_ = kit::PTDataCreator::create(false);
-    return true;
-}
+using pt = kit::PTValueType;
 
 /*
- * 一项配置用 {key, value_type}
- * 如果value_type是PT_TYPE_[U]INT32/PT_TYPE_[U]INT64则有第三个参数bool,表示是否fixed,默认是可变长varint
- * table : {key, PT_TYPE_TABLE, table}
- * array : {key, PT_TYPE_ARRAY, table or PT_TYPE_XXX}
- * 如果value_type为a，则配置格式为{key,a,value_type}
+ * 一项配置用 
+ * {key, value_type}
+ * table : {key, TABLE, table}
+ * array : {key, ARRAY, table or value_type}
  * register a protocol by table
  *  {
  *      {"key1", TYPE_INT32, true},
@@ -65,110 +22,191 @@ bool LuaPacketProtocolHandler::baseInit()
  *  }
  */
 
-bool LuaPacketProtocolHandler::registerTable(kit::PTDataTable* p, const LuaIntf::LuaRef& table)
+LuaProtocol::LuaProtocol()
 {
-    for (auto& e : table)
+}
+
+LuaProtocol::~LuaProtocol()
+{
+    KIT_SAFE_RELEASE(creator_);
+}
+
+bool LuaProtocol::baseInit()
+{
+    KIT_SAFE_RELEASE(creator_);
+    creator_ = LuaPTCreator::create(false);
+    return kit::Protocol::baseInit();
+}
+
+void LuaProtocol::buildFromTable(lua_State* L)
+{
+    LuaIntf::LuaRef table = LuaIntf::Lua::pop<LuaIntf::LuaRef>(L);
+    if (!table.isTable())
+    {
+        ERR("[LuaProtocol](buildFromTable) param not a table! pid:%d", pid_);
+        return;
+    }
+
+    if (!registerTable(this, &table))
+    {
+        ERR("[LuaProtocol](buildFromTable) register error! pid:%d", pid_);
+        return;
+    }
+}
+
+bool LuaProtocol::registerTable(kit::PTTable* p, const LuaIntf::LuaRef* table)
+{
+    for (auto& e : *table)
     {
         auto v = e.value<LuaIntf::LuaRef>();
         if (!v.isTable())
         {
-            ERR("[LuaPacketProtocolHandler](registerTable) desc not table! key:%s", e.key<const std::string&>().c_str());
+            ERR("[LuaProtocol](registerTable) desc not table! key:%s", e.key<const std::string&>().c_str());
             return false;
         }
         int len = v.len();
         if (len < 2)
         {
-            ERR("[LuaPacketProtocolHandler](registerTable) not table! key:%s", e.key<const std::string&>().c_str());
+            ERR("[LuaProtocol](registerTable) not table! key:%s", e.key<const std::string&>().c_str());
             return false;
         }
         std::string key = v.get<std::string>(1);
-        int32_t value_type = v.get<int32_t>(2);
+        kit::PTValueType value_type = static_cast<kit::PTValueType>(v.get<uint8_t>(2));
         kit::PTData* info = creator_->createPTData(value_type);
         if (info == NULL)
         {
-            ERR("[LuaPacketProtocolHandler](registerTable) error type! key:%s, type:%d", key.c_str(), value_type);
+            ERR("[LuaProtocol](registerTable) error type! key:%s, type:%d", key.c_str(), value_type);
             return false;
         }
+        info->setKey(key);
         p->addData(info);
 
-        if (value_type == PT_TYPE_TABLE)
+        if (value_type == kit::PTValueType::TABLE)
         {
             auto sub_table = v.get<LuaIntf::LuaRef>(3);
             if (!sub_table.isTable())
             {
-                ERR("[LuaPacketProtocolHandler](registerTable) not table! key:%s", key.c_str());
+                ERR("[LuaProtocol](registerTable) not table! key:%s", key.c_str());
                 return false;
             }
-            if (!registerTable(static_cast<kit::PTDataTable*>(info), sub_table))
+            if (!registerTable(reinterpret_cast<kit::PTTable*>(info), &sub_table))
             {
                 return false;
             }
         }
-        else if (value_type == PT_TYPE_ARRAY)
+        else if (value_type == kit::PTValueType::ARRAY)
         {
             if (len < 3)
             {
-                ERR("[LuaPacketProtocolHandler](registerTable) array need 3 param! key:%s", key.c_str());
+                ERR("[LuaProtocol](registerTable) array need 3 param! key:%s", key.c_str());
                 return false;
             }
             auto item_v = v.get<LuaIntf::LuaRef>(3);
             if (item_v.isTable())
             {
-                auto item_template = creator_->createPTData(PT_TYPE_TABLE);
-                if (!registerTable(static_cast<kit::PTDataTable*>(item_template), item_v))
+                auto item_template = creator_->createPTData(kit::PTValueType::ARRAY);
+                if (!registerTable(reinterpret_cast<kit::PTTable*>(item_template), &item_v))
                     return false;
-                (static_cast<kit::PTDataArray*>(info))->setTemplate(item_template);
+                (reinterpret_cast<kit::PTArray*>(info))->setTemplate(item_template);
             }
             else
             {
-                int32_t item_type = item_v.toValue<int32_t>();
+                kit::PTValueType item_type = static_cast<kit::PTValueType>(item_v.toValue<uint8_t>());
                 auto item_template = creator_->createPTData(item_type);
                 if (item_template == NULL)
                 {
-                    ERR("[LuaPacketProtocolHandler](registerTable) erryr type! key:%s", key.c_str());
+                    ERR("[LuaProtocol](registerTable) erryr type! key:%s", key.c_str());
                     return false;
                 }
-                (static_cast<kit::PTDataArray*>(info))->setTemplate(item_template);
+                (reinterpret_cast<kit::PTArray*>(info))->setTemplate(item_template);
             }
         }
         else
         {
-            if (len >= 3)
-            {
-                info->setFixed(v.get<bool>(3));
-            }
         }
     }
     return true;
 }
 
-void LuaPacketProtocolHandler::registerProtocol(int32_t pid, lua_State* L)
+void LuaProtocol::unserializeFromTable(lua_State* L)
 {
     LuaIntf::LuaRef table = LuaIntf::Lua::pop<LuaIntf::LuaRef>(L);
     if (!table.isTable())
     {
-        ERR("[LuaPacketProtocolHandler](registerProtocol) param not a table! pid:%d", pid);
+        ERR("[LuaProtocol](serializeFromTable) param not a table! pid:%d", pid_);
         return;
     }
-
-    kit::Protocol* pto = kit::Protocol::create();
-    pto->init(pid);
-
-    if (!registerTable(pto, table))
+    if (!unserializeTable(this, &table))
     {
-        ERR("[LuaPacketProtocolHandler](registerProtocol) register error! pid:%d", pid);
+        ERR("[LuaProtocol](unserializeFromTable) unserialize error! pid:%d", pid_);
         return;
     }
-
-    kit::PacketProtocolHandler::registerProtocol(pid, pto);
 }
 
-void LuaPacketProtocolHandler::unregisterProtocol(int32_t pid)
+bool LuaProtocol::unserializeTable(kit::PTTable* p, const LuaIntf::LuaRef* table)
 {
-    kit::PacketProtocolHandler::unregisterProtocol(pid);
+    for (DataVec::iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
+    {
+        creator_->setDataValue(*ix, table);
+    }
+    return true;
 }
 
-void LuaPacketProtocolHandler::onProtocol(int32_t sid, kit::Protocol* pto)
+int32_t LuaProtocol::serializeToTable(lua_State* L)
+{
+    return 1;
+}
+
+
+// creator
+LuaPTCreator::LuaPTCreator()
+{
+    value_apis_[toint(pt::INT8)] = &LuaPTCreator::unsValue<int8_t>;
+    value_apis_[toint(pt::UINT8)] = &LuaPTCreator::unsValue<uint8_t>;
+    value_apis_[toint(pt::INT16)] = &LuaPTCreator::unsValue<int16_t>;
+    value_apis_[toint(pt::UINT16)] = &LuaPTCreator::unsValue<uint16_t>;
+    value_apis_[toint(pt::INT32)] = &LuaPTCreator::unsValue<int32_t>;
+    value_apis_[toint(pt::UINT32)] = &LuaPTCreator::unsValue<uint32_t>;
+    value_apis_[toint(pt::INT64)] = &LuaPTCreator::unsValue<int64_t>;
+    value_apis_[toint(pt::UINT64)] = &LuaPTCreator::unsValue<uint64_t>;
+    value_apis_[toint(pt::VARINT)] = &LuaPTCreator::unsValue<uint32_t>;
+    value_apis_[toint(pt::STRING)] = &LuaPTCreator::unsValue<std::string>;
+
+    value_apis_[toint(pt::ARRAY)] = &LuaPTCreator::unsArray;
+    value_apis_[toint(pt::TABLE)] = &LuaPTCreator::unsTable;
+}
+
+LuaPTCreator::~LuaPTCreator()
+{
+}
+
+void LuaPTCreator::setDataValue(kit::PTData* data, const LuaIntf::LuaRef* table)
+{
+    pt type = data->getValueType();
+    DCHECK(type != pt::ARRAY && type != pt::TABLE, 
+        "[LuaPTCreator](setDataValue) value type invalid!");
+    PTValueAPI func = value_apis_[toint(type)];
+    ((this->*(func))(data, table));
+}
+
+template<typename T>
+void LuaPTCreator::unsValue(kit::PTData* data, const LuaIntf::LuaRef* table)
+{
+    kit::PTValue<T>* p = reinterpret_cast<kit::PTValue<T>*>(data);
+    const std::string& key = data->getKey();
+    if (table->has(key))
+    {
+        p->setValue(table->get<T>(key));
+    } else {
+        p->resetValue();
+    }
+}
+
+void LuaPTCreator::unsArray(kit::PTData* data, const LuaIntf::LuaRef* table)
+{
+}
+
+void LuaPTCreator::unsTable(kit::PTData* data, const LuaIntf::LuaRef* table)
 {
 }
 

@@ -15,7 +15,6 @@
 
 namespace kit {
 
-class Socket;
 class Session;
 class Protocol;
 class PacketHandler;
@@ -26,10 +25,7 @@ public:
 	Terminal();
     virtual ~Terminal();
 
-    virtual PacketHandler* getPacketHandler() const { return packet_handler_; }
-    virtual void setPacketHandler(PacketHandler* handler);
-
-    virtual void handleRecvPackets(Socket* sock);
+    virtual void handleSession(Session* session);
 
     virtual void sendProtocol(SessionID sid, const Protocol* pto);
     virtual void recvProtocol(SessionID sid, const Protocol* pto);
@@ -38,16 +34,14 @@ public:
     void addProtocol(ProtocolID pid, Protocol* pto);
     void delProtocol(ProtocolID pid);
 
-    virtual Session* getSession(SessionID sid) const;
-    virtual SessionID addSession(Socket* sock, SessionID sid = SIDNULL);
-    virtual void delSession(SessionID sid);
+    Session* getSession(SessionID sid) const;
+    void addSession(Session* session);
+    void delSession(SessionID sid);
 
     void clearProtocols();
     void clearSessions();
 protected:
     virtual bool baseInit();
-
-    PacketHandler* packet_handler_;
 
     typedef Map<SessionID, Session*, SESSION_LENGTH> SessionMap;
     SessionMap session_map_;

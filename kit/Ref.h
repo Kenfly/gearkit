@@ -4,6 +4,7 @@
 #include "kitsys.h"
 #include <new>
 #include <vector>
+#include <string>
 
 namespace kit {
 
@@ -29,6 +30,8 @@ public:
     void delChild(Ref* obj);
     void clearChildren();
     virtual void removeFromParent();
+
+    virtual std::string toString() const { return "----[Ref]----"; }
 private:
     typedef std::vector<Ref*> RefVec;
     RefVec children_;

@@ -11,7 +11,6 @@
 #include "BufferPool.h"
 #include "LuaBuffer.h"
 #include "Packet.h"
-#include "Protocol.h"
 #include "LuaProtocol.h"
 #include "Client.h"
 #include "Server.h"
@@ -34,9 +33,7 @@ void register_CommonConstant(lua_State* L)
 {
     LuaIntf::LuaBinding(L)
         .beginModule("kit")
-#ifdef KIT_DEBUG_MODE
-            .addConstant("DEBUG_MODE", 1)
-#endif
+            DPART(.addConstant("DEBUG_MODE", 1))
         .endModule();
 }
 
@@ -69,6 +66,7 @@ void register_Class_Ref(lua_State* L)
                 .addFunction("del_child", &kit::Ref::delChild)
                 .addFunction("clear_children", &kit::Ref::clearChildren)
                 .addFunction("remove_from_parent", &kit::Ref::removeFromParent)
+                .addFunction("to_string", &kit::Ref::toString)
             .endClass()
         .endModule();
 }
@@ -94,13 +92,13 @@ void register_Class_Buffer(lua_State* L)
                 .addFunction("init", &LuaBuffer::init)
                 .addFunction("reset", &LuaBuffer::reset)
                 .addFunction("get_size", &LuaBuffer::getSize)
-                .addFunction("get_memory_size", &LuaBuffer::getMemorySize)
+                .addFunction("getCapacity", &LuaBuffer::getCapacity)
                 .addFunction("get_written_size", &LuaBuffer::getWrittenSize)
                 .addFunction("get_writable_size", &LuaBuffer::getWritableSize)
                 .addFunction("get_readable_size", &LuaBuffer::getReadableSize)
                 .addFunction("skip_write", &LuaBuffer::skipWrite)
                 .addFunction("skip_read", &LuaBuffer::skipRead)
-                .addFunction("debug_print", &LuaBuffer::debugPrint) 
+                .addFunction("to_string", &LuaBuffer::toString) 
                 .addFunction("write_buffer", &LuaBuffer::writeBuffer) // disable ?
                 .addFunction("read_buffer", &LuaBuffer::readBuffer) // disable ? 
                 .addFunction("w_string", &LuaBuffer::operator<< <const char*> )
@@ -119,11 +117,6 @@ void register_Class_Buffer(lua_State* L)
                 .addFunction("r_int32_t", [](LuaBuffer* self){ int32_t t; (*self)>>t; return t;} )
                 .addFunction("w_uint32_t", &LuaBuffer::operator<< <uint32_t> )
                 .addFunction("r_uint32_t", [](LuaBuffer* self){ uint32_t t; (*self)>>t; return t;} )
-
-                .addFunction("w_varint32_t", &LuaBuffer::writeVar_int32_t)
-                //.addFunction("r_varint32_t", &LuaBuffer::readVarint, LUA_ARGS(int32_t))
-                //.addFunction("w_varuint32_t", &LuaBuffer::writeVarint, LUA_ARGS(uint32_t))
-                //.addFunction("r_varuint32_t", &LuaBuffer::readVarint, LUA_ARGS(uint32_t))
 
                 .addFunction("write_format", &LuaBuffer::luaWriteFormat)
                 .addFunction("read_format", &LuaBuffer::luaReadFormat)
@@ -160,38 +153,30 @@ void register_Class_Packet(lua_State* L)
         .endModule();
 }
 
-void register_Class_PacketHandler(lua_State* L)
-{
-    LuaIntf::LuaBinding(L)
-        .beginModule("kit")
-            .beginExtendClass<kit::PacketHandler, kit::Ref>("packethandler")
-            .endClass()
-            .beginExtendClass<kit::PacketProtocolHandler, kit::PacketHandler>("packetptohandler")
-            .endClass()
-            .beginExtendClass<LuaPacketProtocolHandler, kit::PacketProtocolHandler>("protocolhandler")
-                .addStaticFunction("create", &LuaPacketProtocolHandler::create)
-                .addFunction("register_protocol", &LuaPacketProtocolHandler::registerProtocol)
-                .addFunction("unregister_protocol", &LuaPacketProtocolHandler::unregisterProtocol)
-            .endClass()
-        .endModule();
-}
-
 void register_Class_Protocol(lua_State* L)
 {
     LuaIntf::LuaBinding(L)
         .beginModule("kit")
-            .addConstant("TYPE_INT8", PT_TYPE_INT8)
-            .addConstant("TYPE_UINT8", PT_TYPE_INT8)
-            .addConstant("TYPE_INT16", PT_TYPE_INT16)
-            .addConstant("TYPE_UINT16", PT_TYPE_UINT16)
-            .addConstant("TYPE_INT32", PT_TYPE_INT32)
-            .addConstant("TYPE_UINT32", PT_TYPE_UINT32)
-            .addConstant("TYPE_INT64", PT_TYPE_INT64)
-            .addConstant("TYPE_UINT64", PT_TYPE_UINT64)
-            .addConstant("TYPE_STRING", PT_TYPE_STRING)
+            .addConstant("INT8", toint(kit::PTValueType::INT8))
+            .addConstant("UINT8", toint(kit::PTValueType::UINT8))
+            .addConstant("INT16", toint(kit::PTValueType::INT16))
+            .addConstant("UINT16", toint(kit::PTValueType::UINT16))
+            .addConstant("INT32", toint(kit::PTValueType::INT32))
+            .addConstant("UINT32", toint(kit::PTValueType::UINT32))
+            .addConstant("INT64", toint(kit::PTValueType::INT64))
+            .addConstant("UINT64", toint(kit::PTValueType::UINT64))
+            .addConstant("VARINT", toint(kit::PTValueType::VARINT))
+            .addConstant("STRING", toint(kit::PTValueType::STRING))
 
-            .addConstant("TYPE_ARRAY", PT_TYPE_ARRAY)
-            .addConstant("TYPE_TABLE", PT_TYPE_TABLE)
+            .addConstant("ARRAY", toint(kit::PTValueType::ARRAY))
+            .addConstant("TABLE", toint(kit::PTValueType::TABLE))
+            .beginExtendClass<kit::Protocol, kit::Ref>("protocolbase")
+                .addFunction("init", &kit::Protocol::init)
+            .endClass()
+            .beginExtendClass<LuaProtocol, kit::Protocol>("protocol")
+                .addStaticFunction("create", &LuaProtocol::create)
+                .addFunction("buildFromTable", &LuaProtocol::buildFromTable)
+            .endClass()
         .endModule();
 }
 
@@ -200,7 +185,8 @@ void register_Class_Terminal(lua_State* L)
     LuaIntf::LuaBinding(L)
         .beginModule("kit")
             .beginExtendClass<kit::Terminal, kit::Ref>("terminal")
-                .addFunction("set_packet_handler", &kit::Terminal::setPacketHandler)
+                .addFunction("add_protocol", &kit::Terminal::addProtocol)
+                .addFunction("del_protocol", &kit::Terminal::delProtocol)
             .endClass()
         .endModule();
 }

@@ -30,7 +30,7 @@ Buffer* BufferPool::createBuffer(size_t size)
     }
     buf->reset();
     //动态修改tail_，改成跟size一样大小
-    buf->tail_ = buf->head_ + size;
+    buf->setSize(size);
 
     return buf;
 }

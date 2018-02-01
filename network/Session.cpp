@@ -1,5 +1,6 @@
 #include "Session.h"
 #include "Socket.h"
+#include "Packet.h"
 
 namespace kit {
 
@@ -21,10 +22,6 @@ void Session::init(Socket* sock)
     setSocket(sock);
 }
 
-void Session::update()
-{
-}
-
 void Session::setSocket(Socket* sock)
 {
     if (socket_)
@@ -35,23 +32,24 @@ void Session::setSocket(Socket* sock)
     time_ = kit::time();
 }
 
-int32_t Session::sendPacket(Packet* pack)
+bool Session::sendPacket(Packet* pack)
 {
     // 判断是放到缓存列队，还是直接给socket发送
-    if (send_packets_.count() > 0 || !socket_ || !socket_->valid())
+    if (send_packets_.count() == 0 && socket_ && socket_->valid())
     {
+        int32_t ret = socket_->sendPacket(pack);
+        return ret == 0;
+    } else {
         send_packets_.push(pack);
-        return 1;
+        return false;
     }
-    else
-    {
-    }
-    return 0;
 }
 
-int32_t Session::recvPacket(Packet*& pack)
+bool Session::recvPacket(Packet* pack)
 {
-    return 0;
+    KIT_SAFE_RETAIN(pack);
+    recv_packets_.push(pack);
+    return true;
 }
 
 } // namespace kit

@@ -86,7 +86,8 @@ void IClient::handlePollEvent()
         if (sock_ev & KIT_POLLIN)
         {
             //FIXME: 收到协议包处理
-            handleRecvPackets(sock);
+            //TODO
+            //handleRecvPackets(sock);
         }
         if (sock_ev & KIT_POLLOUT)
         {

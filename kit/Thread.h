@@ -61,9 +61,9 @@ protected:
 } // namepsace kit
 
 #ifdef PLATFORM_LINUX
-#include <platform/linux/Thread_linux.h>
+#include "platform/linux/Thread_linux.h"
 #elif defined PLATFORM_WINDOWS
-#include <platform/win/Thread_win.h>
+#include "platform/win/Thread_win.h"
 #endif
 
 #endif

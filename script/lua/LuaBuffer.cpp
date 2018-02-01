@@ -173,8 +173,8 @@ int32_t LuaBuffer::luaReadFormat(lua_State* L)
                 break;
             case 's':
                 {
-                    uint32_t len;
-                    this->readVar_uint32_t(&len);
+                    size_t len;
+                    this->readVaruint<size_t>(len);
                     if (len <= 512)
                     {
                         char buf[512];

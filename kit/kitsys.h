@@ -23,6 +23,23 @@
 #define NULL 0
 #endif
 
+#ifdef KIT_DEBUG_MODE
+
+#define DPART(gram) gram
+
+#define DCHECK(gram, msg)                   \
+    if (!(gram)) {                          \
+        perror(msg);                        \
+    }
+
+#else
+
+#define DPART(gram)
+
+#define DCHECK(gram, msg)
+
+#endif
+
 namespace kit {
 
 // sleep milliseconds
@@ -30,18 +47,6 @@ void sleep(uint32_t msec);
 
 // return milliseconds when os started
 uint32_t time();
-
-template <typename T>
-T min(T a, T b)
-{
-    return a < b ? a : b;
-}
-
-template <typename T>
-T max(T a, T b)
-{
-    return a > b ? a : b;
-}
 
 } // namespace ekit
 #endif

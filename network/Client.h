@@ -41,9 +41,9 @@ protected:
 } // namespcae kit
 
 #ifdef PLATFORM_LINUX
-#include <platform/linux/Client_linux.h>
+#include "platform/linux/Client_linux.h"
 #elif defined PLATFORM_WINDOWS
-#include <platform/win/Client_win.h>
+#include "platform/win/Client_win.h"
 #endif
 
 #endif

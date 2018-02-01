@@ -24,9 +24,6 @@ void register_Class_BufferPool(lua_State* L);
 // packet
 void register_Class_Packet(lua_State* L);
 
-// packet handler
-void register_Class_PacketHandler(lua_State* L);
-
 // protocol
 void register_Class_Protocol(lua_State* L);
 

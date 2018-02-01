@@ -30,7 +30,6 @@ bool LuaCore::baseInit()
     register_Class_Buffer(L);
     register_Class_BufferPool(L);
     register_Class_Packet(L);
-    register_Class_PacketHandler(L);
     register_Class_Protocol(L);
     register_Class_Terminal(L);
     register_Class_Client(L);
@@ -39,9 +38,7 @@ bool LuaCore::baseInit()
     register_Class_ScriptManager(L);
     register_Class_Gear(L);
 
-#ifdef KIT_DEBUG_MODE
-    register_debug(L);
-#endif
+    DPART(register_debug(L));
 
     return true;
 }

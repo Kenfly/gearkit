@@ -1,21 +1,19 @@
 #include "Terminal.h"
 #include "Packet.h"
-#include "PacketHandler.h"
 #include "Socket.h"
 #include "Session.h"
 #include "Protocol.h"
+#include "BufferPool.h"
 #include "Logger.h"
 
 namespace kit {
 
 Terminal::Terminal()
-: packet_handler_(NULL)
 {
 }
 
 Terminal::~Terminal()
 {
-    KIT_SAFE_RELEASE(packet_handler_);
     clearProtocols();
     clearSessions();
 }
@@ -25,33 +23,26 @@ bool Terminal::baseInit()
     return true;
 }
 
-void Terminal::handleRecvPackets(Socket* socket)
+void Terminal::handleSession(Session* session)
 {
-    PacketHandler* handler = packet_handler_;
-    if (handler == NULL)
-    {
-        ERR("[Terminal](handleRecvPackets) no packet handler!");
-        return;
-    }
-
-    PacketQue& que = socket->getRecvQueue();
+    PacketQue& que = session->getPackets();
     Packet* pack = NULL;
     int cnt = que.count();
     for (int i = 0; i != cnt; ++i)
     {
         if (!que.pop(pack))
             break;
-        // TODO: sid
-        handler->onPacket(0, pack);
+        ProtocolID pid = pack->getPID();
+        Protocol* pto;
+        if (!protocol_map_.get(pid, pto))
+        {
+            pack->release();
+            continue;
+        }
+        pto->unserialize(pack->getBuffer());
         pack->release();
+        recvProtocol(session->getID(), pto);
     }
-}
-
-void Terminal::setPacketHandler(PacketHandler* handler)
-{
-    KIT_SAFE_RELEASE(packet_handler_)
-    packet_handler_ = handler;
-    KIT_SAFE_RETAIN(packet_handler_)
 }
 
 void Terminal::addProtocol(ProtocolID pid, Protocol* pto)
@@ -82,27 +73,12 @@ Session* Terminal::getSession(SessionID sid) const
     return sd;
 }
 
-SessionID Terminal::addSession(Socket* sock, SessionID sid)
+void Terminal::addSession(Session* session)
 {
-    Session* sd = NULL;
-    if (sid != SIDNULL)
-    {
-        if (!session_map_.get(sid, sd))
-        {
-            ERR("[Terminal](addSession)faild! no session:%d", sid);
-            return DSESSIONERR;
-        }
-        sd->setSocket(sock);
-    }
-    else
-    {
-        sd = Session::create();
-        sd->init(sock);
-    }
+    SessionID sid = session->getID();
     delSession(sid);
-    session_map_.set(sid, sd);
-    KIT_SAFE_RETAIN(sd);
-    return sd->getID();
+    session_map_.set(sid, session);
+    KIT_SAFE_RETAIN(session);
 }
 
 void Terminal::delSession(SessionID sid)
@@ -121,10 +97,15 @@ void Terminal::sendProtocol(SessionID sid, const Protocol* pto)
         return;
     }
     Packet* pack = Packet::create();
+    Buffer* buf = g_BufPool->createBuffer(pto->getBudgetSize());
+    pto->serialize(buf);
+    pack->init(pto->getPID(), buf);
+    sd->sendPacket(pack);
 }
 
 void Terminal::recvProtocol(SessionID sid, const Protocol* pto)
 {
+    DBG(pto->toString().c_str());
 }
 
 void Terminal::clearProtocols()

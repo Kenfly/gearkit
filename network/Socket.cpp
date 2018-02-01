@@ -3,6 +3,7 @@
 #include "Buffer.h"
 #include "BufferPool.h"
 #include "Packet.h"
+#include "Session.h"
 #include "netsys.h"
 #include "base.h"
 #include <errno.h>
@@ -13,6 +14,7 @@ namespace kit {
 
 ISocket::ISocket()
 : sock_(DSOCKERR)
+, session_(NULL)
 , addr_(NULL)
 , packet_seed_(0)
 , recv_count_(0)
@@ -250,8 +252,8 @@ int32_t ISocket::doSend()
     uint32_t rest_header_size = send_head_buf_->getReadableSize();
     if (rest_header_size > 0)
     {
-		int len = kit::min(rest_header_size, rest_size);
-        send_bufs_->writeBuffer(send_head_buf_->read_cur_, len);
+		int len = std::min(rest_header_size, rest_size);
+        send_bufs_->writeBuffer(send_head_buf_->readCur(), len);
         rest_size -= len;
 		send_head_buf_->skipRead(len);
 		rest_header_size -= len;
@@ -270,8 +272,8 @@ int32_t ISocket::doSend()
         send_head_buf_->reset();
         send_packet_->setSeed(packet_seed_);
         send_packet_->packHeader(send_head_buf_);
-        uint32_t size = kit::min(PACKET_HEADER_SIZE, rest_size);
-        send_bufs_->writeBuffer(send_head_buf_->read_cur_, size);
+        uint32_t size = std::min(PACKET_HEADER_SIZE, rest_size);
+        send_bufs_->writeBuffer(send_head_buf_->readCur(), size);
         send_head_buf_->skipRead(size);
         rest_size -= size;
 
@@ -290,8 +292,8 @@ int32_t ISocket::doSend()
 	uint32_t rest_buffer_size = send_buf_->getReadableSize();
 	if (rest_buffer_size > 0)
 	{
-		uint32_t len = kit::min(rest_size, rest_buffer_size);
-		send_bufs_->writeBuffer(send_buf_->read_cur_, len);
+		uint32_t len = std::min(rest_size, rest_buffer_size);
+		send_bufs_->writeBuffer(send_buf_->readCur(), len);
 		rest_size -= len;
 		rest_buffer_size -= len;
 	}
@@ -322,10 +324,32 @@ int32_t ISocket::sendPacket(Packet* pack)
 
 int32_t ISocket::recvPacket(Packet* pack)
 {
-    pack->retain();
+    if (recv_que_.count() == 0 && session_)
+    {
+        session_->recvPacket(pack);
+        return 0;
+    }
+
     // 放进包队列，等待处理
+    KIT_SAFE_RETAIN(pack);
     recv_que_.push(pack);
+    pullPacketsToSession();
     return 0;
+}
+
+void ISocket::pullPacketsToSession()
+{
+    if (!session_)
+        return;
+    Packet* pack;
+    int cnt = recv_que_.count();
+    for (int i = 0; i != cnt; ++i)
+    {
+        if (!recv_que_.pop(pack))
+            break;
+        session_->recvPacket(pack);
+        pack->release();
+    }
 }
 
 int32_t ISocket::send(const char* buf, int32_t size, int32_t mode)
@@ -369,7 +393,7 @@ int32_t ISocket::recvBuffer(Buffer* buf)
     int32_t len = 0;
     while (nrecv < size)
     {
-        len = this->recv(buf->write_cur_, size - nrecv, 0);
+        len = this->recv(buf->writeCur(), size - nrecv, 0);
         if (len < 0 && getErrno() != KIT_WOULDBLOCK)
             return -1;
         if (len <= 0)
@@ -387,7 +411,7 @@ int32_t ISocket::sendBuffer(Buffer* buf)
     int32_t len = 0;
     while (nsend < size)
     {
-        len = this->send(buf->read_cur_, size - nsend, 0);
+        len = this->send(buf->readCur(), size - nsend, 0);
         if (len < 0 && getErrno() != KIT_WOULDBLOCK)
             return -1;
         if (len <= 0)
@@ -454,15 +478,6 @@ int32_t ISocket::flushSend()
 		send_bufs_ = NULL;
 	}
 	return ret;
-}
-
-void ISocket::test_packet()
-{
-    Packet* pack = NULL;
-    while (recv_que_.pop(pack))
-    {
-        pack->getBuffer()->debugPrint();
-    }
 }
 
 } // namespace kit
