@@ -52,5 +52,16 @@ bool Session::recvPacket(Packet* pack)
     return true;
 }
 
+bool Session::flush()
+{
+    Pakcet* pk = nullptr;
+    while (!send_packets_.front(pk))
+    {
+        if (!socket_->sendPacket(pk))
+            break;
+        send_packets_.pop(pk);
+    }
+}
+
 } // namespace kit
 

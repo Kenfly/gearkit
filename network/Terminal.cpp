@@ -1,6 +1,5 @@
 #include "Terminal.h"
 #include "Packet.h"
-#include "Socket.h"
 #include "Session.h"
 #include "Protocol.h"
 #include "BufferPool.h"
@@ -23,9 +22,9 @@ bool Terminal::baseInit()
     return true;
 }
 
-void Terminal::handleSession(Session* session)
+void Terminal::handleSessionRecv(Session* session)
 {
-    PacketQue& que = session->getPackets();
+    PacketQue& que = session->getRecvPackets();
     Packet* pack = NULL;
     int cnt = que.count();
     for (int i = 0; i != cnt; ++i)
@@ -37,12 +36,18 @@ void Terminal::handleSession(Session* session)
         if (!protocol_map_.get(pid, pto))
         {
             pack->release();
+            //TODO: not exist protocol
             continue;
         }
         pto->unserialize(pack->getBuffer());
         pack->release();
         recvProtocol(session->getID(), pto);
     }
+}
+
+void Terminal::handleSessionSend(Session* session)
+{
+    //session->flush();
 }
 
 void Terminal::addProtocol(ProtocolID pid, Protocol* pto)
@@ -100,7 +105,7 @@ void Terminal::sendProtocol(SessionID sid, const Protocol* pto)
     Buffer* buf = g_BufPool->createBuffer(pto->getBudgetSize());
     pto->serialize(buf);
     pack->init(pto->getPID(), buf);
-    sd->sendPacket(pack);
+    bool clear_out = sd->sendPacket(pack);
 }
 
 void Terminal::recvProtocol(SessionID sid, const Protocol* pto)

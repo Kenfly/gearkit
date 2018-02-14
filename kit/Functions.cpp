@@ -1,4 +1,5 @@
 #include "Functions.h"
+#include <stdarg.h>
 
 namespace kit {
 
@@ -47,6 +48,15 @@ void splitWithString(const std::string& text, std::vector<std::string>& vec, con
         vec.push_back(text.substr(pos, length - pos));
 }
 
+std::string formatString(const char* format, ...)
+{
+    char buffer[1024];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(buffer, 1024, format, args);
+    va_end(args);
+    return std::string(buffer);
+}
 
 } // namepsace kit
 

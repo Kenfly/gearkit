@@ -25,7 +25,6 @@ public:
     int32_t serializeToTable(lua_State* L);
 private:
     bool registerTable(kit::PTTable* p, const LuaIntf::LuaRef* table);
-    bool unserializeTable(kit::PTTable* p, const LuaIntf::LuaRef* table);
 
     LuaPTCreator* creator_ = nullptr;
 };
@@ -39,12 +38,12 @@ public:
     void setDataValue(kit::PTData* data, const LuaIntf::LuaRef* t);
 private:
     template<typename T>
-    void unsValue(kit::PTData* data, const LuaIntf::LuaRef* table);
+    void unsValue(kit::PTData* data, const LuaIntf::LuaRef* t);
     void unsArray(kit::PTData* data, const LuaIntf::LuaRef* table);
     void unsTable(kit::PTData* data, const LuaIntf::LuaRef* table);
 
     typedef void (LuaPTCreator::* PTValueAPI)(kit::PTData*, const LuaIntf::LuaRef*);
-    PTValueAPI value_apis_[toint(kit::PTValueType::MAX)];
+    PTValueAPI value_apis_[toint(kit::PTType::MAX)];
 };
 
 #endif

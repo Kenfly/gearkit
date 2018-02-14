@@ -18,7 +18,9 @@ bool PTValue<T>::unserialize(Buffer* buffer)
 template<typename T>
 PTData* PTValue<T>::clone() const
 {
-    return PTValue<T>::create();
+    PTValue<T>* new_data = PTValue<T>::create();
+    new_data->type_ = this->type_;
+    return new_data;
 }
 
 template<typename T>
@@ -51,14 +53,14 @@ PTData* PTVarint::clone() const
 
 // pt data array
 PTArray::PTArray()
-: item_template(NULL)
+: item_template_(NULL)
 {
 }
 
 PTArray::~PTArray()
 {
     clear();
-    KIT_SAFE_RELEASE(item_template);
+    KIT_SAFE_RELEASE(item_template_);
 }
 
 bool PTArray::serialize(Buffer* buffer) const
@@ -67,9 +69,9 @@ bool PTArray::serialize(Buffer* buffer) const
     if (!buffer->writeVaruint<size_t>(len))
         return false;
 
-    for(DataVec::const_iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
+    for (auto p : datas_)
     {
-        if (!(*ix)->serialize(buffer))
+        if (!p->serialize(buffer))
             return false;
     }
 
@@ -78,7 +80,7 @@ bool PTArray::serialize(Buffer* buffer) const
 
 bool PTArray::unserialize(Buffer* buffer)
 {
-    if (item_template == NULL)
+    if (item_template_ == NULL)
         return false;
     size_t len;
     if (!buffer->readVaruint<size_t>(len))
@@ -88,13 +90,18 @@ bool PTArray::unserialize(Buffer* buffer)
     PTData* data;
     for (uint32_t i = 0; i != len; ++i)
     {
-        data = item_template->clone();
+        data = item_template_->clone();
         if (!data || !data->unserialize(buffer))
             return false;
         addData(data);
     }
 
     return true;
+}
+
+void PTArray::resetValue()
+{
+    clear();
 }
 
 void PTArray::addData(PTData* data)
@@ -106,9 +113,9 @@ void PTArray::addData(PTData* data)
 PTData* PTArray::clone() const
 {
     PTArray* pt = PTArray::create();
-    if (this->item_template)
+    if (this->item_template_)
     {
-        PTData* data = this->item_template->clone();
+        PTData* data = this->item_template_->clone();
         pt->setTemplate(data);
     }
     return pt;
@@ -117,9 +124,9 @@ PTData* PTArray::clone() const
 std::string PTArray::toString() const
 {
     std::string s = "{" + key_ + ":[";
-    for (DataVec::const_iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
+    for (auto p : datas_)
     {
-        s += (*ix)->toString();
+        s += p->toString();
     }
     s += "]}";
     return s;
@@ -127,19 +134,22 @@ std::string PTArray::toString() const
 
 void PTArray::setTemplate(PTData* data)
 {
-    if (item_template == data)
+    if (item_template_ == data)
         return;
-    KIT_SAFE_RELEASE(item_template);
-    item_template = data;
-    KIT_SAFE_RETAIN(item_template);
+    KIT_SAFE_RELEASE(item_template_);
+    item_template_ = data;
+    KIT_SAFE_RETAIN(item_template_);
+}
+
+PTData* PTArray::cloneItem()
+{
+    return item_template_->clone();
 }
 
 void PTArray::clear()
 {
-    PTData* p;
-    for(DataVec::iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
+    for(auto p : datas_)
     {
-        p = (*ix);
         if (p)
             p->release();
     }
@@ -154,9 +164,9 @@ PTTable::~PTTable()
 
 bool PTTable::serialize(Buffer* buffer) const
 {
-    for(DataVec::const_iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
+    for (auto p : datas_)
     {
-        if (!(*ix)->serialize(buffer))
+        if (!p->serialize(buffer))
             return false;
     }
     return true;
@@ -170,9 +180,9 @@ PTData* PTTable::clone() const
 std::string PTTable::toString() const
 {
     std::string s = "{" + key_ + ":\n";
-    for (DataVec::const_iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
+    for (auto p : datas_)
     {
-        s += (*ix)->toString() + "\n";
+        s += p->toString() + "\n";
     }
     s += "}";
     return s;
@@ -180,9 +190,9 @@ std::string PTTable::toString() const
 
 bool PTTable::unserialize(Buffer* buffer)
 {
-    for(DataVec::iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
+    for (auto p : datas_)
     {
-        if (!(*ix)->unserialize(buffer))
+        if (!p->unserialize(buffer))
             return false;
     }
     return true;
@@ -196,7 +206,7 @@ void PTTable::addData(PTData* data)
 
 void PTTable::delData(PTData* data)
 {
-    for(DataVec::iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
+    for(PTDataVec::iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
     {
         if (*ix == data)
         {
@@ -207,12 +217,18 @@ void PTTable::delData(PTData* data)
     }
 }
 
+void PTTable::resetValue()
+{
+    for (auto p : datas_)
+    {
+        p->resetValue();
+    }
+}
+
 void PTTable::clear()
 {
-    PTData* p;
-    for(DataVec::iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
+    for (auto p : datas_)
     {
-        p = (*ix);
         if (p)
             p->release();
     }
@@ -244,7 +260,7 @@ std::string Protocol::toString() const
 // PTDataCreator
 PTDataCreator::PTDataCreator()
 {
-    using pt = PTValueType ;
+    using pt = PTType ;
     api_table_[toint(pt::INT8)] = &PTDataCreator::createValue<int8_t>;
     api_table_[toint(pt::UINT8)] = &PTDataCreator::createValue<uint8_t>;
     api_table_[toint(pt::INT16)] = &PTDataCreator::createValue<int16_t>;
@@ -264,13 +280,13 @@ PTDataCreator::~PTDataCreator()
 {
 }
 
-PTData* PTDataCreator::createPTData(PTValueType value_type)
+PTData* PTDataCreator::createPTData(PTType type)
 {
-    DCHECK(value_type != PTValueType::NONE && value_type != PTValueType::MAX,
-        "[PTDataCreator](createPTData) value_type invalid!");
-    PTDataAPI func = api_table_[toint(value_type)];
+    DCHECK(type != PTType::NONE && type != PTType::MAX,
+        "[PTDataCreator](createPTData) type invalid!");
+    PTDataAPI func = api_table_[toint(type)];
     PTData* data = ((this->*(func))());
-    data->setValueType(value_type);
+    data->setType(type);
     return data;
 }
 

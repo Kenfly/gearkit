@@ -3,14 +3,15 @@
 #include "lua.hpp"
 #include "LuaIntf/LuaIntf.h"
 #include "Logger.h"
+#include "Functions.h"
 
-using pt = kit::PTValueType;
+using pt = kit::PTType;
 
 /*
  * 一项配置用 
- * {key, value_type}
+ * {key, type}
  * table : {key, TABLE, table}
- * array : {key, ARRAY, table or value_type}
+ * array : {key, ARRAY, table or type}
  * register a protocol by table
  *  {
  *      {"key1", TYPE_INT32, true},
@@ -71,17 +72,17 @@ bool LuaProtocol::registerTable(kit::PTTable* p, const LuaIntf::LuaRef* table)
             return false;
         }
         std::string key = v.get<std::string>(1);
-        kit::PTValueType value_type = static_cast<kit::PTValueType>(v.get<uint8_t>(2));
-        kit::PTData* info = creator_->createPTData(value_type);
+        kit::PTType type = static_cast<kit::PTType>(v.get<uint8_t>(2));
+        kit::PTData* info = creator_->createPTData(type);
         if (info == NULL)
         {
-            ERR("[LuaProtocol](registerTable) error type! key:%s, type:%d", key.c_str(), value_type);
+            ERR("[LuaProtocol](registerTable) error type! key:%s, type:%d", key.c_str(), type);
             return false;
         }
         info->setKey(key);
         p->addData(info);
 
-        if (value_type == kit::PTValueType::TABLE)
+        if (type == kit::PTType::TABLE)
         {
             auto sub_table = v.get<LuaIntf::LuaRef>(3);
             if (!sub_table.isTable())
@@ -94,7 +95,7 @@ bool LuaProtocol::registerTable(kit::PTTable* p, const LuaIntf::LuaRef* table)
                 return false;
             }
         }
-        else if (value_type == kit::PTValueType::ARRAY)
+        else if (type == kit::PTType::ARRAY)
         {
             if (len < 3)
             {
@@ -104,14 +105,14 @@ bool LuaProtocol::registerTable(kit::PTTable* p, const LuaIntf::LuaRef* table)
             auto item_v = v.get<LuaIntf::LuaRef>(3);
             if (item_v.isTable())
             {
-                auto item_template = creator_->createPTData(kit::PTValueType::ARRAY);
+                auto item_template = creator_->createPTData(kit::PTType::ARRAY);
                 if (!registerTable(reinterpret_cast<kit::PTTable*>(item_template), &item_v))
                     return false;
                 (reinterpret_cast<kit::PTArray*>(info))->setTemplate(item_template);
             }
             else
             {
-                kit::PTValueType item_type = static_cast<kit::PTValueType>(item_v.toValue<uint8_t>());
+                kit::PTType item_type = static_cast<kit::PTType>(item_v.toValue<uint8_t>());
                 auto item_template = creator_->createPTData(item_type);
                 if (item_template == NULL)
                 {
@@ -136,20 +137,7 @@ void LuaProtocol::unserializeFromTable(lua_State* L)
         ERR("[LuaProtocol](serializeFromTable) param not a table! pid:%d", pid_);
         return;
     }
-    if (!unserializeTable(this, &table))
-    {
-        ERR("[LuaProtocol](unserializeFromTable) unserialize error! pid:%d", pid_);
-        return;
-    }
-}
-
-bool LuaProtocol::unserializeTable(kit::PTTable* p, const LuaIntf::LuaRef* table)
-{
-    for (DataVec::iterator ix = datas_.begin(); ix != datas_.end(); ++ix)
-    {
-        creator_->setDataValue(*ix, table);
-    }
-    return true;
+    creator_->setDataValue(this, &table);
 }
 
 int32_t LuaProtocol::serializeToTable(lua_State* L)
@@ -161,52 +149,68 @@ int32_t LuaProtocol::serializeToTable(lua_State* L)
 // creator
 LuaPTCreator::LuaPTCreator()
 {
-    value_apis_[toint(pt::INT8)] = &LuaPTCreator::unsValue<int8_t>;
-    value_apis_[toint(pt::UINT8)] = &LuaPTCreator::unsValue<uint8_t>;
-    value_apis_[toint(pt::INT16)] = &LuaPTCreator::unsValue<int16_t>;
-    value_apis_[toint(pt::UINT16)] = &LuaPTCreator::unsValue<uint16_t>;
-    value_apis_[toint(pt::INT32)] = &LuaPTCreator::unsValue<int32_t>;
-    value_apis_[toint(pt::UINT32)] = &LuaPTCreator::unsValue<uint32_t>;
-    value_apis_[toint(pt::INT64)] = &LuaPTCreator::unsValue<int64_t>;
-    value_apis_[toint(pt::UINT64)] = &LuaPTCreator::unsValue<uint64_t>;
-    value_apis_[toint(pt::VARINT)] = &LuaPTCreator::unsValue<uint32_t>;
-    value_apis_[toint(pt::STRING)] = &LuaPTCreator::unsValue<std::string>;
+    value_apis_[kit::toint(pt::INT8)] = &LuaPTCreator::unsValue<int8_t>;
+    value_apis_[kit::toint(pt::UINT8)] = &LuaPTCreator::unsValue<uint8_t>;
+    value_apis_[kit::toint(pt::INT16)] = &LuaPTCreator::unsValue<int16_t>;
+    value_apis_[kit::toint(pt::UINT16)] = &LuaPTCreator::unsValue<uint16_t>;
+    value_apis_[kit::toint(pt::INT32)] = &LuaPTCreator::unsValue<int32_t>;
+    value_apis_[kit::toint(pt::UINT32)] = &LuaPTCreator::unsValue<uint32_t>;
+    value_apis_[kit::toint(pt::INT64)] = &LuaPTCreator::unsValue<int64_t>;
+    value_apis_[kit::toint(pt::UINT64)] = &LuaPTCreator::unsValue<uint64_t>;
+    value_apis_[kit::toint(pt::VARINT)] = &LuaPTCreator::unsValue<uint32_t>;
+    value_apis_[kit::toint(pt::STRING)] = &LuaPTCreator::unsValue<std::string>;
 
-    value_apis_[toint(pt::ARRAY)] = &LuaPTCreator::unsArray;
-    value_apis_[toint(pt::TABLE)] = &LuaPTCreator::unsTable;
+    value_apis_[kit::toint(pt::ARRAY)] = &LuaPTCreator::unsArray;
+    value_apis_[kit::toint(pt::TABLE)] = &LuaPTCreator::unsTable;
 }
 
 LuaPTCreator::~LuaPTCreator()
 {
 }
 
-void LuaPTCreator::setDataValue(kit::PTData* data, const LuaIntf::LuaRef* table)
+void LuaPTCreator::setDataValue(kit::PTData* data, const LuaIntf::LuaRef* t)
 {
-    pt type = data->getValueType();
-    DCHECK(type != pt::ARRAY && type != pt::TABLE, 
-        "[LuaPTCreator](setDataValue) value type invalid!");
-    PTValueAPI func = value_apis_[toint(type)];
-    ((this->*(func))(data, table));
+    pt type = data->getType();
+    DCHECK(type != pt::NONE && type != pt::MAX,
+        kit::formatString("[LuaPTCreator](setDataValue) invalid type: %d", kit::toint(type)).c_str());
+    PTValueAPI func = value_apis_[kit::toint(type)];
+    ((this->*(func))(data, t));
 }
 
 template<typename T>
-void LuaPTCreator::unsValue(kit::PTData* data, const LuaIntf::LuaRef* table)
+void LuaPTCreator::unsValue(kit::PTData* data, const LuaIntf::LuaRef* t)
 {
     kit::PTValue<T>* p = reinterpret_cast<kit::PTValue<T>*>(data);
-    const std::string& key = data->getKey();
-    if (table->has(key))
-    {
-        p->setValue(table->get<T>(key));
-    } else {
-        p->resetValue();
-    }
+    p->setValue(t->toValue<T>());
 }
 
 void LuaPTCreator::unsArray(kit::PTData* data, const LuaIntf::LuaRef* table)
 {
+    kit::PTArray* array = reinterpret_cast<kit::PTArray*>(data);
+    array->clear();
+    int len = table->len();
+    for (int i = 1; i <= len; ++i)
+    {
+        auto ref = table->get(i);
+        auto item = array->cloneItem();
+        setDataValue(item, &ref);
+        array->addData(item);
+    }
 }
 
 void LuaPTCreator::unsTable(kit::PTData* data, const LuaIntf::LuaRef* table)
 {
+    kit::PTTable* t = reinterpret_cast<kit::PTTable*>(data);
+    for (auto p : t->getDatas())
+    {
+        const std::string& key = p->getKey();
+        if (table->has(key))
+        {
+            LuaIntf::LuaRef subtable = table->get(key);
+            setDataValue(p, &subtable);
+        } else {
+            p->resetValue();
+        }
+    }
 }
 

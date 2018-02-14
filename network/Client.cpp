@@ -85,9 +85,9 @@ void IClient::handlePollEvent()
         sock_ev = ev.events;
         if (sock_ev & KIT_POLLIN)
         {
-            //FIXME: 收到协议包处理
-            //TODO
-            //handleRecvPackets(sock);
+            Session* sd = sock->getSession();
+            if (sd)
+                handleSessionRecv(sd);
         }
         if (sock_ev & KIT_POLLOUT)
         {

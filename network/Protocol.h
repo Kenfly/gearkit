@@ -9,7 +9,7 @@
 
 namespace kit {
 
-enum class PTValueType : uint8_t
+enum class PTType : uint8_t
 {
     NONE,
     INT8,
@@ -28,21 +28,7 @@ enum class PTValueType : uint8_t
     MAX,
 };
 
-enum class PTDataType : uint8_t
-{
-    NONE,
-    VALUE,
-    ARRAY,
-    TABLE,
-    PROTOCOL,
-};
-
-inline constexpr int toint(PTValueType t)
-{
-    return static_cast<int>(t);
-}
-
-inline constexpr int toint(PTDataType t)
+inline constexpr int toint(PTType t)
 {
     return static_cast<int>(t);
 }
@@ -52,8 +38,8 @@ class PTData : public Ref
 {
 public:
     virtual ~PTData() {}
-
-    virtual PTDataType getType() const { return PTDataType::NONE; }
+    virtual PTType getType() const { return PTType::NONE; }
+    virtual void setType(PTType type) {}
 
     virtual bool serialize(Buffer* buffer) const = 0;
     virtual bool unserialize(Buffer* buffer) = 0;
@@ -61,13 +47,11 @@ public:
     const std::string& getKey() const { return key_; }
     void setKey(const std::string& k) { key_ = k; }
 
-    PTValueType getValueType() const { return value_type_; }
-    void setValueType(PTValueType type) { value_type_ = type; }
+    virtual void resetValue() {}
 
     virtual PTData* clone() const { return NULL; }
 
 protected:
-    PTValueType value_type_;
     std::string key_;
 };
 
@@ -77,12 +61,12 @@ class PTValue : public PTData
 {
 public:
     KIT_CREATE_FUNC(PTValue<T>)
+    virtual PTType getType() const { return type_; }
+    virtual void setType(PTType type) { type_ = type; }
 
-    virtual PTDataType getType() const { return PTDataType::VALUE; }
     const T& getValue() const { return value_; }
     void setValue(const T& v) { value_ = v; }
     void resetValue() { value_ = 0; }
-    void reset();
 
     virtual bool serialize(Buffer* buffer) const;
     virtual bool unserialize(Buffer* buffer);
@@ -91,6 +75,7 @@ public:
     virtual std::string toString() const;
 
 protected:
+    PTType type_;
     T value_;
 };
 
@@ -110,6 +95,8 @@ public:
     virtual PTData* clone() const;
 };
 
+typedef std::vector<PTData*> PTDataVec;
+
 // array
 class PTArray : public PTData
 {
@@ -119,21 +106,24 @@ public:
     PTArray();
     virtual ~PTArray();
 
-    virtual PTDataType getType() const { return PTDataType::ARRAY; }
+    virtual PTType getType() const { return PTType::ARRAY; }
+
     virtual bool serialize(Buffer* buffer) const; 
     virtual bool unserialize(Buffer* Buffer);
     virtual PTData* clone() const;
     virtual std::string toString() const;
+    virtual void resetValue();
 
     void addData(PTData* data);
     // 设置模版
     void setTemplate(PTData* data);
+    PTData* cloneItem();
     void clear();
 
+    const PTDataVec& getDatas() const { return datas_; }
 protected:
-    typedef std::vector<PTData*> DataVec;
-    DataVec datas_;
-    PTData* item_template;
+    PTDataVec datas_;
+    PTData* item_template_;
 };
 
 // Table
@@ -144,7 +134,7 @@ public:
 
     virtual ~PTTable();
 
-    virtual PTDataType getType() const { return PTDataType::TABLE; }
+    virtual PTType getType() const { return PTType::TABLE; }
 
     virtual bool serialize(Buffer* buffer) const;
     virtual bool unserialize(Buffer* buffer);
@@ -153,11 +143,12 @@ public:
 
     void addData(PTData* data);
     void delData(PTData* data);
+    virtual void resetValue();
     virtual void clear();
 
+    const PTDataVec& getDatas() const { return datas_; }
 protected:
-    typedef std::vector<PTData*> DataVec;
-    DataVec datas_;
+    PTDataVec datas_;
 };
 
 // protocol
@@ -167,8 +158,6 @@ public:
     KIT_CREATE_FUNC(Protocol)
     Protocol();
     virtual ~Protocol();
-
-    virtual PTDataType getType() const { return PTDataType::PROTOCOL; }
 
     virtual void init(int32_t pid);
 
@@ -190,7 +179,7 @@ public:
     PTDataCreator();
     virtual ~PTDataCreator();
 
-    PTData* createPTData(PTValueType value_type);
+    PTData* createPTData(PTType type);
 private:
     template<typename T>
     PTData* createValue();
@@ -201,7 +190,7 @@ private:
     PTData* createTable();
 
     typedef PTData* (PTDataCreator::* PTDataAPI)();
-    PTDataAPI api_table_[toint(PTValueType::MAX)];
+    PTDataAPI api_table_[toint(PTType::MAX)];
 };
 
 

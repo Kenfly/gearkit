@@ -1,6 +1,7 @@
 #include "Server.h"
 #include "netsys.h"
 #include "Socket.h"
+#include "Session.h"
 #include "SockAddr.h"
 #include "Thread.h"
 #include "Logger.h"
@@ -113,8 +114,14 @@ void IServer::handlePollEvent()
         {
             // 收到协议包处理
             Session* sd = sock->getSession();
-            if (sd)
-                handleSession(sock->getSession());
+            if (!sd)
+            {
+                // TODO: deal msg before session
+                sd = Session::create();
+                sd->setSocket(sock);
+                addSession(sd);
+            }
+            handleSessionRecv(sd);
         }
         if (sock_ev & KIT_POLLOUT)
         {

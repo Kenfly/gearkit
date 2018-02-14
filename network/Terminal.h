@@ -25,10 +25,11 @@ public:
 	Terminal();
     virtual ~Terminal();
 
-    virtual void handleSession(Session* session);
+    void handleSessionRecv(Session* session);
+    void handleSessionSend(Session* session);
 
-    virtual void sendProtocol(SessionID sid, const Protocol* pto);
-    virtual void recvProtocol(SessionID sid, const Protocol* pto);
+    void sendProtocol(SessionID sid, const Protocol* pto);
+    void recvProtocol(SessionID sid, const Protocol* pto);
 
     Protocol* getProtocol(ProtocolID pid) const;
     void addProtocol(ProtocolID pid, Protocol* pto);
@@ -48,6 +49,9 @@ protected:
 
     typedef Map<ProtocolID, Protocol*, PROTOCOL_LENGTH> ProtocolMap;
     ProtocolMap protocol_map_;
+
+    // ready to write
+    std::vector<Session*> out_vec_;
 };
 
 } // namespcae kit

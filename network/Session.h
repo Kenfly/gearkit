@@ -28,8 +28,12 @@ public:
 
     bool sendPacket(Packet* pack);
     bool recvPacket(Packet* pack);
+    bool flush();
 
-    PacketQue& getPackets() { return recv_packets_; }
+    PacketQue& getRecvPackets() { return recv_packets_; }
+    PacketQue& getSendPackets() { return send_packets_; }
+
+    bool out_dirty = false;
 protected:
     SessionID sid_;
     // 连接上socket的时间
