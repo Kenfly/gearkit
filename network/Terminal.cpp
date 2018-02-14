@@ -22,6 +22,24 @@ bool Terminal::baseInit()
     return true;
 }
 
+void Terminal::update()
+{
+	size_t length = out_vec_.size();
+	for (size_t i = 1; i != length;)
+	{
+		Session* sd = out_vec_[i];
+		handleSessionSend(sd);
+		if (!sd->out_dirty)
+		{
+			out_vec_[i] = out_vec_[length];
+			out_vec_[length - 1] = ds;
+			--length;
+		}
+		else
+			++i;
+	}
+}
+
 void Terminal::handleSessionRecv(Session* session)
 {
     PacketQue& que = session->getRecvPackets();
@@ -47,7 +65,8 @@ void Terminal::handleSessionRecv(Session* session)
 
 void Terminal::handleSessionSend(Session* session)
 {
-    //session->flush();
+	if (! session->flush())
+		session->out_dirty = false
 }
 
 void Terminal::addProtocol(ProtocolID pid, Protocol* pto)
