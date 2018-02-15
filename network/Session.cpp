@@ -54,7 +54,7 @@ bool Session::recvPacket(Packet* pack)
 
 bool Session::flush()
 {
-    Pakcet* pk = nullptr;
+    Packet* pk = nullptr;
     while (!send_packets_.front(pk))
     {
         if (!socket_->sendPacket(pk))
