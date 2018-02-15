@@ -57,10 +57,11 @@ bool Session::flush()
     Packet* pk = nullptr;
     while (!send_packets_.front(pk))
     {
-        if (!socket_->sendPacket(pk))
-            break;
+        if (socket_->sendPacket(pk) != 0)
+            return false;
         send_packets_.pop(pk);
     }
+	return true;
 }
 
 } // namespace kit
