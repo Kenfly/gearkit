@@ -18,8 +18,17 @@
 
 namespace kit {
 
-const uint16_t CONNECTION_LIMIT = 0x7FFF;
-const uint16_t SERVER_EVENT_CNT = 512;
+#ifndef SERVER_LISTEN_LENGTH
+#define SERVER_LISTEN_LENGTH 50
+#endif
+
+#ifndef SERVER_CONNECTION_LENGTH
+#define SERVER_CONNECTION_LENGTH 0x7FFF
+#endif
+
+#ifndef SERVER_EVENT_LENGTH
+#define SERVER_EVENT_LENGTH 512
+#endif
 
 class Socket;
 class Mutex;
@@ -39,6 +48,7 @@ protected:
 
     // 主线程处理pollevent
     virtual void handlePollEvent();
+    void handleSocketRecv(Socket* sock);
 
     virtual int32_t addSocket(SocketID fd, Socket* sock = NULL);
     virtual int32_t delSocket(SocketID fd);
@@ -50,12 +60,10 @@ protected:
     Mutex* del_socket_mutex_;
 
     // socket list
-    //typedef Array<Socket*, CONNECTION_LIMIT> SocketArray;
-    //SocketArray socket_array_;
-    Socket* sockets_[CONNECTION_LIMIT];
+    Socket* sockets_[SERVER_CONNECTION_LENGTH];
 
     // event que
-    typedef Queue<PollEvent, SERVER_EVENT_CNT> EventQue;
+    typedef Queue<PollEvent, SERVER_EVENT_LENGTH> EventQue;
     EventQue event_que_;
 };
 

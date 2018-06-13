@@ -44,12 +44,12 @@ public:
         return true;
     }
 
-    int count()
+    int count() const
     {
         return count_;
     }
 
-    int rest()
+    int rest() const
     {
         return Length - count_;
     }
@@ -89,14 +89,6 @@ public:
         ++count_;
         que_[count_] = value;
         adjust(count_);
-        return true;
-    }
-
-    bool front(Type& value)
-    {
-        if (count_ == 0)
-            return false;
-        value = que_[1];
         return true;
     }
 

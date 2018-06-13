@@ -2,16 +2,18 @@
 #define __KIT_CLIENT_H__
 
 #include "Terminal.h"
-#include "Queue.h"
 #include "netsys.h"
+#include "Queue.h"
 
 namespace kit {
 
+class ClientStateMgr;
 class Socket;
 class Packet;
-class IPacketHandler;
 
-const uint16_t CLIENT_EVENT_CNT = 128;
+#ifndef CLIENT_EVENT_LENGTH
+#define CLIENT_EVENT_LENGTH 128
+#endif
 
 class IClient : public Terminal
 {
@@ -23,18 +25,22 @@ public:
 
     // 每帧调用
     virtual void update();
+    void sendProtocol(const Protocol* pto);
 
-    void sendPacket(Packet* buf);
+    Socket* getSocket(void) const { return socket_; }
 protected:
-    virtual void handlePollEvent();
+    virtual bool baseInit();
+    void handlePollEvent();
+    void handleSocketRecv(Socket* sock);
 protected:
+    ClientStateMgr* state_mgr_;
 	Socket* socket_;
+    Session* session_;
 
-    IPacketHandler* packet_handler_;
     bool active_;
 
     // event que
-    typedef Queue<PollEvent, CLIENT_EVENT_CNT> EventQue;
+    typedef Queue<PollEvent, CLIENT_EVENT_LENGTH> EventQue;
     EventQue event_que_;
 };
 

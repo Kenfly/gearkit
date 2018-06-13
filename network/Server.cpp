@@ -3,12 +3,11 @@
 #include "Socket.h"
 #include "Session.h"
 #include "SockAddr.h"
+#include "Mutex.h"
 #include "Thread.h"
 #include "Logger.h"
 
 namespace kit {
-
-const int32_t MAX_LISTEN = 50;
 
 IServer::IServer()
 : socket_(NULL)
@@ -34,7 +33,7 @@ bool IServer::baseInit()
 
     del_socket_mutex_ = Mutex::create(false);
 
-    memset(sockets_, 0, sizeof(Socket*) * CONNECTION_LIMIT);
+    memset(sockets_, 0, sizeof(Socket*) * SERVER_CONNECTION_LENGTH);
 
     return true;
 }
@@ -73,7 +72,7 @@ int32_t IServer::startup(const char* ip, int32_t port)
     }
 
     // socket listen
-    if (sock->listen(MAX_LISTEN) < 0)
+    if (sock->listen(SERVER_LISTEN_LENGTH) < 0)
     {
         ERR("[IServer](startup) listen error! %s, %d", ip, port);
         return -4;
@@ -113,13 +112,16 @@ void IServer::handlePollEvent()
         if (sock_ev & KIT_POLLIN)
         {
             // 收到协议包处理
-            Session* sd = sock->getSession();
-            if (!sd)
+            Session* session = sock->getSession();
+            if (session)
             {
+                handleSessionRecv(session);
                 // TODO: deal msg before session
                 sd = Session::create();
                 sd->setSocket(sock);
                 addSession(sd);
+            } else {
+                handleSocketRecv(sock);
             }
             handleSessionRecv(sd);
         }
@@ -143,10 +145,22 @@ void IServer::handlePollEvent()
     }
 }
 
+// 处理session前的协议
+void IServer::handleSocketRecv(Socket* sock)
+{
+    PacketQue& packet_que = sock->getRecvQueue();
+    Packet* packet;
+    int count = packet_que.count();
+    for (int i = 0; i != count; ++i)
+    {
+        if (!packet_que.pop(packet))
+            break;
+    }
+}
+
 void IServer::update()
 {
     Terminal::update();
-
     handlePollEvent();
 }
 
@@ -208,7 +222,7 @@ int32_t IServer::shutdown()
 	}
 
     Socket* sock;
-    for (int i = 0; i != CONNECTION_LIMIT; ++i)
+    for (int i = 0; i != SERVER_CONNECTION_LENGTH; ++i)
     {
         sock = sockets_[i];
         if (sock)

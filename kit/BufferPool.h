@@ -2,32 +2,36 @@
 #define __KIT_BUFFER_POOL_H__
 
 //非线程安全，线程里不要调用create/destroy
-//buffer大小只有: 8, 16, 32, 64, 128, 512, 1024...
+//buffer大小只有: 1, 2, 4, 8, 16, 32, 64, 128, 512, 1024...
 
 #include "Buffer.h"
-#include "Queue.h"
+#include "SyncQueue.h"
 #include "Singleton.h"
 
 #ifndef BUFFER_POOL_SIZE
 #define BUFFER_POOL_SIZE (200)
 #endif
+#ifndef BUFFER_QUEUE_CNT
+#define BUFFER_QUEUE_CNT (10)
+#endif
 
 namespace kit {
-
-const int32_t BUFFER_QUEUE_CNT = 8;
 
 class BufferPool : public Ref
 {
 public:
+    KIT_CREATE_FUNC(BufferPool)
+
     BufferPool();
     virtual ~BufferPool();
+    virtual bool baseInit();
 
     Buffer* createBuffer(size_t size);
     void destroyBuffer(Buffer* buffer);
 
     void clear();
 private:
-    typedef Queue<Buffer*, BUFFER_POOL_SIZE> BufferQue;
+    typedef SyncQueue<Buffer*, BUFFER_POOL_SIZE> BufferQue;
     BufferQue ques_[BUFFER_QUEUE_CNT];
 };
 
@@ -40,10 +44,8 @@ public:
     virtual bool baseInit();
 
     BufferPool* getPool() const { return pool_; }
-    BufferPool* getThreadPool() const { return thread_pool_; }
 private:
     BufferPool* pool_;
-    BufferPool* thread_pool_;
 };
 
 } // namespace kit
@@ -52,9 +54,6 @@ private:
 
 // buf pool
 #define g_BufPool (g_BufPoolMng->getPool())
-
-// 这个pool专门给线程单向之间交流
-#define g_BufPoolThread (g_BufPoolMng->getThreadPool())
 
 #endif
 

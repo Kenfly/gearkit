@@ -148,6 +148,63 @@ public:
     }
 private:
     ItemList vec_[Length];
+
+/*
+// iterator 
+public:
+    class Iterator
+    {
+    public:
+        Item* node_;
+        int index_;
+        ItemList* vec_;
+        Iterator(ItemList* vec, int index = 0, Item* node = nullptr)
+        : vec_(vec)
+        , index_(index)
+        , node_(node)
+        {
+        }
+        Iterator& operator ++()
+        {
+            node_ = node_->next;
+            return *this;
+        }
+        bool operator ==(const Iterator& it)
+        {
+            return vec_ == it.vec_ && index_ == it.index_ && node_ == it.node_;
+        }
+        bool operator !=(const Iterator& it)
+        {
+            return !((*this) == it);
+        }
+        Type& operator *()
+        {
+            return node_->value;
+        }
+    private:
+        void next()
+        {
+            if (node_ && node_->next)
+            {
+                node_ = node_->next;
+                return
+            }
+            while (index_ < Length)
+            {
+            }
+        }
+    };
+
+    Iterator begin() const
+    {
+        return Iterator(vec_);
+    }
+
+    Iterator end() const
+    {
+        return Iterator(vec_, Length);
+    }
+*/
 };
 
 } // namespace kit

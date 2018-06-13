@@ -16,8 +16,12 @@ set(HEADER_FILE
     BufferPool.h
     Logger.h
     Timer.h
+    Mutex.h
     Thread.h
     Functions.h
+    State.h
+    SyncQueue.h
+    platform/${suffix}/Mutex_${suffix}.h
     platform/${suffix}/Thread_${suffix}.h
 )
 
@@ -29,8 +33,11 @@ Set(SOURCE_FILE
     BufferPool.cpp
     Logger.cpp
     Timer.cpp
+    Mutex.cpp
     Thread.cpp
     Functions.cpp
+    State.cpp
+    platform/${suffix}/Mutex_${suffix}.cpp
     platform/${suffix}/Thread_${suffix}.cpp
 )
 

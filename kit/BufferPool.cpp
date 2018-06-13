@@ -11,6 +11,11 @@ BufferPool::~BufferPool()
     clear();
 }
 
+bool BufferPool::baseInit()
+{
+    return true;
+}
+
 Buffer* BufferPool::createBuffer(size_t size)
 {
     int index = 0;
@@ -23,7 +28,7 @@ Buffer* BufferPool::createBuffer(size_t size)
     }
 
     Buffer* buf = NULL;
-    if (index < BUFFER_QUEUE_CNT || !ques_[index].pop(buf))
+    if (index >= BUFFER_QUEUE_CNT || !ques_[index].pop(buf))
     {
 		buf = Buffer::create(false);
 		buf->init(fix_size);
@@ -45,7 +50,7 @@ void BufferPool::destroyBuffer(Buffer* buffer)
         ++index;
         fix_size <<= 1;
     }
-    if (index < BUFFER_QUEUE_CNT || !ques_[index].push(buffer))
+    if (index >= BUFFER_QUEUE_CNT || !ques_[index].push(buffer))
     {
 		buffer->release();
     }
@@ -70,20 +75,17 @@ void BufferPool::clear()
 
 BufferPoolManager::BufferPoolManager()
 : pool_(NULL)
-, thread_pool_(NULL)
 {
 }
 
 BufferPoolManager::~BufferPoolManager()
 {
     KIT_SAFE_RELEASE(pool_)
-    KIT_SAFE_RELEASE(thread_pool_)
 }
 
 bool BufferPoolManager::baseInit()
 {
-    pool_ = new BufferPool();
-    thread_pool_ = new BufferPool();
+    pool_ = BufferPool::create(false);
     return true;
 }
 

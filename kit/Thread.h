@@ -6,29 +6,7 @@
 
 namespace kit {
 
-// 锁
-class IMutex : public Ref
-{
-public:
-    IMutex() {}
-    virtual ~IMutex() {}
-
-    virtual int32_t lock() = 0;
-    virtual int32_t unlock() = 0;
-    virtual int32_t tryLock() = 0;
-};
-
-class AutoLock
-{
-public:
-    AutoLock(IMutex* mutex);
-    ~AutoLock();
-protected:
-    IMutex* mutex_;
-};
-
-////////////////////////////////////////////
-
+class IMutex;
 // 线程函数
 struct ThreadHandler
 {

@@ -23,6 +23,9 @@
 #define NULL 0
 #endif
 
+// should define to NULL when lower than c++11
+//#define nullptr NULL
+
 #ifdef KIT_DEBUG_MODE
 
 #define DPART(gram) gram

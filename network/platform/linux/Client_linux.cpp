@@ -87,7 +87,7 @@ void Client::handleThread()
     int32_t rest = 0;
     int32_t epoll_fd = poll_fd_;
 
-    struct epoll_event events[CLIENT_EVENT_CNT];
+    struct epoll_event events[CLIENT_EVENT_LENGTH];
     memset(&events, 0, sizeof(events));
 
     PollEvent out_ev;

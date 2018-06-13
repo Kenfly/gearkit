@@ -24,20 +24,8 @@ bool Terminal::baseInit()
 
 void Terminal::update()
 {
-	size_t length = out_vec_.size();
-	for (size_t i = 1; i != length;)
-	{
-		Session* sd = out_vec_[i];
-		handleSessionSend(sd);
-		if (!sd->out_dirty)
-		{
-			out_vec_[i] = out_vec_[length];
-			out_vec_[length - 1] = ds;
-			--length;
-		}
-		else
-			++i;
-	}
+    Ref::update();
+    handleOutSession();
 }
 
 void Terminal::handleSessionRecv(Session* session)
@@ -50,30 +38,51 @@ void Terminal::handleSessionRecv(Session* session)
         if (!que.pop(pack))
             break;
         ProtocolID pid = pack->getPID();
-        Protocol* pto;
-        if (!protocol_map_.get(pid, pto))
+        Protocol* protocol;
+        if (!protocol_map_.get(pid, protocol))
         {
             pack->release();
             //TODO: not exist protocol
             continue;
         }
-        pto->unserialize(pack->getBuffer());
+        protocol->unserialize(pack->getBuffer());
         pack->release();
-        recvProtocol(session->getID(), pto);
+        recvProtocol(session->getID(), protocol);
     }
 }
 
 void Terminal::handleSessionSend(Session* session)
 {
 	if (! session->flush())
-		session->out_dirty = false
+		session->out_dirty = false;
 }
 
-void Terminal::addProtocol(ProtocolID pid, Protocol* pto)
+void Terminal::handleOutSession()
+{
+	size_t length = out_vec_.size();
+    if (length == 0)
+        return;
+	for (size_t i = 0; i != length;)
+	{
+		Session* session = out_vec_[i];
+		handleSessionSend(session);
+		if (!session->out_dirty)
+		{
+			out_vec_[i] = out_vec_[length];
+			out_vec_[length - 1] = session;
+			--length;
+		}
+		else
+			++i;
+	}
+    out_vec_.resize(length);
+}
+
+void Terminal::addProtocol(ProtocolID pid, Protocol* protocol)
 {
     delProtocol(pid);
-    protocol_map_.set(pid, pto);
-    KIT_SAFE_RETAIN(pto);
+    protocol_map_.set(pid, protocol);
+    KIT_SAFE_RETAIN(protocol);
 }
 
 void Terminal::delProtocol(ProtocolID pid)
@@ -85,16 +94,16 @@ void Terminal::delProtocol(ProtocolID pid)
 
 Protocol* Terminal::getProtocol(ProtocolID pid) const
 {
-    Protocol* pto = NULL;
-    protocol_map_.get(pid, pto);
-    return pto;
+    Protocol* protocol = NULL;
+    protocol_map_.get(pid, protocol);
+    return protocol;
 }
 
 Session* Terminal::getSession(SessionID sid) const
 {
-    Session* sd = NULL;
-    session_map_.get(sid, sd);
-    return sd;
+    Session* session = NULL;
+    session_map_.get(sid, session);
+    return session;
 }
 
 void Terminal::addSession(Session* session)
@@ -112,24 +121,31 @@ void Terminal::delSession(SessionID sid)
     });
 }
 
-void Terminal::sendProtocol(SessionID sid, const Protocol* pto)
+void Terminal::sendProtocol(SessionID sid, const Protocol* protocol)
 {
-    Session* sd = getSession(sid);
-    if (sd == NULL)
+    Session* session = getSession(sid);
+    if (session == NULL)
     {
-        ERR("[Terminal](sendProtocol) no session:%d\n", sid);
+        ERR("[Terminal](sendProtocol) no session:%d", sid);
         return;
     }
-    Packet* pack = Packet::create();
-    Buffer* buf = g_BufPool->createBuffer(pto->getBudgetSize());
-    pto->serialize(buf);
-    pack->init(pto->getPID(), buf);
-    bool clear_out = sd->sendPacket(pack);
+    sessionSendProtocol(session, protocol);
 }
 
-void Terminal::recvProtocol(SessionID sid, const Protocol* pto)
+void Terminal::sessionSendProtocol(Session* session, const Protocol* protocol)
 {
-    DBG(pto->toString().c_str());
+    Packet* pack = Packet::create();
+    Buffer* buf = g_BufPool->createBuffer(protocol->getBudgetSize());
+    protocol->serialize(buf);
+    pack->init(protocol->getPID(), buf);
+    bool clear_out = session->sendPacket(pack);
+    if (!clear_out)
+        out_vec_.push_back(session);
+}
+
+void Terminal::recvProtocol(SessionID sid, const Protocol* protocol)
+{
+    DBG(protocol->toString().c_str());
 }
 
 void Terminal::clearProtocols()

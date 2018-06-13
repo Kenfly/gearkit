@@ -92,8 +92,9 @@ private:
     Item* head_;
     Item* tail_;
     int count_;
+
+// iterator
 public:
-    // iterator
     class Iterator
     {
     public:
@@ -119,10 +120,12 @@ public:
             return node_->value;
         }
     };
+
     Iterator begin() const
     {
         return Iterator(head_);
     }
+
     Iterator end() const
     {
         return Iterator(NULL);

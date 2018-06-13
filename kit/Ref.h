@@ -12,25 +12,27 @@ class Ref
 {
 protected:
     Ref();
-    virtual bool baseInit(void) { return true; }
 
     unsigned int reference_count_;
 public:
     virtual ~Ref();
 
+    virtual bool baseInit(void) { return true; }
     void retain();
     void release();
 
     virtual void update();
 
     Ref* autoRelease();
-    unsigned int getReferenceCount() const { return reference_count_; };
+    unsigned int getReferenceCount() const { return reference_count_; }
 
     void addChild(Ref* obj);
     void delChild(Ref* obj);
     void clearChildren();
     virtual void removeFromParent();
 
+    template<typename T>
+    T* to() const { return reinterpret_cast<T*>(this); }
     virtual std::string toString() const { return "----[Ref]----"; }
 private:
     typedef std::vector<Ref*> RefVec;

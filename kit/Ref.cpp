@@ -6,7 +6,7 @@ namespace kit {
 
 Ref::Ref()
 : reference_count_(1)
-, parent_(NULL)
+, parent_(nullptr)
 {
 }
 
@@ -62,7 +62,7 @@ void Ref::delChild(Ref* child)
         if ((*ix) == child)
         {
             children_.erase(ix);
-            child->parent_ = NULL;
+            child->parent_ = nullptr;
             child->release();
             break;
         }
@@ -73,7 +73,7 @@ void Ref::clearChildren()
 {
     for(RefVec::iterator ix = children_.begin(); ix != children_.end(); ++ix)
     {
-        (*ix)->parent_ = NULL;
+        (*ix)->parent_ = nullptr;
         (*ix)->release();
     }
     children_.clear();

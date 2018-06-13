@@ -28,6 +28,8 @@ void Session::setSocket(Socket* sock)
         socket_->release();
     socket_ = sock;
     socket_->retain();
+    socket_->setSession(this);
+    socket_->pullPacketsToSession();
 
     time_ = kit::time();
 }

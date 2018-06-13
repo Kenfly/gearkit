@@ -36,6 +36,7 @@ void Gear::logic()
 
 void Gear::begin()
 {
+    g_BufPool;
     begine_time_ = kit::time() - frame_msec_;
     DBG("[Gear](start) begin_time:%d frame_msec_:%d", begine_time_, frame_msec_);
 

@@ -1,28 +1,35 @@
 #include "Client.h"
+#include "ClientState.h"
 #include "netsys.h"
 #include "Socket.h"
 #include "SockAddr.h"
 #include "Packet.h"
+#include "Session.h"
 #include "Logger.h"
 
 namespace kit {
 
-const int32_t MAX_LISTEN = 50;
-
 IClient::IClient()
-: socket_(NULL)
+: state_mgr_(NULL)
+, socket_(NULL)
+, session_(NULL)
 , active_(false)
 {
 }
 
 IClient::~IClient()
 {
-    if (socket_ != NULL)
-    {
-        socket_->release();
-        socket_ = NULL;
-    }
+    KIT_SAFE_RELEASE(socket_);
+    KIT_SAFE_RELEASE(session_);
+}
 
+bool IClient::baseInit()
+{
+    if (! Terminal::baseInit())
+        return false;
+    state_mgr_ = new ClientStateMgr(this);
+    state_mgr_->setState(ClientState::Inited);
+    return true;
 }
 
 int32_t IClient::startup(const char* ip, int32_t port)
@@ -66,17 +73,19 @@ int32_t IClient::startup(const char* ip, int32_t port)
     socket_ = sock;
 
     active_ = true;
-
+    state_mgr_->setState(ClientState::Connecting);
     return 0;
 }
 
 void IClient::handlePollEvent()
 {
+    int32_t cnt = event_que_.count();
+    if (cnt == 0)
+        return;
     Socket* sock = socket_;
     // 处理epoll事件
     PollEvent ev;
     int32_t sock_ev;
-    int32_t cnt = event_que_.count();
 
     for (int i = 0; i != cnt; ++i)
     {
@@ -85,9 +94,14 @@ void IClient::handlePollEvent()
         sock_ev = ev.events;
         if (sock_ev & KIT_POLLIN)
         {
-            Session* sd = sock->getSession();
-            if (sd)
-                handleSessionRecv(sd);
+            Session* session = socket_->getSession();
+            if (session)
+            {
+                socket_->pullPacketsToSession();
+                handleSessionRecv(session);
+            } else {
+                handleSocketRecv(socket_);
+            }
         }
         if (sock_ev & KIT_POLLOUT)
         {
@@ -96,6 +110,7 @@ void IClient::handlePollEvent()
             if (ret == -1)
             {
                 sock_ev |= KIT_POLLERR;
+            } else {
             }
         }
         if (sock_ev & KIT_POLLERR)
@@ -107,6 +122,19 @@ void IClient::handlePollEvent()
         }
 
         DBG("[Server](update) poll event fd=%d", ev.fd);
+    }
+}
+
+// 处理session前的协议
+void IClient::handleSocketRecv(Socket* sock)
+{
+    PacketQue& packet_que = sock->getRecvQueue();
+    Packet* packet;
+    int count = packet_que.count();
+    for (int i = 0; i != count; ++i)
+    {
+        if (!packet_que.pop(packet))
+            break;
     }
 }
 
@@ -129,10 +157,20 @@ int32_t IClient::shutdown()
     return 0;
 }
 
-void IClient::sendPacket(Packet* buf)
+void IClient::sendProtocol(const Protocol* protocol)
 {
-    socket_->sendPacket(buf);
-    //TODO: may be fail
+    if (!socket_)
+    {
+        ERR("[IClient](sendProtocol) not inited socket!");
+        return;
+    }
+    Session* session = socket_->getSession();
+    if (!session)
+    {
+        ERR("[IClient](sendProtocol) not inited session!");
+        return;
+    }
+    sessionSendProtocol(session, protocol);
 }
 
 }

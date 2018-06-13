@@ -25,8 +25,7 @@ public:
 	Terminal();
     virtual ~Terminal();
 
-    void handleSessionRecv(Session* session);
-    void handleSessionSend(Session* session);
+    virtual void update();
 
     void sendProtocol(SessionID sid, const Protocol* pto);
     void recvProtocol(SessionID sid, const Protocol* pto);
@@ -41,9 +40,15 @@ public:
 
     void clearProtocols();
     void clearSessions();
-protected:
-    virtual bool baseInit();
 
+    void handleSessionRecv(Session* session);
+    void handleSessionSend(Session* session);
+    void handleOutSession();
+protected:
+    void sessionSendProtocol(Session* sd, const Protocol* pto);
+
+    virtual bool baseInit();
+protected:
     typedef Map<SessionID, Session*, SESSION_LENGTH> SessionMap;
     SessionMap session_map_;
 

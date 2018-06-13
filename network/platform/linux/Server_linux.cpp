@@ -15,8 +15,6 @@
 
 namespace kit {
 
-const int32_t MAX_LISTEN = 50;
-
 Server::Server()
 : poll_fd_(0)
 , thread_(NULL)
@@ -36,7 +34,7 @@ int32_t Server::startup(const char* ip, int32_t port)
     active_ = false;
 
     // epoll
-    int32_t poll_fd = epoll_create(CONNECTION_LIMIT);
+    int32_t poll_fd = epoll_create(SERVER_CONNECTION_LENGTH);
     if (poll_fd < 0)
     {
         ERR("[Server](startup) epoll_create error! %s, %d", __FILE__, __LINE__);
@@ -148,7 +146,7 @@ void Server::handleThread()
     int32_t sock_fd = 0;
     int32_t sock_ev = 0;
 
-    struct epoll_event events[SERVER_EVENT_CNT];
+    struct epoll_event events[SERVER_EVENT_LENGTH];
     memset(&events, 0, sizeof(events));
 
     PollEvent out_ev;

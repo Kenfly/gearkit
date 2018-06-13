@@ -16,33 +16,33 @@ typedef std::function<bool(uint32_t)> TimerHandler;
 
 class Timer : public Ref
 {
-struct Node 
-{
-    Node(uint32_t _id, uint32_t _delay, uint32_t _cycle = 0)
-    : id(_id)
-    , delay(_delay)
-    , cycle(_cycle)
-    , next(NULL)
+    struct Node 
     {
-    }
+        Node(uint32_t _id, uint32_t _delay, uint32_t _cycle = 0)
+        : id(_id)
+        , delay(_delay)
+        , cycle(_cycle)
+        , next(NULL)
+        {
+        }
 
-    uint32_t id;
-    union {
-        uint32_t delay;
-        uint8_t bits[4];
+        uint32_t id;
+        union {
+            uint32_t delay;
+            uint8_t bits[4];
+        };
+        uint32_t cycle;
+
+        Node* next;
     };
-    uint32_t cycle;
 
-    Node* next;
-};
-
-struct Wheel
-{
-    Wheel();
-    ~Wheel();
-    uint8_t pos;
-    Node* nodes[512];
-};
+    struct Wheel
+    {
+        Wheel();
+        ~Wheel();
+        uint8_t pos;
+        Node* nodes[512];
+    };
 
 public:
     KIT_CREATE_FUNC(Timer)

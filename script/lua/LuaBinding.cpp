@@ -189,6 +189,7 @@ void register_Class_Terminal(lua_State* L)
             .beginExtendClass<kit::Terminal, kit::Ref>("terminal")
                 .addFunction("add_protocol", &kit::Terminal::addProtocol)
                 .addFunction("del_protocol", &kit::Terminal::delProtocol)
+                .addFunction("send_protocol", &kit::Terminal::sendProtocol)
             .endClass()
         .endModule();
 }
@@ -200,6 +201,7 @@ void register_Class_Client(lua_State* L)
             .beginExtendClass<kit::Client, kit::Terminal>("client")
                 .addStaticFunction("create", &kit::Client::create)
                 .addFunction("startup", &kit::Client::startup)
+                .addFunction("send_protocol", &kit::Client::sendProtocol)
             .endClass()
         .endModule();
 }
