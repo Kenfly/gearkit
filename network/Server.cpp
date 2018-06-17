@@ -115,15 +115,11 @@ void IServer::handlePollEvent()
             Session* session = sock->getSession();
             if (session)
             {
+                sock->pullPacketsToSession();
                 handleSessionRecv(session);
-                // TODO: deal msg before session
-                sd = Session::create();
-                sd->setSocket(sock);
-                addSession(sd);
             } else {
                 handleSocketRecv(sock);
             }
-            handleSessionRecv(sd);
         }
         if (sock_ev & KIT_POLLOUT)
         {
@@ -132,6 +128,7 @@ void IServer::handlePollEvent()
             if (ret == -1)
             {
                 sock_ev |= KIT_POLLERR;
+            } else {
             }
         }
         if (sock_ev & KIT_POLLERR)
@@ -155,7 +152,14 @@ void IServer::handleSocketRecv(Socket* sock)
     {
         if (!packet_que.pop(packet))
             break;
+        //TODO: deal msg before session
     }
+    /*
+    Session* session = Session::create();
+    session->setSocket(sock);
+    addSession(session);
+    handleSessionRecv(session);
+    */
 }
 
 void IServer::update()

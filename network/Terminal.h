@@ -17,7 +17,6 @@ namespace kit {
 
 class Session;
 class Protocol;
-class PacketHandler;
 
 class Terminal : public Ref
 {

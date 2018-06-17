@@ -32,6 +32,8 @@ protected:
     virtual bool baseInit();
     void handlePollEvent();
     void handleSocketRecv(Socket* sock);
+private:
+    Packet* pk_C_CONNECT();
 protected:
     ClientStateMgr* state_mgr_;
 	Socket* socket_;

@@ -45,6 +45,12 @@ public:
     Buffer* buf_;
 };
 
+// socket 协议
+const ProtocolID C_CONNECT = 0x1;
+const ProtocolID S_CONNECT = 0x2;
+const ProtocolID C_RECONNECT = 0x3;
+const ProtocolID S_RECONNECT = 0x4;
+
 } // namespace kit
 
 #endif

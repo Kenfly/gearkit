@@ -324,18 +324,9 @@ int32_t ISocket::sendPacket(Packet* pack)
 
 int32_t ISocket::recvPacket(Packet* pack)
 {
-    /*
-    if (recv_que_.count() == 0 && session_)
-    {
-        session_->recvPacket(pack);
-        return 0;
-    }
-
-    */
     // 放进包队列，等待处理
     KIT_SAFE_RETAIN(pack);
     recv_que_.push(pack);
-    //pullPacketsToSession();
     return 0;
 }
 

@@ -173,5 +173,11 @@ void IClient::sendProtocol(const Protocol* protocol)
     sessionSendProtocol(session, protocol);
 }
 
+// pakcet
+Packet* IClient::pk_C_CONNECT()
+{
+    Buffer* buf = g_BufPool->createBuffer(1);
+}
+
 }
 
