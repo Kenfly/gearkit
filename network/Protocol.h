@@ -2,6 +2,7 @@
 #define __PROTOCOL_H__
 
 #include "Ref.h"
+#include "netsys.h"
 #include "Buffer.h"
 #include <vector>
 #include <string>
@@ -159,7 +160,7 @@ public:
     Protocol();
     virtual ~Protocol();
 
-    virtual void init(int32_t pid);
+    virtual void init(ProtocolID pid);
 
     int32_t getPID() const { return pid_; }
     size_t getBudgetSize() const { return budget_size_; }
@@ -167,7 +168,7 @@ public:
 
     virtual std::string toString() const;
 protected:
-    int32_t pid_;
+    ProtocolID pid_;
     size_t budget_size_ = 64;
 };
 

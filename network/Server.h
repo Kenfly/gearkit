@@ -54,6 +54,8 @@ protected:
     virtual int32_t delSocket(SocketID fd);
     Socket* getSocket(int32_t fd);
 
+private:
+    void pk_C_CONNECT(Socket* socket, Packet* packet);
 protected:
 	Socket* socket_;
     bool active_;

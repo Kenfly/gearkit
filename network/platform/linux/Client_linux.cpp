@@ -137,8 +137,16 @@ void Client::update()
 
 void Client::handleEvents(int32_t events)
 {
+    if (! socket_)
+        return;
     if (events & EPOLLIN)
     {
+        int32_t ret = socket_->flushRecv();
+        if (ret == -1)
+        {
+            // 断开
+            socket_->ready_out = false;
+        }
         DBG("[Client](handleEvents) EPOLLIN");
     }
     if (events & EPOLLOUT)

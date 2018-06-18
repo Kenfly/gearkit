@@ -120,12 +120,13 @@ int32_t Server::handleSocket(Socket* sock, int32_t events)
     if (events & EPOLLOUT)
     {
         // 可以写
-        sock->ready_out = true;
+        //sock->ready_out = true;
         DBG("[Server](handleSocket) EPOLLOUT fd:%d", sock->getHandle());
     }
 
     if (events & EPOLLERR)
     {
+        sock->ready_out = false;
         // 断开
         DBG("[Server](handleSocket) EPOLLERR fd:%d", sock->getHandle());
         return -1;

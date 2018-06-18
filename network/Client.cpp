@@ -103,14 +103,17 @@ void IClient::handlePollEvent()
                 handleSocketRecv(socket_);
             }
         }
-        if (sock_ev & KIT_POLLOUT)
+        if ((sock_ev & KIT_POLLOUT) && !sock->ready_out)
         {
+            // OUT事件会多次触发
             sock->ready_out = true;
             int32_t ret = sock->flushSend();
             if (ret == -1)
             {
                 sock_ev |= KIT_POLLERR;
             } else {
+                // 发起连接
+                pk_C_CONNECT();
             }
         }
         if (sock_ev & KIT_POLLERR)
@@ -121,13 +124,14 @@ void IClient::handlePollEvent()
             // 告诉session掉线
         }
 
-        DBG("[Server](update) poll event fd=%d", ev.fd);
+        DBG("[Client](update) poll event fd=%d", ev.fd);
     }
 }
 
 // 处理session前的协议
 void IClient::handleSocketRecv(Socket* sock)
 {
+    DBG("....handleSocketRecv...");
     PacketQue& packet_que = sock->getRecvQueue();
     Packet* packet;
     int count = packet_que.count();
@@ -135,6 +139,11 @@ void IClient::handleSocketRecv(Socket* sock)
     {
         if (!packet_que.pop(packet))
             break;
+        if (packet->getPID() == kit::S_CONNECT)
+        {
+            pk_S_CONNECT(packet);
+        }
+        packet->release();
     }
 }
 
@@ -174,9 +183,22 @@ void IClient::sendProtocol(const Protocol* protocol)
 }
 
 // pakcet
-Packet* IClient::pk_C_CONNECT()
+void IClient::pk_C_CONNECT()
 {
-    Buffer* buf = g_BufPool->createBuffer(1);
+    Packet* pack = Packet::create(false);
+    pack->init(kit::C_CONNECT, nullptr);
+    socket_->sendPacket(pack);
+    pack->release();
+    ERR("......pk_C_CONNECT.......");
+}
+
+void IClient::pk_S_CONNECT(Packet* pack)
+{
+    DBG("......pk_S_CONNECT.......");
+    Session* session = Session::create(false);
+    session->setSocket(socket_);
+    addSession(session);
+    session->release();
 }
 
 }

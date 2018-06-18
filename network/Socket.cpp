@@ -199,6 +199,7 @@ int32_t ISocket::doRecv()
         {
 			nrecv += len;
 			// 接收完包头
+            // TODO:: Pakcet pool
             Packet* packet = Packet::create(false);
             packet->unpackHeader(recv_head_buf_);
             recv_head_buf_->reset();
@@ -207,18 +208,27 @@ int32_t ISocket::doRecv()
                 // 收到错误包
                 recvClear();
                 packet->release();
-                return 0;
+                return -1;
             }
             recv_packet_ = packet;
 
             // 创建接收buf
             KIT_SAFE_RELEASE(recv_buf_);
-            recv_buf_ = g_BufPool->createBuffer(packet->getLength());
+            uint16_t plen = packet->getLength();
+            if (plen > 0)
+                recv_buf_ = g_BufPool->createBuffer(plen);
         }
     }
 
-    if (recv_buf_ == NULL || recv_packet_ == NULL)
+    if (! recv_packet_)
         return 0;
+    if (! recv_buf_)
+    {
+        // 空协议接收完毕
+        recvPacket(recv_packet_);
+        KIT_SAFE_RELEASE(recv_packet_);
+        return nrecv;
+    }
 
     // 接收包体
     uint32_t rest_size = recv_buf_->getWritableSize();
@@ -286,8 +296,14 @@ int32_t ISocket::doSend()
             send_packet_->delBuffer();
         }
     }
-	if (rest_size == 0 || send_buf_ == NULL)
+	if (rest_size == 0)
 		return 0;
+    if (! send_buf_)
+    {
+        KIT_SAFE_RELEASE(send_packet_);
+        // 空协议
+        return 1;
+    }
 	// 发送buff
 	uint32_t rest_buffer_size = send_buf_->getReadableSize();
 	if (rest_buffer_size > 0)
@@ -314,6 +330,7 @@ int32_t ISocket::doSend()
 
 int32_t ISocket::sendPacket(Packet* pack)
 {
+    printf("......sendPacket:%d\n", pack->getPID());
     pack->retain();
     send_que_.push(pack);
 

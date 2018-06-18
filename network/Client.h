@@ -33,7 +33,8 @@ protected:
     void handlePollEvent();
     void handleSocketRecv(Socket* sock);
 private:
-    Packet* pk_C_CONNECT();
+    void pk_C_CONNECT();
+    void pk_S_CONNECT(Packet* packet);
 protected:
     ClientStateMgr* state_mgr_;
 	Socket* socket_;

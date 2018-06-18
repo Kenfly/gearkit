@@ -2,6 +2,7 @@
 #include "netsys.h"
 #include "Socket.h"
 #include "Session.h"
+#include "Packet.h"
 #include "SockAddr.h"
 #include "Mutex.h"
 #include "Thread.h"
@@ -121,7 +122,7 @@ void IServer::handlePollEvent()
                 handleSocketRecv(sock);
             }
         }
-        if (sock_ev & KIT_POLLOUT)
+        if ((sock_ev & KIT_POLLOUT) && !sock->ready_out)
         {
             sock->ready_out = true;
             int32_t ret = sock->flushSend();
@@ -152,14 +153,10 @@ void IServer::handleSocketRecv(Socket* sock)
     {
         if (!packet_que.pop(packet))
             break;
-        //TODO: deal msg before session
+        if (packet->getPID() == kit::C_CONNECT)
+            pk_C_CONNECT(sock, packet);
+        packet->release();
     }
-    /*
-    Session* session = Session::create();
-    session->setSocket(sock);
-    addSession(session);
-    handleSessionRecv(session);
-    */
 }
 
 void IServer::update()
@@ -237,6 +234,23 @@ int32_t IServer::shutdown()
     }
 
     return 0;
+}
+
+void IServer::pk_C_CONNECT(Socket* socket, Packet* packet)
+{
+    DBG(".....pk_C_CONNECT.....");
+    //TODO: valid packet
+    Session* session = Session::create(false);
+    session->setSocket(socket);
+    addSession(session);
+    session->release();
+    handleSessionRecv(session);
+
+    //TODO: packet pool
+    Packet* pack = Packet::create(false);
+    pack->init(kit::S_CONNECT, nullptr);
+    sessionSendPacket(session, pack);
+    pack->release();
 }
 
 }

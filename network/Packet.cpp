@@ -4,7 +4,7 @@
 namespace kit {
 
 Packet::Packet()
-: buf_(NULL)
+: buf_(nullptr)
 {
 }
 
@@ -15,28 +15,22 @@ Packet::~Packet()
 
 void Packet::init(ProtocolID pid, Buffer* buf)
 {
-    buf_ = buf;
-    buf_->retain();
+    setBuffer(buf);
 
     header_.pid = pid;
-    header_.length = (uint16_t)buf->getWrittenSize();
+    header_.length = (uint16_t)(buf ? buf->getWrittenSize() : 0);
 }
 
 void Packet::setBuffer(Buffer* buf)
 {
-    if (buf_)
-        buf_->release();
-    buf->retain();
+    KIT_SAFE_RELEASE(buf_);
     buf_ = buf;
+    KIT_SAFE_RETAIN(buf_);
 }
 
 void Packet::delBuffer()
 {
-    if (buf_)
-    {
-        buf_->release();
-        buf_ = NULL;
-    }
+    KIT_SAFE_RELEASE(buf_);
 }
 
 void Packet::packHeader(Buffer* head_buf)

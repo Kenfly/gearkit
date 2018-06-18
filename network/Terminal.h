@@ -17,6 +17,7 @@ namespace kit {
 
 class Session;
 class Protocol;
+class Packet;
 
 class Terminal : public Ref
 {
@@ -45,6 +46,7 @@ public:
     void handleOutSession();
 protected:
     void sessionSendProtocol(Session* sd, const Protocol* pto);
+    void sessionSendPacket(Session* sd, Packet* pack);
 
     virtual bool baseInit();
 protected:

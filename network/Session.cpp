@@ -43,6 +43,7 @@ bool Session::sendPacket(Packet* pack)
         return ret == 0;
     } else {
         send_packets_.push(pack);
+        pack->retain();
         return false;
     }
 }
@@ -56,12 +57,14 @@ bool Session::recvPacket(Packet* pack)
 
 bool Session::flush()
 {
+    int32_t ret = 0;
     Packet* pk = nullptr;
-    while (!send_packets_.front(pk))
+    while (send_packets_.pop(pk))
     {
-        if (socket_->sendPacket(pk) != 0)
+        ret = socket_->sendPacket(pk);
+        pk->release();
+        if (ret != 0)
             return false;
-        send_packets_.pop(pk);
     }
 	return true;
 }

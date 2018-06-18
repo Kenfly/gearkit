@@ -81,6 +81,7 @@ void Terminal::handleOutSession()
 void Terminal::addProtocol(ProtocolID pid, Protocol* protocol)
 {
     delProtocol(pid);
+    protocol->init(pid);
     protocol_map_.set(pid, protocol);
     KIT_SAFE_RETAIN(protocol);
 }
@@ -134,11 +135,18 @@ void Terminal::sendProtocol(SessionID sid, const Protocol* protocol)
 
 void Terminal::sessionSendProtocol(Session* session, const Protocol* protocol)
 {
-    Packet* pack = Packet::create();
+    Packet* pack = Packet::create(false);
     Buffer* buf = g_BufPool->createBuffer(protocol->getBudgetSize());
     protocol->serialize(buf);
     pack->init(protocol->getPID(), buf);
-    bool clear_out = session->sendPacket(pack);
+    buf->release();
+    sessionSendPacket(session, pack);
+    pack->release();
+}
+
+void Terminal::sessionSendPacket(Session* session, Packet* packet)
+{
+    bool clear_out = session->sendPacket(packet);
     if (!clear_out)
         out_vec_.push_back(session);
 }

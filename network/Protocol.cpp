@@ -245,7 +245,7 @@ Protocol::~Protocol()
 {
 }
 
-void Protocol::init(int32_t pid)
+void Protocol::init(ProtocolID pid)
 {
     pid_ = pid;
 }
