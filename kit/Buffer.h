@@ -40,7 +40,12 @@ public:
 	bool readBuffer(void* buf, size_t size);
 
 	template<typename T>
-	bool operator<<(T v);
+	bool operator<<(const T& v);
+    bool operator<<(const char* v);
+    /*
+    template<typename T>
+    bool operator<<(const T* v);
+    */
 
 	template<typename T>
 	bool operator>>(T& v);

@@ -238,7 +238,6 @@ int32_t IServer::shutdown()
 
 void IServer::pk_C_CONNECT(Socket* socket, Packet* packet)
 {
-    DBG(".....pk_C_CONNECT.....");
     //TODO: valid packet
     Session* session = Session::create(false);
     session->setSocket(socket);
@@ -251,6 +250,8 @@ void IServer::pk_C_CONNECT(Socket* socket, Packet* packet)
     pack->init(kit::S_CONNECT, nullptr);
     sessionSendPacket(session, pack);
     pack->release();
+
+    DBG("__________pk_C_CONNECT___________");
 }
 
 }

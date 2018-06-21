@@ -101,7 +101,8 @@ void register_Class_Buffer(lua_State* L)
                 .addFunction("to_string", &LuaBuffer::toString) 
                 .addFunction("write_buffer", &LuaBuffer::writeBuffer) // disable ?
                 .addFunction("read_buffer", &LuaBuffer::readBuffer) // disable ? 
-                .addFunction("w_string", &LuaBuffer::operator<< <const char*> )
+                .addFunction("w_string", &LuaBuffer::operator<< <std::string> )
+                .addFunction("r_string", [](LuaBuffer* self){ std::string t; (*self)>>t; return t;} )
 
                 .addFunction("w_int8_t", &LuaBuffer::operator<< <int8_t> )
                 .addFunction("r_int8_t", [](LuaBuffer* self){ int8_t t; (*self)>>t; return t;} )

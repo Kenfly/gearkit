@@ -18,6 +18,7 @@ Buffer::~Buffer()
     if (head_)
     {
         free(head_);
+        head_ = NULL;
     }
 }
 

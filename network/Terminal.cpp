@@ -45,6 +45,7 @@ void Terminal::handleSessionRecv(Session* session)
             //TODO: not exist protocol
             continue;
         }
+        printf("...............:%s\n", pack->getBuffer()->toString().c_str());
         protocol->unserialize(pack->getBuffer());
         pack->release();
         recvProtocol(session->getID(), protocol);
@@ -142,6 +143,7 @@ void Terminal::sessionSendProtocol(Session* session, const Protocol* protocol)
     buf->release();
     sessionSendPacket(session, pack);
     pack->release();
+    DBG("_______sendProtocol:(%d)%s", session->getID(), protocol->toString().c_str());
 }
 
 void Terminal::sessionSendPacket(Session* session, Packet* packet)
@@ -149,11 +151,12 @@ void Terminal::sessionSendPacket(Session* session, Packet* packet)
     bool clear_out = session->sendPacket(packet);
     if (!clear_out)
         out_vec_.push_back(session);
+    DBG("_______sessionSendPacket:(%d)[%d]", packet->getPID(), packet->getLength());
 }
 
 void Terminal::recvProtocol(SessionID sid, const Protocol* protocol)
 {
-    DBG(protocol->toString().c_str());
+    DBG("_______recvProtocol:(%d)%s", sid, protocol->toString().c_str());
 }
 
 void Terminal::clearProtocols()

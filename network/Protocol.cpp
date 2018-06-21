@@ -1,4 +1,5 @@
 #include "Protocol.h"
+#include "Buffer.h"
 
 namespace kit {
 
@@ -6,7 +7,8 @@ namespace kit {
 template<typename T>
 bool PTValue<T>::serialize(Buffer* buffer) const
 {
-    return (*buffer) << value_;
+    const T& v = value_;
+    return (*buffer) << v;
 }
 
 template<typename T>
@@ -166,6 +168,7 @@ bool PTTable::serialize(Buffer* buffer) const
 {
     for (auto p : datas_)
     {
+        printf("..serialize:%d\n", p->getType());
         if (!p->serialize(buffer))
             return false;
     }
@@ -192,6 +195,7 @@ bool PTTable::unserialize(Buffer* buffer)
 {
     for (auto p : datas_)
     {
+        printf("..unserialize:%d\n", p->getType());
         if (!p->unserialize(buffer))
             return false;
     }
@@ -252,7 +256,7 @@ void Protocol::init(ProtocolID pid)
 
 std::string Protocol::toString() const
 {
-    std::string s = "[" + std::to_string(pid_) + "]\n";
+    std::string s = "["+std::to_string(pid_)+"]\n";
     s += PTTable::toString();
     return s;
 }

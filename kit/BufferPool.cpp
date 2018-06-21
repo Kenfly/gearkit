@@ -1,4 +1,5 @@
 #include "BufferPool.h"
+#include "Logger.h"
 
 namespace kit {
 
@@ -18,13 +19,12 @@ bool BufferPool::baseInit()
 
 Buffer* BufferPool::createBuffer(size_t size)
 {
-    int index = 0;
-    size_t fix_size = 1;
-    size_t size_tmp = size;
-    while (size_tmp >>= 1)
+    int index = 3;
+    size_t fix_size = 8;
+    while (fix_size < size)
     {
-        ++index;
         fix_size <<= 1;
+        ++index;
     }
 
     Buffer* buf = NULL;
@@ -37,19 +37,19 @@ Buffer* BufferPool::createBuffer(size_t size)
     //动态修改tail_，改成跟size一样大小
     buf->setSize(size);
 
+    DBG("[BufferPool](createBuffer)[%d/%d]", size, fix_size);
     return buf;
 }
 
 void BufferPool::destroyBuffer(Buffer* buffer)
 {
     size_t size = buffer->getCapacity();
-    int index = 0;
-    size_t fix_size = 8;
-    while (fix_size >= size)
+    int index = 3;
+    do
     {
         ++index;
-        fix_size <<= 1;
-    }
+        size >>= 1;
+    } while(size);
     if (index >= BUFFER_QUEUE_CNT || !ques_[index].push(buffer))
     {
 		buffer->release();

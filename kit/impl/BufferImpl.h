@@ -62,19 +62,45 @@ inline void Buffer::skipRead(size_t size)
 }
 
 template<typename T>
-inline bool Buffer::operator<<(T v)
+inline bool Buffer::operator<<(const T& v)
 {
     // TODO: little endian or big endian
 	return writeBuffer(&v, sizeof(T));
 }
 
+/*
+template<typename T>
+inline bool Buffer::operator<<(const T* v)
+{
+    perror("ERROR Buffer << type!\n");
+    return false;
+}
+*/
+
 template<>
-inline bool Buffer::operator<< <const char*>(const char* v)
+inline bool Buffer::operator<< <std::string>(const std::string& v)
+{
+    size_t size = v.length();
+    writeVaruint<size_t>(size);
+    //(*this) << size;
+    return writeBuffer(v.c_str(), size);
+}
+
+inline bool Buffer::operator<< (const char* v)
 {
 	size_t size = strlen(v);
     writeVaruint<size_t>(size);
-	return writeBuffer(v, (size_t)size);
+	return writeBuffer(v, size);
 }
+
+/*
+template<>
+inline bool Buffer::operator<< <char*> (char* v)
+{
+    return this->operator<< <const char*>(v);
+}
+*/
+
 
 template<typename T>
 inline bool Buffer::operator>>(T& v)
@@ -101,8 +127,9 @@ inline bool Buffer::operator>> <char*>(char*& v)
 template<>
 inline bool Buffer::operator>> <std::string>(std::string& v)
 {
-    uint16_t size;
-    (*this) >> size;
+    size_t size;
+    this->readVaruint<size_t>(size);
+    //(*this) >> size;
     if (size < 512)
     {
         char buf[512];
@@ -163,7 +190,8 @@ inline bool Buffer::writeVaruint(T value)
 	do
 	{
 		*next_byte = (value & 0x7f) | 0x80;
-		next_byte++;
+        //printf("____w___[%d]__\n", (*next_byte) & 0x7f);
+		++next_byte;
 		value >>= 7;
 	} while (value);
 	*(next_byte - 1) &= 0x7f;
@@ -184,23 +212,23 @@ inline bool Buffer::readVaruint(T& value)
 {
     static_assert(std::is_integral<T>::value && std::is_unsigned<T>::value,
             "Only signed integer types can be read as varuints.");
-    T val = 0;
     unsigned shift = 0;
     bool has_another_byte;
+    value = 0;
     do
     {
         if (read_cur_ >= tail_)
             return false;
         uint8_t byte = *read_cur_;
+        //printf("_____[%u]_____\n", byte & 0x7f);
         if (shift < sizeof(T) * 8)
         {
             value |= static_cast<T>(byte & 0x7f) << shift;
             shift += 7;
         }
         has_another_byte = byte & 0x80;
-        read_cur_++;
+        ++read_cur_;
     } while (has_another_byte);
-    value = val;
     return true;
 }
 

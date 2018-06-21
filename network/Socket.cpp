@@ -6,6 +6,7 @@
 #include "Session.h"
 #include "netsys.h"
 #include "base.h"
+#include "Logger.h"
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -330,7 +331,6 @@ int32_t ISocket::doSend()
 
 int32_t ISocket::sendPacket(Packet* pack)
 {
-    printf("......sendPacket:%d\n", pack->getPID());
     pack->retain();
     send_que_.push(pack);
 
@@ -364,14 +364,16 @@ void ISocket::pullPacketsToSession()
 
 int32_t ISocket::send(const char* buf, int32_t size, int32_t mode)
 {
-    printf("_______send_______%d\n", size);
-	return ::send(sock_, buf, size, mode);
+	int32_t n = ::send(sock_, buf, size, mode);
+    DBG("_______send_______[%d/%d]", n, size);
+    return n;
 }
 
 int32_t ISocket::recv(char* buf, int32_t size, int32_t mode)
 {
-    printf("_______recv_______%d\n", size);
-	return ::recv(sock_, buf, size, mode);
+	int32_t n = ::recv(sock_, buf, size, mode);
+    DBG("_______recv_______[%d/%d]", n, size);
+    return n;
 }
 
 int32_t ISocket::recvFrom(char* buf, int32_t size, int32_t mode, SockAddr *addr)

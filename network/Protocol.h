@@ -3,7 +3,6 @@
 
 #include "Ref.h"
 #include "netsys.h"
-#include "Buffer.h"
 #include <vector>
 #include <string>
 #include <functional>
@@ -33,6 +32,8 @@ inline constexpr int toint(PTType t)
 {
     return static_cast<int>(t);
 }
+
+class Buffer;
 
 // data
 class PTData : public Ref

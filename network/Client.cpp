@@ -131,7 +131,6 @@ void IClient::handlePollEvent()
 // 处理session前的协议
 void IClient::handleSocketRecv(Socket* sock)
 {
-    DBG("....handleSocketRecv...");
     PacketQue& packet_que = sock->getRecvQueue();
     Packet* packet;
     int count = packet_que.count();
@@ -189,16 +188,16 @@ void IClient::pk_C_CONNECT()
     pack->init(kit::C_CONNECT, nullptr);
     socket_->sendPacket(pack);
     pack->release();
-    ERR("......pk_C_CONNECT.......");
+    DBG("__________pk_C_CONNECT__________");
 }
 
 void IClient::pk_S_CONNECT(Packet* pack)
 {
-    DBG("......pk_S_CONNECT.......");
     Session* session = Session::create(false);
     session->setSocket(socket_);
     addSession(session);
     session->release();
+    DBG("__________pk_S_CONNECT__________");
 }
 
 }
