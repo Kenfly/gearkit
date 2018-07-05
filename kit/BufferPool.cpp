@@ -43,6 +43,7 @@ Buffer* BufferPool::createBuffer(size_t size)
 
 void BufferPool::destroyBuffer(Buffer* buffer)
 {
+    KIT_ASSERT(buffer->getReferenceCount() == 1);
     size_t size = buffer->getCapacity();
     int index = 3;
     do

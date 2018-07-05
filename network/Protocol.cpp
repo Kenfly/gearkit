@@ -168,7 +168,6 @@ bool PTTable::serialize(Buffer* buffer) const
 {
     for (auto p : datas_)
     {
-        printf("..serialize:%d\n", p->getType());
         if (!p->serialize(buffer))
             return false;
     }
@@ -195,7 +194,6 @@ bool PTTable::unserialize(Buffer* buffer)
 {
     for (auto p : datas_)
     {
-        printf("..unserialize:%d\n", p->getType());
         if (!p->unserialize(buffer))
             return false;
     }

@@ -45,7 +45,6 @@ void Terminal::handleSessionRecv(Session* session)
             //TODO: not exist protocol
             continue;
         }
-        printf("...............:%s\n", pack->getBuffer()->toString().c_str());
         protocol->unserialize(pack->getBuffer());
         pack->release();
         recvProtocol(session->getID(), protocol);

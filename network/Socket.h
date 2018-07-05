@@ -105,6 +105,7 @@ private:
     Buffer* send_head_buf_;
     // 一个完整包接收buf
     Buffer* recv_buf_;
+    Buffer* recv_bufs_;
     Packet* recv_packet_;
     // 一个完整包发送buf
     Buffer* send_buf_;

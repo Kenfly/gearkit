@@ -18,6 +18,7 @@ public:
     virtual ~Ref();
 
     virtual bool baseInit(void) { return true; }
+
     void retain();
     void release();
 

@@ -1,6 +1,5 @@
 #include "Ref.h"
 #include "RefPool.h"
-#include <assert.h>
 
 namespace kit {
 
@@ -12,6 +11,8 @@ Ref::Ref()
 
 Ref::~Ref()
 {
+    KIT_ASSERT(reference_count_ == 0);
+
     clearChildren();
 }
 
@@ -22,7 +23,7 @@ void Ref::retain()
 
 void Ref::release()
 {
-    assert(reference_count_ > 0);
+    KIT_ASSERT(reference_count_ > 0);
 
     --reference_count_;
     if (reference_count_ == 0)

@@ -10,6 +10,7 @@
  */
 
 #include <stdint.h>
+#include <assert.h>
 
 #ifdef PLATFORM_LINUX
 #endif // PLATFORM_LINUX
@@ -21,6 +22,10 @@
 
 #ifndef NULL
 #define NULL 0
+#endif
+
+#ifndef KIT_ASSERT
+#define KIT_ASSERT assert
 #endif
 
 // should define to NULL when lower than c++11

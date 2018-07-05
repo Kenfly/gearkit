@@ -22,6 +22,7 @@ ISocket::ISocket()
 , recv_head_buf_(NULL)
 , send_head_buf_(NULL)
 , recv_buf_(NULL)
+, recv_bufs_(NULL)
 , recv_packet_(NULL)
 , send_buf_(NULL)
 , send_bufs_(NULL)
@@ -36,22 +37,22 @@ ISocket::~ISocket()
     if (sock_ != DSOCKERR)
 	    close();
     KIT_SAFE_RELEASE(addr_);
-    KIT_SAFE_RELEASE(recv_head_buf_);
-    KIT_SAFE_RELEASE(send_head_buf_);
-    KIT_SAFE_RELEASE(recv_buf_);
+    KIT_DESTROY_BUFFER(recv_head_buf_);
+    KIT_DESTROY_BUFFER(send_head_buf_);
+    KIT_DESTROY_BUFFER(recv_buf_);
+    KIT_DESTROY_BUFFER(recv_bufs_);
+    KIT_DESTROY_BUFFER(send_buf_);
+    KIT_DESTROY_BUFFER(send_bufs_);
     KIT_SAFE_RELEASE(recv_packet_);
-    KIT_SAFE_RELEASE(send_buf_);
-    KIT_SAFE_RELEASE(send_bufs_);
+    KIT_SAFE_RELEASE(send_packet_);
 }
 
 bool ISocket::baseInit()
 {
     if (!recv_head_buf_)
-        recv_head_buf_ = Buffer::create(false);
-    recv_head_buf_->init(PACKET_HEADER_SIZE);
+        recv_head_buf_ = KIT_CREATE_BUFFER(PACKET_HEADER_SIZE);
     if (!send_head_buf_)
-        send_head_buf_ = Buffer::create(false);
-    send_head_buf_->init(PACKET_HEADER_SIZE);
+        send_head_buf_ = KIT_CREATE_BUFFER(PACKET_HEADER_SIZE);
 
     // 生成随机种子
     //packet_seed_ = ::rand();
@@ -214,10 +215,10 @@ int32_t ISocket::doRecv()
             recv_packet_ = packet;
 
             // 创建接收buf
-            KIT_SAFE_RELEASE(recv_buf_);
+            //KIT_DESTROY_BUFFER(recv_buf_);
             uint16_t plen = packet->getLength();
             if (plen > 0)
-                recv_buf_ = g_BufPool->createBuffer(plen);
+                recv_buf_ = KIT_CREATE_BUFFER(plen);
         }
     }
 
@@ -289,7 +290,7 @@ int32_t ISocket::doSend()
         rest_size -= size;
 
         // 读出内容buf，准备发送
-        KIT_SAFE_RELEASE(send_buf_);
+        KIT_DESTROY_BUFFER(send_buf_);
         send_buf_ = send_packet_->getBuffer();
         if (send_buf_)
         {
@@ -320,7 +321,7 @@ int32_t ISocket::doSend()
 	else
 	{
         KIT_SAFE_RELEASE(send_packet_);
-		g_BufPool->destroyBuffer(send_buf_);
+        KIT_DESTROY_BUFFER(send_buf_);
 		send_buf_ = NULL;
 	}
 
@@ -466,7 +467,7 @@ int32_t ISocket::flushSend()
 	int32_t ret = 0;
     int32_t send_len = 0;
 	if (send_bufs_ == NULL)
-		send_bufs_ = g_BufPool->createBuffer(PACKET_SIZE);
+		send_bufs_ = KIT_CREATE_BUFFER(PACKET_SIZE);
 	do {
 		len = doSend();
 		if (len == -1)

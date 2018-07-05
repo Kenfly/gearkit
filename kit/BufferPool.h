@@ -55,5 +55,15 @@ private:
 // buf pool
 #define g_BufPool (g_BufPoolMng->getPool())
 
+#define KIT_CREATE_BUFFER(size) \
+    g_BufPool->createBuffer(size);
+
+#define KIT_DESTROY_BUFFER(buf) \
+    if (buf) \
+    { \
+        g_BufPool->destroyBuffer(buf); \
+        buf = 0; \
+    }
+
 #endif
 
