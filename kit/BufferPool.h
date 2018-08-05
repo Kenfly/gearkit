@@ -61,7 +61,10 @@ private:
 #define KIT_DESTROY_BUFFER(buf) \
     if (buf) \
     { \
-        g_BufPool->destroyBuffer(buf); \
+        if (buf->getReferenceCount() == 1) \
+            g_BufPool->destroyBuffer(buf); \
+        else \
+            buf->release(); \
         buf = 0; \
     }
 

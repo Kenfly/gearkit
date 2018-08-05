@@ -10,6 +10,14 @@
 #define PACKET_QUEUE_LENGTH (200)
 #endif
 
+#define SOCKET_RECV_ERROR (-1)
+#define SOCKET_SEND_ERROR (-1)
+
+#define SOCKET_SP_CLEAR (-2)
+#define SOCKET_RP_CLEAR (0)
+#define SOCKET_RP_BLOCK (0)     //协议包未接收完毕
+#define SOCKET_SP_BLOCK (0)     //协议包未发送完毕
+
 namespace kit {
 
 class SockAddr;

@@ -108,7 +108,7 @@ void IClient::handlePollEvent()
             // OUT事件会多次触发
             sock->ready_out = true;
             int32_t ret = sock->flushSend();
-            if (ret == -1)
+            if (ret == SOCKET_SEND_ERROR)
             {
                 sock_ev |= KIT_POLLERR;
             } else {

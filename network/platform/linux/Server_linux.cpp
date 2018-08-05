@@ -109,11 +109,11 @@ int32_t Server::handleSocket(Socket* sock, int32_t events)
     if (events & EPOLLIN)
     {
         int32_t ret = sock->flushRecv();
-        if (ret == -1)
+        if (ret == SOCKET_RECV_ERROR)
         {
             // 断开
             sock->ready_out = false;
-            return -1;
+            return SOCKET_RECV_ERROR;
         }
         DBG("[Server](handleSocket) EPOLLIN fd:%d", sock->getHandle());
     }
